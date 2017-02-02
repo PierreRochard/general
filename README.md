@@ -16,3 +16,10 @@ Angular
 
 PrimeNG
 
+
+
+git clone https://github.com/michelp/pgjwt
+
+cd pgjwt
+
+make install
