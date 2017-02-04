@@ -16,3 +16,11 @@ Angular
 
 PrimeNG
 
+
+<pre>
+export PYTHONPATH=$(pwd)
+</pre>
+
+<pre>
+alembic revision --autogenerate -m "Add users table"
+</pre>

@@ -4,10 +4,13 @@ import os
 
 from alembic import context
 import keyring
-from sqlalchemy import engine_from_config, pool
+from sqlalchemy import create_engine
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
+
+
 config = context.config
 
 # Interpret the config file for Python logging.
@@ -18,7 +21,9 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = None
+
+from models import Base
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -73,7 +78,7 @@ def run_migrations_online():
     and associate a connection with the context.
 
     """
-    connectible = engine_from_config(get_url())
+    connectible = create_engine(get_url())
 
     with connectible.connect() as connection:
         context.configure(connection=connection,
