@@ -148,3 +148,4 @@ ENV/
 
 .idea
 
+postgrest.conf

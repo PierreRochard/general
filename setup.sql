@@ -11,7 +11,7 @@ CREATE ROLE anon;
 CREATE ROLE authenticator NOINHERIT;
 GRANT anon TO authenticator;
 
-GRANT USAGE ON SCHEMA public, auth TO anon;
+GRANT USAGE ON SCHEMA api, auth TO anon;
 GRANT SELECT ON TABLE pg_authid, auth.users TO anon;
 GRANT EXECUTE ON FUNCTION api.login(TEXT, TEXT) TO anon;
 
@@ -71,7 +71,7 @@ FOR EACH ROW
 EXECUTE PROCEDURE auth.encrypt_password();
 
 CREATE OR REPLACE FUNCTION
-  auth.user_role(email TEXT, password TEXT)
+  auth.user_role(_email TEXT, _password TEXT)
   RETURNS NAME
 LANGUAGE plpgsql
 AS $$
@@ -79,8 +79,8 @@ BEGIN
   RETURN (
     SELECT role
     FROM auth.users
-    WHERE users.email = email
-          AND users.password = crypt(password, users.password)
+    WHERE users.email = _email
+          AND users.password = crypt(_password, users.password)
   );
 END;
 $$;
@@ -90,7 +90,7 @@ CREATE TYPE auth.jwt_token AS (
 );
 
 CREATE OR REPLACE FUNCTION
-  api.login(email TEXT, pass TEXT)
+  api.login(email TEXT, password TEXT)
   RETURNS auth.jwt_token
 LANGUAGE plpgsql
 AS $$
@@ -98,7 +98,7 @@ DECLARE
   _role  NAME;
   result auth.jwt_token;
 BEGIN
-  SELECT auth.user_role(email, pass)
+  SELECT auth.user_role(email, password)
   INTO _role;
   IF _role IS NULL
   THEN
@@ -111,7 +111,7 @@ BEGIN
          SELECT
            _role                                                                             AS role,
            email                                                                             AS email,
-           extract(EPOCH FROM now()) :: INTEGER + current_setting('app.jwt_hours') * 60 * 60 AS exp
+           extract(EPOCH FROM now()) :: INTEGER + current_setting('app.jwt_hours')::INTEGER * 60 * 60 AS exp
        ) r
   INTO result;
   RETURN result;
