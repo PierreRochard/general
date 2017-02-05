@@ -24,3 +24,9 @@ export PYTHONPATH=$(pwd)
 <pre>
 alembic revision --autogenerate -m "Add users table"
 </pre>
+
+git clone https://github.com/michelp/pgjwt
+
+cd pgjwt
+
+make install
