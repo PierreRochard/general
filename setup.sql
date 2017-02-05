@@ -12,7 +12,6 @@ CREATE ROLE authenticator NOINHERIT;
 GRANT anon TO authenticator;
 
 GRANT USAGE ON SCHEMA api, auth TO anon;
-GRANT SELECT ON TABLE pg_authid, auth.users TO anon;
 GRANT EXECUTE ON FUNCTION api.login(TEXT, TEXT) TO anon;
 
 
@@ -22,6 +21,8 @@ CREATE TABLE
   password TEXT NOT NULL CHECK (length(password) < 512),
   role     NAME NOT NULL CHECK (length(role) < 512)
 );
+
+GRANT SELECT ON TABLE pg_authid, auth.users TO anon;
 
 CREATE OR REPLACE FUNCTION
   auth.check_if_role_exists()
