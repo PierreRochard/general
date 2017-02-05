@@ -147,5 +147,3 @@ ENV/
 .ropeproject
 
 .idea
-
-postgrest.conf
