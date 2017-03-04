@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION table_notify() RETURNS trigger AS $$
 DECLARE
-  id bigint;
+  id UUID;
   payload text;
   json_record JSON;
   payload_size INT;
@@ -23,7 +23,7 @@ BEGIN
   IF payload_size >= 8000 THEN
     payload = json_build_object('table_name', TG_TABLE_SCHEMA || '.' || TG_TABLE_NAME, 'id', id, 'type', TG_OP)::text;
   END IF;
-  PERFORM pg_notify('todo_items_table_update', payload);
+  PERFORM pg_notify('messages_table_update', payload);
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;

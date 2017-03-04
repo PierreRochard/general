@@ -5,7 +5,7 @@ import websockets
 
 payload = {
   'mode': 'rw',
-  'channel': 'messages'
+  'channel': 'messages_table_update'
 }
 
 encoded = jwt.encode(payload, '4S7lR9SnY8g3', algorithm='HS256').decode('utf-8')
