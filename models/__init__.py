@@ -7,8 +7,7 @@ Base = declarative_base()
 
 
 def get_session():
-    from mech_ops.webapp.config import DevConfig
-    engine = create_engine(DevConfig.SQLALCHEMY_DATABASE_URI, echo=True)
+    engine = create_engine("postgresql+psycopg2://postgrest@localhost:5432/rest", echo=True)
     session_maker = sessionmaker(bind=engine)
     session = session_maker()
     return session

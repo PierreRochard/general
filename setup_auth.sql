@@ -110,8 +110,8 @@ BEGIN
   SELECT sign(row_to_json(r), current_setting('app.jwt_secret')) AS token
   FROM (
          SELECT
-           _role                                                                             AS role,
-           email                                                                             AS email,
+           _role            AS role,
+           email            AS email,
            extract(EPOCH FROM now()) :: INTEGER + current_setting('app.jwt_hours')::INTEGER * 60 * 60 AS exp
        ) r
   INTO result;
@@ -120,9 +120,9 @@ END;
 $$;
 
 CREATE TABLE api.messages (
-  id        UUID PRIMARY KEY                                                                                                                                                                                                                                                                                     DEFAULT gen_random_uuid(),
-  time      TIMESTAMP   NOT NULL                                                                                                                                                                                                                                                                                   DEFAULT now(),
-  from_user NAME      NOT NULL                                                                                                                                                                                                                                                                                   DEFAULT current_user,
+  id        UUID PRIMARY KEY   DEFAULT gen_random_uuid(),
+  time      TIMESTAMP   NOT NULL DEFAULT now(),
+  from_user NAME      NOT NULL DEFAULT current_user,
   to_user   NAME      NOT NULL,
   subject   VARCHAR(64) NOT NULL,
   body      TEXT
