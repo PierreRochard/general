@@ -8,8 +8,8 @@ class Settings(Base):
     __tablename__ = 'users'
     __table_args__ = ({'schema': 'admin'},
                       UniqueConstraint('user',
-                                       'table',
-                                       'column',
+                                       'path',
+                                       'property',
                                        'key',
                                        name='setting_unique_constraint'))
 
@@ -17,7 +17,7 @@ class Settings(Base):
                 server_default=text('gen_random_uuid()'),
                 primary_key=True)
     user = Column(String)
-    table = Column(String)
-    column = Column(String)
+    path = Column(String)
+    property = Column(String)
     key = Column(String)
     value = Column(String)
