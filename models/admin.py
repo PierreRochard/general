@@ -6,7 +6,7 @@ from models import Base
 
 class Users(Base):
     __tablename__ = 'users'
-    __table_args__ = {'schema': 'admin'}
+    __table_args__ = {'schema': 'auth'}
 
     id = Column(UUID(as_uuid=True),
                 server_default=text('gen_random_uuid()'),
