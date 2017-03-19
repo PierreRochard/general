@@ -49,19 +49,4 @@ def install_user_table_functions(session):
     BEFORE INSERT OR UPDATE ON auth.users
     FOR EACH ROW
     EXECUTE PROCEDURE auth.encrypt_password();
-
-    CREATE OR REPLACE FUNCTION
-      auth.user_role(_email TEXT, _password TEXT)
-      RETURNS NAME
-    LANGUAGE plpgsql
-    AS $$
-    BEGIN
-      RETURN (
-        SELECT role
-        FROM auth.users
-        WHERE users.email = _email
-              AND users.password = crypt(_password, users.password)
-      );
-    END;
-    $$;
     """)

@@ -1,6 +1,22 @@
 def install_login_function(session):
-    session.execute(
-        """
+    session.execute( """
+    CREATE OR REPLACE FUNCTION
+      auth.user_role(_email TEXT, _password TEXT)
+      RETURNS NAME
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+      RETURN (
+        SELECT role
+        FROM auth.users
+        WHERE users.email = _email
+              AND users.password = crypt(_password, users.password)
+      );
+    END;
+    $$;
+    """)
+
+    session.execute("""
     CREATE OR REPLACE FUNCTION
       api.login(email TEXT, password TEXT)
       RETURNS auth.jwt_token
@@ -33,3 +49,12 @@ def install_login_function(session):
     session.execute('''
     GRANT EXECUTE ON FUNCTION api.login(TEXT, TEXT) TO anon;
     ''')
+
+    session.execute("""
+    CREATE OR REPLACE FUNCTION
+        api.websocket_login(channel TEXT)
+        RETURNS auth.jwt_token
+    LANGUAGE plpgsql
+    AS $$
+    DECLARE
+    """)

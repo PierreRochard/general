@@ -1,7 +1,7 @@
 import argparse
 
 from models import get_session
-from models.admin import Messages
+from models.auth import Messages
 
 
 def insert_records(database, user):
