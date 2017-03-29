@@ -1,7 +1,7 @@
 from sqlalchemy import Column, DateTime, String, text
 from sqlalchemy.dialects.postgresql import UUID
 
-from models import Base
+from .util import Base
 
 
 class Messages(Base):

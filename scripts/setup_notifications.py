@@ -1,7 +1,7 @@
 
 def setup_table_notifications(session, schema, table):
     session.execute(f'''
-    CREATE OR REPLACE FUNCTION {schema}_{table}_notify() RETURNS TRIGGER AS $$
+    CREATE OR REPLACE FUNCTION table_notify() RETURNS TRIGGER AS $$
     DECLARE
       id UUID;
       payload TEXT;

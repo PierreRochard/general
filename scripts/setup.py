@@ -116,8 +116,8 @@ def setup_database(database, user):
 if __name__ == '__main__':
     argument_parser = argparse.ArgumentParser(
         description='Install PostgREST Auth')
-    argument_parser.add_argument('-d', help='Database name', dest='database')
-    argument_parser.add_argument('-u', help='Database user', dest='user')
+    argument_parser.add_argument('-d', help='Database name', dest='database', required=True)
+    argument_parser.add_argument('-u', help='Database user', dest='user', required=True)
     args = argument_parser.parse_args()
     install_dependencies()
     setup_database(args.database, args.user)

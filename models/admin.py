@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String, text, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 
-from models import Base
+from .util import Base
 
 
 class Settings(Base):
