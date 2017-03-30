@@ -1,2 +1,4 @@
+websockets
+PyJWT
 requests
 sqlalchemy
