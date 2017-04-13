@@ -1,4 +1,5 @@
-websockets
+alembic
 PyJWT
 requests
 sqlalchemy
+websockets
