@@ -1,11 +1,9 @@
-import argparse
-
 from models.api import Messages
 from models.util import get_session
 
 
-def insert_records(database, user):
-    session = get_session(database, user)
+def insert_records():
+    session = get_session()
     for i in range(0, 50):
         new_message = Messages(to_user='you', subject='test')
         session.add(new_message)
@@ -13,9 +11,4 @@ def insert_records(database, user):
 
 
 if __name__ == '__main__':
-    argument_parser = argparse.ArgumentParser(
-        description='Create test records')
-    argument_parser.add_argument('-d', help='Database name', dest='database')
-    argument_parser.add_argument('-u', help='Database user', dest='user')
-    args = argument_parser.parse_args()
-    insert_records(args.database, args.user)
+    insert_records()
