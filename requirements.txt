@@ -1,4 +1,5 @@
 alembic
+psycopg2
 PyJWT
 requests
 sqlalchemy
