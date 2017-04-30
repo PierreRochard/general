@@ -7,15 +7,15 @@ from sqlalchemy.orm import sessionmaker
 
 Base = declarative_base()
 
-pg_url = URL(drivername='postgresql+psycopg2',
-             username=os.environ['PGUSER'],
-             password=os.environ['PGPASSWORD'],
-             host=os.environ['PGHOST'],
-             port=os.environ['PGPORT'],
-             database='rest')
-
 
 def get_session():
+    pg_url = URL(drivername='postgresql+psycopg2',
+                 username=os.environ['PGUSER'],
+                 password=os.environ['PGPASSWORD'],
+                 host=os.environ['PGHOST'],
+                 port=os.environ['PGPORT'],
+                 database='rest')
+
     engine = create_engine(pg_url, echo=True)
     session_maker = sessionmaker(bind=engine)
     session = session_maker()
