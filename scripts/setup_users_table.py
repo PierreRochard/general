@@ -1,7 +1,7 @@
 def install_user_table_functions(session):
     session.execute("GRANT SELECT ON TABLE auth.users TO anon;")
 
-    session.execute(f"""
+    session.execute("""
     CREATE OR REPLACE FUNCTION
       auth.check_if_role_exists()
       RETURNS TRIGGER
@@ -28,7 +28,7 @@ def install_user_table_functions(session):
     EXECUTE PROCEDURE auth.check_if_role_exists();
     """)
 
-    session.execute(f"""
+    session.execute("""
     CREATE OR REPLACE FUNCTION
       auth.encrypt_password()
       RETURNS TRIGGER

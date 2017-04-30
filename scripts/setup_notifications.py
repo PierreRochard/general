@@ -1,6 +1,6 @@
 
 def setup_table_notifications(session, schema, table):
-    session.execute(f'''
+    session.execute('''
     CREATE OR REPLACE FUNCTION table_notify() RETURNS TRIGGER AS $$
     DECLARE
       id UUID;
@@ -30,9 +30,9 @@ def setup_table_notifications(session, schema, table):
       RETURN NEW;
     END;
     $$ LANGUAGE plpgsql;
-    ''')
+    '''.format(schema=schema, table=table))
 
-    session.execute(f'''
+    session.execute('''
     DROP TRIGGER IF EXISTS messages_notify_update ON {schema}.{table};
     CREATE TRIGGER messages_notify_update
     AFTER UPDATE ON {schema}.{table}
@@ -47,7 +47,7 @@ def setup_table_notifications(session, schema, table):
     CREATE TRIGGER messages_notify_delete
     AFTER DELETE ON {schema}.{table}
     FOR EACH ROW EXECUTE PROCEDURE table_notify();
-    ''')
+    '''.format(schema=schema, table=table))
 
 
 def install_json_diff_function(session):
