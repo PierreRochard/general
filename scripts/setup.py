@@ -6,9 +6,9 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 from models import Base
 from scripts import get_pg_url
-from .setup_login import install_login_function
-from .setup_users_table import install_user_table_functions
-from .setup_notifications import setup_table_notifications
+from scripts.setup_login import install_login_function
+from scripts.setup_users_table import install_user_table_functions
+from scripts.setup_notifications import setup_table_notifications
 
 
 def setup_database():
