@@ -5,14 +5,14 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 from models import Base
-from scripts import pg_url
+from scripts import get_pg_url
 from .setup_login import install_login_function
 from .setup_users_table import install_user_table_functions
 from .setup_notifications import setup_table_notifications
 
 
 def setup_database():
-    engine = create_engine(pg_url, echo=True)
+    engine = create_engine(get_pg_url(), echo=True)
     session = scoped_session(sessionmaker(bind=engine, autocommit=True))()
     session.connection().connection.set_isolation_level(0)
 
