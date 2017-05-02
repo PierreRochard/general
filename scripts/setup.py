@@ -32,7 +32,7 @@ def setup_database():
     for schema, table in [('api', 'messages')]:
         setup_table_notifications(session, schema, table)
 
-
+    setup_views(session)
 
 if __name__ == '__main__':
     setup_database()
