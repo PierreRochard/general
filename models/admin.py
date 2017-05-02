@@ -5,7 +5,7 @@ from .util import Base
 
 
 class Settings(Base):
-    __tablename__ = 'users'
+    __tablename__ = 'settings'
     __table_args__ = (UniqueConstraint('user',
                                        'path',
                                        'property',
