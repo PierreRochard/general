@@ -13,7 +13,7 @@ from scripts.setup_notifications import setup_table_notifications
 
 def setup_views(session):
     session.execute("""
-    CREATE VIEW api.settings AS
+    CREATE OR REPLACE VIEW api.settings AS
     SELECT *
     FROM admin.settings;
     """)
