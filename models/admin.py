@@ -7,10 +7,8 @@ from .util import Base
 class TableSettings(Base):
     __tablename__ = 'table_settings'
     __table_args__ = (UniqueConstraint('user',
-                                       'path',
-                                       'property',
-                                       'key',
-                                       name='setting_unique_constraint'),
+                                       'table_name',
+                                       name='table_settings_unique_constraint'),
                       {'schema': 'admin'},
                       )
 
