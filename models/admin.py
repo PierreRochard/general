@@ -24,12 +24,12 @@ class TableSettings(Base):
 
 def setup_table_settings_views(session):
     session.execute("""
-        CREATE MATERIALIZED VIEW IF NOT EXISTS tables AS
+        CREATE MATERIALIZED VIEW IF NOT EXISTS auth.tables AS
             SELECT table_name
             FROM information_schema.tables
             WHERE table_schema = 'api';
         
-        REFRESH MATERIALIZED VIEW tables;
+        REFRESH MATERIALIZED VIEW auth.tables;
     """)
     # https://www.postgresql.org/docs/current/static/rules-views.html
     session.execute("""
@@ -75,12 +75,12 @@ class ColumnSettings(Base):
 
 def setup_column_settings_views(session):
     session.execute("""
-        CREATE MATERIALIZED VIEW IF NOT EXISTS columns AS
+        CREATE MATERIALIZED VIEW IF NOT EXISTS auth.columns AS
             SELECT table_name, column_name, is_nullable, data_type
             FROM information_schema.columns
             WHERE table_schema = 'api'
 
-        REFRESH MATERIALIZED VIEW columns;
+        REFRESH MATERIALIZED VIEW auth.columns;
     """)
     # https://www.postgresql.org/docs/current/static/rules-views.html
     session.execute("""
