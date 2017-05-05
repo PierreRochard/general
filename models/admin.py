@@ -34,7 +34,13 @@ def setup_table_settings_views(session):
     # https://www.postgresql.org/docs/current/static/rules-views.html
     session.execute("""
         CREATE OR REPLACE VIEW api.table_settings AS 
-          SELECT admin.tables.table_name, admin.table_settings.* FROM admin.tables
+          SELECT admin.tables.table_name, 
+                 admin.table_settings.id,
+                 admin.table_settings.user,
+                 admin.table_settings.custom_name,
+                 admin.table_settings.category,
+                 admin.table_settings.visible
+          FROM admin.tables
           LEFT OUTER JOIN admin.table_settings 
               ON admin.tables.table_name = admin.table_settings.table_name
     """)
@@ -89,7 +95,13 @@ def setup_column_settings_views(session):
                  admin.columns.column_name,
                  admin.columns.is_nullable,
                  admin.columns.data_type,
-                 admin.column_settings.* FROM admin.columns
+                 admin.column_settings.id,
+                 admin.column_settings.user,
+                 admin.column_settings.custom_name,
+                 admin.column_settings.index,
+                 admin.column_settings.format,
+                 admin.column_settings.visible
+          FROM admin.columns
           LEFT OUTER JOIN admin.column_settings 
               ON admin.columns.table_name = admin.column_settings.table_name
               AND admin.columns.column_name = admin.column_settings.column_name
