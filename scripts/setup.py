@@ -4,7 +4,7 @@ sys.path.insert(0, '../')
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-from models import Base
+from models import Base, setup_table_settings_views, setup_column_settings_views
 from scripts import get_pg_url
 from scripts.setup_login import install_login_function
 from scripts.setup_users_table import install_user_table_functions
@@ -33,6 +33,9 @@ def setup_database():
         setup_table_notifications(session, schema, table)
 
     setup_views(session)
+
+    setup_table_settings_views(session)
+    setup_column_settings_views(session)
 
 if __name__ == '__main__':
     setup_database()
