@@ -24,19 +24,19 @@ class TableSettings(Base):
 
 def setup_table_settings_views(session):
     session.execute("""
-        CREATE MATERIALIZED VIEW IF NOT EXISTS auth.tables AS
+        CREATE MATERIALIZED VIEW IF NOT EXISTS admin.tables AS
             SELECT table_name
             FROM information_schema.tables
             WHERE table_schema = 'api';
         
-        REFRESH MATERIALIZED VIEW auth.tables;
+        REFRESH MATERIALIZED VIEW admin.tables;
     """)
     # https://www.postgresql.org/docs/current/static/rules-views.html
     session.execute("""
         CREATE OR REPLACE VIEW api.table_settings AS 
-          SELECT auth.tables.table_name, auth.table_settings.* FROM auth.tables
-          LEFT OUTER JOIN auth.table_settings 
-              ON auth.tables.table_name = auth.table_settings.table_name
+          SELECT admin.tables.table_name, admin.table_settings.* FROM admin.tables
+          LEFT OUTER JOIN admin.table_settings 
+              ON admin.tables.table_name = admin.table_settings.table_name
     """)
 
 
@@ -75,22 +75,22 @@ class ColumnSettings(Base):
 
 def setup_column_settings_views(session):
     session.execute("""
-        CREATE MATERIALIZED VIEW IF NOT EXISTS auth.columns AS
+        CREATE MATERIALIZED VIEW IF NOT EXISTS admin.columns AS
             SELECT table_name, column_name, is_nullable, data_type
             FROM information_schema.columns
             WHERE table_schema = 'api'
 
-        REFRESH MATERIALIZED VIEW auth.columns;
+        REFRESH MATERIALIZED VIEW admin.columns;
     """)
     # https://www.postgresql.org/docs/current/static/rules-views.html
     session.execute("""
         CREATE OR REPLACE VIEW api.column_settings AS 
-          SELECT auth.columns.table_name,
-                 auth.columns.column_name,
-                 auth.columns.is_nullable,
-                 auth.columns.data_type,
-                 auth.column_settings.* FROM auth.columns
-          LEFT OUTER JOIN auth.column_settings 
-              ON auth.columns.table_name = auth.column_settings.table_name
-              AND auth.columns.column_name = auth.column_settings.column_name
+          SELECT admin.columns.table_name,
+                 admin.columns.column_name,
+                 admin.columns.is_nullable,
+                 admin.columns.data_type,
+                 admin.column_settings.* FROM admin.columns
+          LEFT OUTER JOIN admin.column_settings 
+              ON admin.columns.table_name = admin.column_settings.table_name
+              AND admin.columns.column_name = admin.column_settings.column_name
     """)
