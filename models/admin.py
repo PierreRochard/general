@@ -31,6 +31,11 @@ def setup_table_settings_views(session):
         
         REFRESH MATERIALIZED VIEW tables;
     """)
+    # https://www.postgresql.org/docs/current/static/rules-views.html
+    session.execute("""
+        CREATE VIEW OR REPLACE api.table_settings AS 
+        
+    """)
 
 
 class ColumnSettings(Base):
