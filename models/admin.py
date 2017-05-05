@@ -40,6 +40,18 @@ def setup_table_settings_views(session):
     """)
 
 
+# CREATE FUNCTION MyFuncName() RETURNS trigger AS $$
+# DECLARE
+#   id integer;
+# BEGIN
+#   INSERT INTO tableA (time) VALUES COALESCE(NEW.time, NOW()) RETURNING aPrimaryKey INTO id;
+#   INSERT INTO tableB (aPrimaryKey, someCol1) VALUES (id, NEW.someValue);
+#   RETURN NEW;
+# END; $$ LANGUAGE PLPGSQL;
+#
+# CREATE TRIGGER MyView_on_insert INSTEAD OF INSERT ON MyView
+#   FOR EACH ROW EXECUTE PROCEDURE MyFuncName();
+
 class ColumnSettings(Base):
     __tablename__ = 'column_settings'
     __table_args__ = (UniqueConstraint('user',
