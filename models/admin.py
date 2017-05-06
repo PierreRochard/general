@@ -41,7 +41,7 @@ def setup_table_settings_views(session):
       ALTER TABLE admin.table_settings FORCE ROW LEVEL SECURITY;
       DROP POLICY IF EXISTS table_settings_policy ON admin.table_settings;
       CREATE POLICY table_settings_policy ON admin.table_settings
-          USING (user = current_user);
+          USING (admin.table_settings."user" = current_user);
               
         CREATE OR REPLACE VIEW api.table_settings AS 
           SELECT admin.tables.table_name, 
@@ -131,7 +131,7 @@ def setup_column_settings_views(session):
       ALTER TABLE admin.column_settings FORCE ROW LEVEL SECURITY;
       DROP POLICY IF EXISTS column_settings_policy ON admin.column_settings;
       CREATE POLICY column_settings_policy ON admin.column_settings
-          USING (user = current_user);
+          USING (admin.column_settings.user = current_user);
           
         CREATE MATERIALIZED VIEW IF NOT EXISTS admin.columns AS
             SELECT table_name, column_name, is_nullable, data_type
