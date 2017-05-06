@@ -84,7 +84,7 @@ def setup_column_settings_views(session):
         CREATE MATERIALIZED VIEW IF NOT EXISTS admin.columns AS
             SELECT table_name, column_name, is_nullable, data_type
             FROM information_schema.columns
-            WHERE table_schema = 'api'
+            WHERE table_schema = 'api';
 
         REFRESH MATERIALIZED VIEW admin.columns;
     """)
