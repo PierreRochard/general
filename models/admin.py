@@ -48,7 +48,7 @@ def setup_table_settings_views(session):
                  admin.table_settings.id,
                  admin.table_settings.user,
                  admin.table_settings.custom_name,
-                 admin.table_settings.category,
+                 admin.table_settings.submenu,
                  admin.table_settings.visible,
                  admin.table_settings.can_insert,
                  admin.table_settings.can_update,
