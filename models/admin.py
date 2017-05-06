@@ -18,9 +18,9 @@ class TableSettings(Base):
     user = Column(String,
                   nullable=False,
                   server_default=text('current_user'))
-    table_name = Column(String)
+    table_name = Column(String, nullable=False)
     custom_name = Column(String)
-    category = Column(String)
+    submenu = Column(String)
     visible = Column(Boolean)
     can_insert = Column(Boolean)
     can_update = Column(Boolean)
@@ -38,6 +38,11 @@ def setup_table_settings_views(session):
     """)
     # https://www.postgresql.org/docs/current/static/rules-views.html
     session.execute("""
+      ALTER TABLE admin.table_settings FORCE ROW LEVEL SECURITY;
+      DROP POLICY IF EXISTS table_settings_policy ON admin.table_settings;
+      CREATE POLICY table_settings_policy ON admin.table_settings
+          USING (user = current_user);
+              
         CREATE OR REPLACE VIEW api.table_settings AS 
           SELECT admin.tables.table_name, 
                  admin.table_settings.id,
@@ -50,7 +55,7 @@ def setup_table_settings_views(session):
                  admin.table_settings.can_delete
           FROM admin.tables
           LEFT OUTER JOIN admin.table_settings 
-              ON admin.tables.table_name = admin.table_settings.table_name
+              ON admin.tables.table_name = admin.table_settings.table_name;
     """)
 
     session.execute("""
@@ -64,6 +69,7 @@ def setup_table_settings_views(session):
                   ELSIF TG_OP = 'UPDATE' THEN
                    --UPDATE person_detail SET pid=NEW.pid, pname=NEW.pname WHERE pid=OLD.pid;
                    --UPDATE person_job SET pid=NEW.pid, job=NEW.job WHERE pid=OLD.pid;
+                    INSERT INTO admin.table_settings (custom_name) VALUES(NEW.custom_name);
                    RETURN NEW;
                   ELSIF TG_OP = 'DELETE' THEN
                    --DELETE FROM person_job WHERE pid=OLD.pid;
@@ -111,8 +117,8 @@ class ColumnSettings(Base):
     user = Column(String,
                   nullable=False,
                   server_default=text('current_user'))
-    table_name = Column(String)
-    column_name = Column(String)
+    table_name = Column(String, nullable=False)
+    column_name = Column(String, nullable=False)
     custom_name = Column(String)
     index = Column(Integer)
     format = Column(String)
@@ -122,6 +128,11 @@ class ColumnSettings(Base):
 
 def setup_column_settings_views(session):
     session.execute("""
+      ALTER TABLE admin.column_settings FORCE ROW LEVEL SECURITY;
+      DROP POLICY IF EXISTS column_settings_policy ON admin.column_settings;
+      CREATE POLICY column_settings_policy ON admin.column_settings
+          USING (user = current_user);
+          
         CREATE MATERIALIZED VIEW IF NOT EXISTS admin.columns AS
             SELECT table_name, column_name, is_nullable, data_type
             FROM information_schema.columns
