@@ -11,13 +11,6 @@ from scripts.setup_users_table import install_user_table_functions
 from scripts.setup_notifications import setup_table_notifications
 
 
-def setup_views(session):
-    session.execute("""
-    CREATE OR REPLACE VIEW api.settings AS
-    SELECT *
-    FROM admin.settings;
-    """)
-
 def setup_database():
     engine = create_engine(get_pg_url(), echo=True)
     session = scoped_session(sessionmaker(bind=engine, autocommit=True))()
@@ -31,8 +24,6 @@ def setup_database():
 
     for schema, table in [('api', 'messages')]:
         setup_table_notifications(session, schema, table)
-
-    setup_views(session)
 
     setup_table_settings_views(session)
     setup_column_settings_views(session)
