@@ -20,6 +20,9 @@ class TableSettings(Base):
     custom_name = Column(String)
     category = Column(String)
     visible = Column(Boolean)
+    can_insert = Column(Boolean)
+    can_update = Column(Boolean)
+    can_delete = Column(Boolean)
 
 
 def setup_table_settings_views(session):
@@ -39,7 +42,10 @@ def setup_table_settings_views(session):
                  admin.table_settings.user,
                  admin.table_settings.custom_name,
                  admin.table_settings.category,
-                 admin.table_settings.visible
+                 admin.table_settings.visible,
+                 admin.table_settings.can_insert,
+                 admin.table_settings.can_update,
+                 admin.table_settings.can_delete
           FROM admin.tables
           LEFT OUTER JOIN admin.table_settings 
               ON admin.tables.table_name = admin.table_settings.table_name
@@ -77,6 +83,7 @@ class ColumnSettings(Base):
     index = Column(Integer)
     format = Column(String)
     visible = Column(Boolean)
+    can_update = Column(Boolean)
 
 
 def setup_column_settings_views(session):
@@ -100,7 +107,8 @@ def setup_column_settings_views(session):
                  admin.column_settings.custom_name,
                  admin.column_settings.index,
                  admin.column_settings.format,
-                 admin.column_settings.visible
+                 admin.column_settings.visible,
+                 admin.column_settings.can_update
           FROM admin.columns
           LEFT OUTER JOIN admin.column_settings 
               ON admin.columns.table_name = admin.column_settings.table_name
