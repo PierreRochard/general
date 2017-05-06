@@ -15,7 +15,9 @@ class TableSettings(Base):
     id = Column(UUID(as_uuid=True),
                 server_default=text('gen_random_uuid()'),
                 primary_key=True)
-    user = Column(String)
+    user = Column(String,
+                  nullable=False,
+                  server_default=text('current_user'))
     table_name = Column(String)
     custom_name = Column(String)
     category = Column(String)
@@ -52,22 +54,12 @@ def setup_table_settings_views(session):
     """)
 
     session.execute("""
-    CREATE TRIGGER api.table_settings_trigger
-      INSTEAD OF INSERT OR UPDATE OR DELETE
-      ON api.table_settings
-      FOR EACH ROW
-      EXECUTE PROCEDURE table_settings_function();
-    
     CREATE OR REPLACE FUNCTION table_settings_function()
-      RETURNS trigger AS
+      RETURNS TRIGGER AS
             $BODY$
                BEGIN
-                  IF TG_OP = 'INSERT' THEN
-                    --INSERT INTO   VALUES(NEW.pid,NEW.pname);
-                    --INSERT INTO  person_job VALUES(NEW.pid,NEW.job);
-                    do $$
-                    PERFORM insert_job_titles(NEW.a);
-                    $$;
+                IF TG_OP = 'INSERT' THEN
+                    INSERT INTO admin.table_settings (custom_name) VALUES(NEW.custom_name);
                     RETURN NEW;
                   ELSIF TG_OP = 'UPDATE' THEN
                    --UPDATE person_detail SET pid=NEW.pid, pname=NEW.pname WHERE pid=OLD.pid;
@@ -76,14 +68,21 @@ def setup_table_settings_views(session):
                   ELSIF TG_OP = 'DELETE' THEN
                    --DELETE FROM person_job WHERE pid=OLD.pid;
                    --DELETE FROM person_detail WHERE pid=OLD.pid;
-                   RETURN NULL;
-                  END IF;
-                  RETURN NEW;
-                END;
+                   RETURN NULL; 
+                END IF;
+                RETURN NEW;
+              END;
             $BODY$
       LANGUAGE plpgsql VOLATILE
       COST 100;
+      
+    CREATE TRIGGER table_settings_trigger
+      INSTEAD OF INSERT OR UPDATE OR DELETE
+      ON api.table_settings
+      FOR EACH ROW
+      EXECUTE PROCEDURE table_settings_function();
     """)
+
 
 # CREATE FUNCTION MyFuncName() RETURNS trigger AS $$
 # DECLARE
@@ -109,7 +108,9 @@ class ColumnSettings(Base):
     id = Column(UUID(as_uuid=True),
                 server_default=text('gen_random_uuid()'),
                 primary_key=True)
-    user = Column(String)
+    user = Column(String,
+                  nullable=False,
+                  server_default=text('current_user'))
     table_name = Column(String)
     column_name = Column(String)
     custom_name = Column(String)
@@ -146,4 +147,22 @@ def setup_column_settings_views(session):
           LEFT OUTER JOIN admin.column_settings 
               ON admin.columns.table_name = admin.column_settings.table_name
               AND admin.columns.column_name = admin.column_settings.column_name
+    """)
+
+    session.execute("""
+    CREATE OR REPLACE FUNCTION column_settings_function()
+      RETURNS TRIGGER AS
+            $BODY$
+               BEGIN
+                  RETURN NEW;
+                END;
+            $BODY$
+      LANGUAGE plpgsql VOLATILE
+      COST 100;
+
+    CREATE TRIGGER column_settings_trigger
+      INSTEAD OF INSERT OR UPDATE OR DELETE
+      ON api.column_settings
+      FOR EACH ROW
+      EXECUTE PROCEDURE column_settings_function();
     """)
