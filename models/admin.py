@@ -19,12 +19,13 @@ class TableSettings(Base):
                   nullable=False,
                   server_default=text('current_user'))
     table_name = Column(String, nullable=False)
-    custom_name = Column(String)
-    submenu = Column(String)
-    visible = Column(Boolean)
+
+    can_delete = Column(Boolean)
     can_insert = Column(Boolean)
     can_update = Column(Boolean)
-    can_delete = Column(Boolean)
+    custom_name = Column(String)
+    submenu = Column(String)
+    is_visible = Column(Boolean)
 
 
 def setup_table_settings_views(session):
@@ -33,29 +34,25 @@ def setup_table_settings_views(session):
             SELECT table_name
             FROM information_schema.tables
             WHERE table_schema = 'api';
-        
+            
         REFRESH MATERIALIZED VIEW admin.tables;
     """)
-    # https://www.postgresql.org/docs/current/static/rules-views.html
+
     session.execute("""
-      ALTER TABLE admin.table_settings FORCE ROW LEVEL SECURITY;
-      DROP POLICY IF EXISTS table_settings_policy ON admin.table_settings;
-      CREATE POLICY table_settings_policy ON admin.table_settings
-          USING (admin.table_settings."user" = current_user);
-              
         CREATE OR REPLACE VIEW api.table_settings AS 
           SELECT admin.tables.table_name, 
                  admin.table_settings.id,
                  admin.table_settings.user,
                  admin.table_settings.custom_name,
                  admin.table_settings.submenu,
-                 admin.table_settings.visible,
+                 admin.table_settings.is_visible,
                  admin.table_settings.can_insert,
                  admin.table_settings.can_update,
                  admin.table_settings.can_delete
           FROM admin.tables
           LEFT OUTER JOIN admin.table_settings 
-              ON admin.tables.table_name = admin.table_settings.table_name;
+              ON admin.tables.table_name = admin.table_settings.table_name
+              AND admin.table_settings.user = current_user;
     """)
 
     session.execute("""
@@ -64,7 +61,20 @@ def setup_table_settings_views(session):
             $BODY$
                BEGIN
                 IF TG_OP = 'INSERT' THEN
-                    INSERT INTO admin.table_settings (custom_name) VALUES(NEW.custom_name);
+                    INSERT INTO admin.table_settings (table_name,
+                                                      can_delete,
+                                                      can_insert,
+                                                      can_update,
+                                                      custom_name,
+                                                      submenu,
+                                                      is_visible) 
+                                              VALUES(NEW.table_name,
+                                                     NEW.can_delete,
+                                                     NEW.can_insert,
+                                                     NEW.can_update,
+                                                     NEW.custom_name,
+                                                     NEW.submenu,
+                                                     NEW.is_visible);
                     RETURN NEW;
                   ELSIF TG_OP = 'UPDATE' THEN
                    --UPDATE person_detail SET pid=NEW.pid, pname=NEW.pname WHERE pid=OLD.pid;
@@ -119,20 +129,16 @@ class ColumnSettings(Base):
                   server_default=text('current_user'))
     table_name = Column(String, nullable=False)
     column_name = Column(String, nullable=False)
-    custom_name = Column(String)
-    index = Column(Integer)
-    format = Column(String)
-    visible = Column(Boolean)
+
     can_update = Column(Boolean)
+    custom_name = Column(String)
+    format = Column(String)
+    index = Column(Integer)
+    is_visible = Column(Boolean)
 
 
 def setup_column_settings_views(session):
     session.execute("""
-      ALTER TABLE admin.column_settings FORCE ROW LEVEL SECURITY;
-      DROP POLICY IF EXISTS column_settings_policy ON admin.column_settings;
-      CREATE POLICY column_settings_policy ON admin.column_settings
-          USING (admin.column_settings.user = current_user);
-          
         CREATE MATERIALIZED VIEW IF NOT EXISTS admin.columns AS
             SELECT table_name, column_name, is_nullable, data_type
             FROM information_schema.columns
@@ -149,15 +155,17 @@ def setup_column_settings_views(session):
                  admin.columns.data_type,
                  admin.column_settings.id,
                  admin.column_settings.user,
+                
+                 admin.column_settings.can_update,
                  admin.column_settings.custom_name,
-                 admin.column_settings.index,
                  admin.column_settings.format,
-                 admin.column_settings.visible,
-                 admin.column_settings.can_update
+                 admin.column_settings.index,
+                 admin.column_settings.is_visible
           FROM admin.columns
           LEFT OUTER JOIN admin.column_settings 
               ON admin.columns.table_name = admin.column_settings.table_name
               AND admin.columns.column_name = admin.column_settings.column_name
+              AND admin.column_settings.user = current_user;
     """)
 
     session.execute("""
@@ -165,8 +173,35 @@ def setup_column_settings_views(session):
       RETURNS TRIGGER AS
             $BODY$
                BEGIN
-                  RETURN NEW;
-                END;
+                IF TG_OP = 'INSERT' THEN
+                    INSERT INTO admin.column_settings (table_name,
+                                                       column_name,
+                                                       
+                                                       can_update,
+                                                       custom_name,
+                                                       format,
+                                                       index,
+                                                       is_visible) 
+                                              VALUES(NEW.table_name,
+                                                     NEW.column_name,
+                                                     
+                                                     NEW.can_update,
+                                                     NEW.custom_name,
+                                                     NEW.format,
+                                                     NEW.index,
+                                                     NEW.is_visible);
+                    RETURN NEW;
+                  ELSIF TG_OP = 'UPDATE' THEN
+                   --UPDATE person_detail SET pid=NEW.pid, pname=NEW.pname WHERE pid=OLD.pid;
+                   --UPDATE person_job SET pid=NEW.pid, job=NEW.job WHERE pid=OLD.pid;
+                   RETURN NEW;
+                  ELSIF TG_OP = 'DELETE' THEN
+                   --DELETE FROM person_job WHERE pid=OLD.pid;
+                   --DELETE FROM person_detail WHERE pid=OLD.pid;
+                   RETURN NULL; 
+                END IF;
+                RETURN NEW;
+              END;
             $BODY$
       LANGUAGE plpgsql VOLATILE
       COST 100;
