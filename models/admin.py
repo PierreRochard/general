@@ -51,6 +51,39 @@ def setup_table_settings_views(session):
               ON admin.tables.table_name = admin.table_settings.table_name
     """)
 
+    session.execute("""
+    CREATE TRIGGER api.table_settings_trigger
+      INSTEAD OF INSERT OR UPDATE OR DELETE
+      ON api.table_settings
+      FOR EACH ROW
+      EXECUTE PROCEDURE table_settings_function();
+    
+    CREATE OR REPLACE FUNCTION table_settings_function()
+      RETURNS trigger AS
+            $BODY$
+               BEGIN
+                  IF TG_OP = 'INSERT' THEN
+                    --INSERT INTO   VALUES(NEW.pid,NEW.pname);
+                    --INSERT INTO  person_job VALUES(NEW.pid,NEW.job);
+                    do $$
+                    PERFORM insert_job_titles(NEW.a);
+                    $$;
+                    RETURN NEW;
+                  ELSIF TG_OP = 'UPDATE' THEN
+                   --UPDATE person_detail SET pid=NEW.pid, pname=NEW.pname WHERE pid=OLD.pid;
+                   --UPDATE person_job SET pid=NEW.pid, job=NEW.job WHERE pid=OLD.pid;
+                   RETURN NEW;
+                  ELSIF TG_OP = 'DELETE' THEN
+                   --DELETE FROM person_job WHERE pid=OLD.pid;
+                   --DELETE FROM person_detail WHERE pid=OLD.pid;
+                   RETURN NULL;
+                  END IF;
+                  RETURN NEW;
+                END;
+            $BODY$
+      LANGUAGE plpgsql VOLATILE
+      COST 100;
+    """)
 
 # CREATE FUNCTION MyFuncName() RETURNS trigger AS $$
 # DECLARE
