@@ -20,12 +20,12 @@ class TableSettings(Base):
                   server_default=text('current_user'))
     table_name = Column(String, nullable=False)
 
-    can_delete = Column(Boolean)
-    can_insert = Column(Boolean)
-    can_update = Column(Boolean)
+    can_delete = Column(Boolean, default=True)
+    can_insert = Column(Boolean, default=True)
+    can_update = Column(Boolean, default=True)
     custom_name = Column(String)
     submenu = Column(String)
-    is_visible = Column(Boolean)
+    is_visible = Column(Boolean, default=True)
 
 
 def setup_table_settings_views(session):
