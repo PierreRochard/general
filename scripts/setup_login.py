@@ -18,7 +18,7 @@ def install_login_function(session):
 
     session.execute("""
     CREATE OR REPLACE FUNCTION
-      api.login(email TEXT, password TEXT)
+      api.login_form(email TEXT, password TEXT)
       RETURNS auth.jwt_token
     LANGUAGE plpgsql
     AS $$
@@ -47,7 +47,7 @@ def install_login_function(session):
     $$;
     """)
     session.execute('''
-    GRANT EXECUTE ON FUNCTION api.login(TEXT, TEXT) TO anon;
+    GRANT EXECUTE ON FUNCTION api.login_form(TEXT, TEXT) TO anon;
     ''')
 
     # session.execute("""

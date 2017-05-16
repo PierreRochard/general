@@ -89,7 +89,11 @@ class ColumnSettings(Base):
 def setup_column_settings_views(session):
     session.execute("""
         CREATE MATERIALIZED VIEW IF NOT EXISTS admin.columns AS
-            SELECT table_name, column_name, is_nullable, data_type
+            SELECT table_name, 
+                   column_name, 
+                   is_nullable,
+                   column_default,
+                   data_type
             FROM information_schema.columns
             WHERE table_schema = 'api';
 
@@ -101,6 +105,7 @@ def setup_column_settings_views(session):
           SELECT admin.columns.table_name,
                  admin.columns.column_name,
                  admin.columns.is_nullable,
+                 admin.columns.column_default,
                  admin.columns.data_type,
                  admin.column_settings.id,
                  admin.column_settings.user,
@@ -113,4 +118,33 @@ def setup_column_settings_views(session):
           LEFT OUTER JOIN admin.column_settings 
               ON admin.columns.table_name = admin.column_settings.table_name
               AND admin.columns.column_name = admin.column_settings.column_name
+    """)
+
+
+class FormSettings(Base):
+    __tablename__ = 'form_settings'
+    __table_args__ = (UniqueConstraint('user',
+                                       'form_name',
+                                       name='form_settings_unique_constraint'),
+                      {'schema': 'admin'},
+                      )
+
+    id = Column(UUID(as_uuid=True),
+                server_default=text('gen_random_uuid()'),
+                primary_key=True)
+    user = Column(String)
+    form_name = Column(String)
+
+
+def setup_form_settings_views(session):
+    session.execute("""
+        CREATE MATERIALIZED VIEW IF NOT EXISTS admin.forms AS
+            SELECT pg_namespace.nspname as schema,
+                   pg_proc.proname as form_name,
+                   pg_proc.proargnames as form_args,
+                   pg_proc.proargtypes AS form_arg_types
+            FROM pg_proc
+            LEFT OUTER JOIN pg_namespace ON pg_namespace.OID = pg_proc.pronamespace
+            WHERE pg_namespace.nspname = 'api';
+        REFRESH MATERIALIZED VIEW admin.columns;
     """)
