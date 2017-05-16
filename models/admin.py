@@ -99,6 +99,40 @@ def setup_table_settings_views(session):
       EXECUTE PROCEDURE table_settings_function();
     """)
 
+    session.execute("""
+        CREATE OR REPLACE FUNCTION admin.create_defaults_function()
+        RETURNS VOID AS $$
+          DECLARE
+          pg_users RECORD[];
+          tables RECORD[];
+          BEGIN
+            SELECT information_schema
+            <<users_loop>>
+            FOREACH pg_user IN ARRAY pg_users
+              LOOP
+                <<periods_loop>>
+                 FOR period_name in SELECT DISTINCT
+                          to_char(bookkeeping.journal_entries.timestamp,
+                          period_interval_name) AS p
+                    FROM bookkeeping.journal_entries
+                    WHERE bookkeeping.journal_entries.timestamp >= new.timestamp LOOP
+                  PERFORM bookkeeping.update_trial_balance(
+                        new.debit_subaccount,
+                        period_interval_name,
+                        period_name.p);
+                  PERFORM bookkeeping.update_trial_balance(
+                        new.credit_subaccount,
+                        period_interval_name,
+                        period_name.p);
+                END LOOP periods_loop;
+              END LOOP period_interval_loop;
+            RETURN new;
+          END;
+        $$
+        SECURITY DEFINER
+        LANGUAGE  plpgsql;
+        """)
+
 
 # CREATE FUNCTION MyFuncName() RETURNS trigger AS $$
 # DECLARE
