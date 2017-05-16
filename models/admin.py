@@ -264,8 +264,13 @@ class FormSettings(Base):
     id = Column(UUID(as_uuid=True),
                 server_default=text('gen_random_uuid()'),
                 primary_key=True)
-    user = Column(String)
+    user = Column(String,
+                  nullable=False,
+                  server_default=text('current_user'))
     form_name = Column(String)
+    custom_name = Column(String)
+    submenu = Column(String)
+    is_visible = Column(Boolean, default=True)
 
 
 def setup_form_settings_views(session):
