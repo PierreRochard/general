@@ -2,7 +2,9 @@ import sys
 sys.path.insert(0, '../')
 
 from sqlalchemy import create_engine
+from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.schema import DropTable
 
 from models import Base, setup_table_settings_views, setup_column_settings_views
 from scripts import get_pg_url
@@ -11,11 +13,17 @@ from scripts.setup_users_table import install_user_table_functions
 from scripts.setup_notifications import setup_table_notifications
 
 
+@compiles(DropTable, "postgresql")
+def _compile_drop_table(element, compiler, **kwargs):
+    return compiler.visit_drop_table(element) + " CASCADE"
+
+
 def setup_database():
     engine = create_engine(get_pg_url(), echo=True)
     session = scoped_session(sessionmaker(bind=engine, autocommit=True))()
     session.connection().connection.set_isolation_level(0)
 
+    Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
 
     install_user_table_functions(session)
