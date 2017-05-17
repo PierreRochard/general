@@ -278,8 +278,7 @@ class FormSettings(Base):
 def setup_form_settings_views(session):
     session.execute("""
         CREATE MATERIALIZED VIEW IF NOT EXISTS admin.forms AS
-            SELECT pg_namespace.nspname as schema,
-                   pg_proc.proname as form_name,
+            SELECT pg_proc.proname as form_name,
                    pg_proc.proargnames as form_args,
                    pg_proc.proargtypes AS form_arg_types
             FROM pg_proc
@@ -287,3 +286,65 @@ def setup_form_settings_views(session):
             WHERE pg_namespace.nspname = 'api';
         REFRESH MATERIALIZED VIEW admin.columns;
     """)
+
+    session.execute("""
+        CREATE OR REPLACE VIEW api.form_settings AS 
+          SELECT admin.forms.form_name,
+                 admin.forms.form_args,
+                 admin.forms.form_arg_types,
+                 admin.form_settings.id,
+                 admin.form_settings.user,
+                
+                 admin.form_settings.custom_name,
+                 admin.form_settings.submenu,
+                 admin.form_settings.is_visible
+          FROM admin.forms
+          LEFT OUTER JOIN admin.form_settings 
+              ON admin.forms.form_name = admin.form_settings.form_name
+              AND admin.form_settings.user = current_user;
+    """)
+
+    # session.execute("""
+    # CREATE OR REPLACE FUNCTION column_settings_function()
+    #   RETURNS TRIGGER AS
+    #         $BODY$
+    #            BEGIN
+    #             IF TG_OP = 'INSERT' THEN
+    #                 INSERT INTO admin.column_settings (table_name,
+    #                                                    column_name,
+    #
+    #                                                    can_update,
+    #                                                    custom_name,
+    #                                                    format,
+    #                                                    index,
+    #                                                    is_visible)
+    #                                           VALUES(NEW.table_name,
+    #                                                  NEW.column_name,
+    #
+    #                                                  NEW.can_update,
+    #                                                  NEW.custom_name,
+    #                                                  NEW.format,
+    #                                                  NEW.index,
+    #                                                  NEW.is_visible);
+    #                 RETURN NEW;
+    #               ELSIF TG_OP = 'UPDATE' THEN
+    #                --UPDATE person_detail SET pid=NEW.pid, pname=NEW.pname WHERE pid=OLD.pid;
+    #                --UPDATE person_job SET pid=NEW.pid, job=NEW.job WHERE pid=OLD.pid;
+    #                RETURN NEW;
+    #               ELSIF TG_OP = 'DELETE' THEN
+    #                --DELETE FROM person_job WHERE pid=OLD.pid;
+    #                --DELETE FROM person_detail WHERE pid=OLD.pid;
+    #                RETURN NULL;
+    #             END IF;
+    #             RETURN NEW;
+    #           END;
+    #         $BODY$
+    #   LANGUAGE plpgsql VOLATILE
+    #   COST 100;
+    #
+    # CREATE TRIGGER column_settings_trigger
+    #   INSTEAD OF INSERT OR UPDATE OR DELETE
+    #   ON api.column_settings
+    #   FOR EACH ROW
+    #   EXECUTE PROCEDURE column_settings_function();
+    # """)
