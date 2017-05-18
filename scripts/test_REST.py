@@ -73,7 +73,7 @@ class TestRestAuth(unittest.TestCase):
         except IntegrityError:
             self.session.rollback()
 
-        params = dict(select="label,items{label}")
+        params = dict(select="label,items{label, icon}")
         response = requests.get(api_path + '/submenus', params=params).json()
         pprint(response)
 

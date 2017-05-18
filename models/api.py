@@ -34,21 +34,17 @@ def create_api_submenus(session):
 
 def create_api_menubar_views(session):
     session.execute("""
-    CREATE OR REPLACE VIEW api.table_settings AS 
-      SELECT admin.tables.table_name, 
-             admin.table_settings.id,
-             admin.table_settings.user,
-             admin.table_settings.custom_name,
-             admin.table_settings.submenu_id,
+    CREATE OR REPLACE VIEW api.items AS 
+      SELECT coalesce(admin.table_settings.custom_name,
+                      admin.tables.table_name) AS label,
              admin.table_settings.icon,
-             admin.table_settings.is_visible,
-             admin.table_settings.can_insert,
-             admin.table_settings.can_update,
-             admin.table_settings.can_delete
+             admin.table_settings.id,
+             admin.table_settings.submenu_id
       FROM admin.tables
       LEFT OUTER JOIN admin.table_settings 
           ON admin.tables.table_name = admin.table_settings.table_name
           AND admin.table_settings.user = current_user;
+    GRANT SELECT ON api.items TO anon;
           """)
 
 
