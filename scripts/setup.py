@@ -6,7 +6,12 @@ from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.schema import DropTable
 
-from models import Base, setup_table_settings_views, setup_column_settings_views
+from models import (Base,
+                    create_admin_tables_view,
+                    create_admin_columns_view,
+                    create_admin_forms_view,
+                    create_api_column_settings, create_api_table_settings,
+                    create_api_form_settings, create_api_submenus)
 from scripts import get_pg_url
 from scripts.setup_login import install_login_function
 from scripts.setup_users_table import install_user_table_functions
@@ -26,15 +31,26 @@ def setup_database():
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
 
-    install_user_table_functions(session)
+    create_admin_tables_view(session)
+    create_admin_columns_view(session)
+    create_admin_forms_view(session)
 
+    install_user_table_functions(session)
     install_login_function(session)
 
     for schema, table in [('api', 'messages')]:
         setup_table_notifications(session, schema, table)
 
-    setup_table_settings_views(session)
-    setup_column_settings_views(session)
+    create_api_table_settings(session)
+    create_api_column_settings(session)
+    create_api_form_settings(session)
+    create_api_submenus(session)
+
+    session.execute("""
+        REFRESH MATERIALIZED VIEW admin.tables;
+        REFRESH MATERIALIZED VIEW admin.columns;
+        REFRESH MATERIALIZED VIEW admin.forms;
+        """)
 
 if __name__ == '__main__':
     setup_database()
