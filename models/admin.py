@@ -52,7 +52,8 @@ def create_admin_tables_view(session):
     session.execute("""
         DROP MATERIALIZED VIEW IF EXISTS admin.tables CASCADE;
         CREATE MATERIALIZED VIEW admin.tables AS
-            SELECT pg_class.relname AS "table_name"
+            SELECT pg_class.relname AS "table_name", 
+                   pg_class.relkind AS "kind"
             FROM pg_class
               JOIN pg_namespace ON 	pg_namespace.oid = pg_class.relnamespace
             WHERE pg_namespace.nspname = 'api' 

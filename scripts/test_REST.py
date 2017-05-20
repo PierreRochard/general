@@ -1,11 +1,9 @@
-import os
 from pprint import pprint
 import unittest
 import uuid
 
 import requests
 from sqlalchemy import create_engine
-from sqlalchemy.engine.url import URL
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import scoped_session, sessionmaker
 
@@ -13,21 +11,9 @@ from models.admin import Submenus, TableSettings
 
 from scripts import get_pg_url
 
-host = 'localhost'
-port = 5432
-database_name = 'rest_auth_test'
-admin_user = 'test_admin'
-admin_password = os.environ.get('TEST_ADMIN_PASSWORD')
-api_path = 'http://localhost:4545'
+api_path = 'https://api.rochard.org'
 test_user_email = 'testing@localhost'
 test_user_password = str(uuid.uuid4()).replace('-', '')
-
-pg_uri = URL(drivername='postgresql+psycopg2',
-             username=admin_user,
-             password=admin_password,
-             host=host,
-             port=port,
-             database=database_name)
 
 
 class TestRestAuth(unittest.TestCase):
@@ -73,7 +59,7 @@ class TestRestAuth(unittest.TestCase):
         except IntegrityError:
             self.session.rollback()
 
-        params = dict(select="label,items{label, icon}")
+        params = dict(select="label,items{label, icon, routerLink}")
         response = requests.get(api_path + '/submenus', params=params).json()
         pprint(response)
 

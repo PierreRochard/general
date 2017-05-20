@@ -39,7 +39,9 @@ def create_api_menubar_views(session):
                       admin.tables.table_name) AS label,
              admin.table_settings.icon,
              admin.table_settings.id,
-             admin.table_settings.submenu_id
+             admin.table_settings.submenu_id,
+             string_to_array('/' || admin.table_settings.table_name, ' ') 
+                AS routerLink
       FROM admin.tables
       LEFT OUTER JOIN admin.table_settings 
           ON admin.tables.table_name = admin.table_settings.table_name
