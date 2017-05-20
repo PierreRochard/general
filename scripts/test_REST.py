@@ -4,10 +4,7 @@ import uuid
 
 import requests
 from sqlalchemy import create_engine
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import scoped_session, sessionmaker
-
-from models.admin import Submenus, TableSettings
 
 from scripts import get_pg_url
 
@@ -26,38 +23,25 @@ class TestRestAuth(unittest.TestCase):
     def test_unauthenticated(self):
         response = requests.get(api_path + '/')
         pprint(response)
+        data = dict(submenu_name='Test', user='anon')
+        new_submenu = requests.post(api_path + '/submenus', data=data)
 
-        new_submenu = Submenus()
-        new_submenu.submenu_name = 'Test'
-        new_submenu.user = 'anon'
-        try:
-            self.session.add(new_submenu)
-            self.session.commit()
-        except IntegrityError:
-            self.session.rollback()
-            new_submenu = (self.session.query(Submenus)
-                           .filter(Submenus.submenu_name == 'Test')
-                           .filter(Submenus.user == 'anon').one())
+        test_submenu = requests.get(api_path + '/submenus').json()
+        test_submenu = [s for s in test_submenu if s['label'] == 'Test'][0]
 
-        new_table_setting = TableSettings()
-        new_table_setting.table_name = 'messages'
-        new_table_setting.user = 'anon'
-        new_table_setting.submenu_id = str(new_submenu.id)
-        try:
-            self.session.add(new_table_setting)
-            self.session.commit()
-        except IntegrityError:
-            self.session.rollback()
+        data = dict(table_name='messages',
+                    user='anon',
+                    submenu_id=test_submenu['id'],
+                    )
+        new_table_setting = requests.post(api_path + '/table_settings',
+                                          data=data)
 
-        new_table_setting = TableSettings()
-        new_table_setting.table_name = 'column_settings'
-        new_table_setting.user = 'anon'
-        new_table_setting.submenu_id = str(new_submenu.id)
-        try:
-            self.session.add(new_table_setting)
-            self.session.commit()
-        except IntegrityError:
-            self.session.rollback()
+        data = dict(table_name='column_settings',
+                    user='anon',
+                    submenu_id=test_submenu['id'],
+                    )
+        new_table_setting = requests.post(api_path + '/table_settings',
+                                          data=data)
 
         params = dict(select="label,items{label, icon, routerLink}")
         response = requests.get(api_path + '/submenus', params=params).json()
