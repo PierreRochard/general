@@ -28,7 +28,7 @@ def create_api_submenus(session):
      FROM admin.submenus
      WHERE admin.submenus.user = current_user;
      
-     GRANT SELECT ON api.submenus TO anon;
+     GRANT SELECT, UPDATE, INSERT ON api.submenus TO anon;
     """)
 
 

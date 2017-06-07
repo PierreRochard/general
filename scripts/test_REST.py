@@ -23,8 +23,9 @@ class TestRestAuth(unittest.TestCase):
     def test_unauthenticated(self):
         response = requests.get(api_path + '/')
         pprint(response)
-        data = dict(submenu_name='Test', user='anon')
+        data = dict(label='Test')
         new_submenu = requests.post(api_path + '/submenus', data=data)
+        print(new_submenu.json())
 
         test_submenu = requests.get(api_path + '/submenus').json()
         test_submenu = [s for s in test_submenu if s['label'] == 'Test'][0]
