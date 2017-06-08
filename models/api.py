@@ -50,6 +50,20 @@ def create_api_menubar_views(session):
           """)
 
 
+def create_api_datatable_view(session):
+    session.execute("""
+      CREATE OR REPLACE VIEW api.datatable AS
+        SELECT c.table_name, 
+               c.column_name as field, 
+               coalesce(cs.custom_name, c.column_name) as header
+        FROM admin.columns c
+          LEFT OUTER JOIN admin.column_settings cs
+            ON c.table_name = cs.table_name
+               AND c.column_name = cs.column_name
+               AND cs.user = current_user;
+    """)
+
+
 def create_api_table_settings(session):
     session.execute("""
     CREATE OR REPLACE VIEW api.table_settings AS 
