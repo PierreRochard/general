@@ -1,4 +1,9 @@
 import sys
+
+from scripts.insert_FormSettings import insert_form_settings
+from scripts.insert_Submenus import insert_submenus
+from scripts.insert_TableSettings import insert_table_settings
+
 sys.path.insert(0, '../')
 
 from sqlalchemy import create_engine
@@ -44,8 +49,11 @@ def setup_database():
 
     create_api_table_settings(session)
     create_api_column_settings(session)
+
     create_api_form_settings(session)
+
     create_api_submenus(session)
+
     create_api_menubar_views(session)
 
     session.execute("""
@@ -53,6 +61,10 @@ def setup_database():
         REFRESH MATERIALIZED VIEW admin.columns;
         REFRESH MATERIALIZED VIEW admin.forms;
         """)
+
+    insert_submenus('anon')
+    insert_form_settings('anon')
+    insert_table_settings('anon')
 
 if __name__ == '__main__':
     setup_database()

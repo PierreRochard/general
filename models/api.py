@@ -37,15 +37,27 @@ def create_api_menubar_views(session):
     CREATE OR REPLACE VIEW api.items AS 
       SELECT coalesce(admin.table_settings.custom_name,
                       admin.tables.table_name) AS label,
-             admin.table_settings.icon,
-             admin.table_settings.id,
-             admin.table_settings.submenu_id,
+             admin.table_settings.icon AS icon,
+             admin.table_settings.id AS id,
+             admin.table_settings.submenu_id AS submenu_id,
              string_to_array('/' || admin.table_settings.table_name, ' ') 
                 AS "routerLink"
       FROM admin.tables
       LEFT OUTER JOIN admin.table_settings 
           ON admin.tables.table_name = admin.table_settings.table_name
-          AND admin.table_settings.user = current_user;
+          AND admin.table_settings.user = current_user
+      UNION
+      SELECT coalesce(admin.form_settings.custom_name,
+      admin.forms.form_name) as label,
+      admin.form_settings.icon,
+      admin.form_settings.id,
+      admin.form_settings.submenu_id AS submenu_id,
+             string_to_array('/rpc/' || admin.form_settings.form_name, ' ') 
+                AS "routerLink"
+      FROM admin.forms
+      LEFT OUTER JOIN admin.form_settings
+        ON admin.forms.form_name = admin.form_settings.form_name
+        AND admin.form_settings.user = current_user;
     GRANT SELECT ON api.items TO anon;
           """)
 

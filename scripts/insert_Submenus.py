@@ -2,10 +2,10 @@ from models import Submenus
 from models.util import get_session
 
 
-def insert():
+def insert_submenus(user):
     session = get_session()
     new_record = Submenus()
-    new_record.user = 'anon'
+    new_record.user = user
     new_record.submenu_name = 'Settings'
     new_record.icon = 'fa-cogs'
     session.add(new_record)
@@ -13,4 +13,4 @@ def insert():
 
 
 if __name__ == '__main__':
-    insert()
+    insert_submenus('anon')

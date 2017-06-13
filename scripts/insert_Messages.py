@@ -2,7 +2,7 @@ from models.api import Messages
 from models.util import get_session
 
 
-def insert_records():
+def insert_messages():
     session = get_session()
     for i in range(0, 50):
         new_message = Messages(user='you', subject='test')
@@ -11,4 +11,4 @@ def insert_records():
 
 
 if __name__ == '__main__':
-    insert_records()
+    insert_messages()
