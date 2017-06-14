@@ -21,14 +21,22 @@ class Messages(Base):
 
 def create_api_submenus(session):
     session.execute("""
-    CREATE OR REPLACE VIEW api.submenus AS
+    CREATE OR REPLACE VIEW api.menubar AS
      SELECT admin.submenus.id,
             admin.submenus.submenu_name AS label,
-            admin.submenus.icon
+            admin.submenus.icon,
+            string_to_array('', '') as "routerLink"
      FROM admin.submenus
-     WHERE admin.submenus.user = current_user;
+     WHERE admin.submenus.user = current_user
+     UNION
+     SELECT api.items.id,
+            api.items.label,
+            api.items.icon, 
+            api.items."routerLink" 
+     FROM api.items
+     WHERE api.items.submenu_id IS NULL;
      
-     GRANT SELECT, UPDATE, INSERT ON api.submenus TO anon;
+     GRANT SELECT, UPDATE, INSERT ON api.menubar TO anon;
     """)
 
 
