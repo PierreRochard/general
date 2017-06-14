@@ -168,3 +168,13 @@ def create_api_form_settings(session):
       FOR EACH ROW
       EXECUTE PROCEDURE admin.form_settings_function();
     """)
+
+
+def create_api_form_field_settings(session):
+    session.execute("""
+        CREATE OR REPLACE VIEW api.form_field_settings AS 
+          SELECT admin.forms.form_name,
+                 unnest(admin.forms.form_args) as form_field_name
+          FROM admin.forms;
+     GRANT SELECT ON api.form_field_settings TO anon;
+    """)
