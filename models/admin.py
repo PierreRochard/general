@@ -251,6 +251,26 @@ class FormSettings(Base):
     is_visible = Column(Boolean, default=True)
 
 
+class FormFieldSettings(Base):
+    __tablename__ = 'form_field_settings'
+    __table_args__ = (UniqueConstraint('user',
+                                       'form_name',
+                                       'form_field_name',
+                                       name='form_field_settings_unique_constraint'),
+                      {'schema': 'admin'},
+                      )
+
+    id = Column(UUID(as_uuid=True),
+                server_default=text('gen_random_uuid()'),
+                primary_key=True)
+    user = Column(String,
+                  nullable=False,
+                  server_default=text('current_user'))
+    form_name = Column(String)
+    form_field_name = Column(String)
+    custom_name = Column(String)
+
+
 def create_admin_forms_view(session):
     session.execute("""
         DROP MATERIALIZED VIEW IF EXISTS admin.forms CASCADE;
