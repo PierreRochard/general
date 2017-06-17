@@ -16,7 +16,7 @@ def get_session():
                  port=os.environ['PGPORT'],
                  database='rest')
 
-    engine = create_engine(pg_url, echo=True)
+    engine = create_engine(pg_url, echo=False)
     session_maker = sessionmaker(bind=engine)
     session = session_maker()
     return session

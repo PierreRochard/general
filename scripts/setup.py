@@ -1,3 +1,4 @@
+import os
 import sys
 
 from scripts.insert_FormSettings import insert_form_settings
@@ -18,7 +19,7 @@ from models import (Base,
                     create_admin_forms_view,
                     create_api_column_settings, create_api_table_settings,
                     create_api_form_settings, create_api_submenus,
-                    create_api_menubar_views)
+                    create_api_menubar_views, create_api_form_field_settings)
 from scripts import get_pg_url
 from scripts.setup_login import install_login_function
 from scripts.setup_users_table import install_user_table_functions
@@ -31,7 +32,7 @@ def _compile_drop_table(element, compiler, **kwargs):
 
 
 def setup_database():
-    engine = create_engine(get_pg_url(), echo=True)
+    engine = create_engine(get_pg_url(), echo=False)
     session = scoped_session(sessionmaker(bind=engine, autocommit=True))()
     session.connection().connection.set_isolation_level(0)
 
@@ -52,10 +53,9 @@ def setup_database():
     create_api_column_settings(session)
 
     create_api_form_settings(session)
-
+    create_api_form_field_settings(session)
     create_api_menubar_views(session)
     create_api_submenus(session)
-
 
     session.execute("""
         REFRESH MATERIALIZED VIEW admin.tables;
@@ -68,6 +68,11 @@ def setup_database():
     insert_table_settings('anon')
 
     insert_admin()
+
+    insert_submenus(os.environ['REST_USER'])
+    insert_form_settings(os.environ['REST_USER'])
+    insert_table_settings(os.environ['REST_USER'])
+
 
 if __name__ == '__main__':
     setup_database()
