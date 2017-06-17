@@ -3,6 +3,7 @@ import sys
 from scripts.insert_FormSettings import insert_form_settings
 from scripts.insert_Submenus import insert_submenus
 from scripts.insert_TableSettings import insert_table_settings
+from scripts.insert_User import insert_admin
 
 sys.path.insert(0, '../')
 
@@ -52,9 +53,9 @@ def setup_database():
 
     create_api_form_settings(session)
 
+    create_api_menubar_views(session)
     create_api_submenus(session)
 
-    create_api_menubar_views(session)
 
     session.execute("""
         REFRESH MATERIALIZED VIEW admin.tables;
@@ -65,6 +66,8 @@ def setup_database():
     insert_submenus('anon')
     insert_form_settings('anon')
     insert_table_settings('anon')
+
+    insert_admin()
 
 if __name__ == '__main__':
     setup_database()
