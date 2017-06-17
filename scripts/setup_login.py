@@ -17,6 +17,9 @@ def install_login_function(session):
     """)
 
     session.execute("""
+    CREATE TYPE auth.jwt_token AS (
+      token TEXT
+    );
     CREATE OR REPLACE FUNCTION
       api.login_form(email TEXT, password TEXT)
       RETURNS auth.jwt_token
