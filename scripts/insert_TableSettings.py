@@ -8,6 +8,7 @@ def insert_table_settings(user):
     session = get_session()
     submenu_id = (session.query(Submenus.id)
                   .filter(Submenus.submenu_name == 'Settings')
+                  .filter(Submenus.user == user)
                   .scalar())
     for table_name, in session.execute('SELECT table_name FROM admin.tables'):
         print(table_name)

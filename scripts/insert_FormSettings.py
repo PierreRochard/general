@@ -1,5 +1,7 @@
 from pprint import pformat
 
+from sqlalchemy.exc import IntegrityError
+
 from models.util import get_session
 from models import Submenus, FormSettings
 
@@ -21,8 +23,11 @@ def insert_form_settings(user):
         }
         print(pformat(new_record_data))
         new_record = FormSettings(**new_record_data)
-        session.add(new_record)
-        session.commit()
+        try:
+            session.add(new_record)
+            session.commit()
+        except IntegrityError:
+            session.rollback()
 
 
 if __name__ == '__main__':
