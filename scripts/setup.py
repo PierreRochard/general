@@ -3,6 +3,7 @@ import sys
 
 from scripts.insert_FormSettings import insert_form_settings
 from scripts.insert_Submenus import insert_submenus
+from scripts.insert_TableColumnSettings import insert_table_column_settings
 from scripts.insert_TableSettings import insert_table_settings
 from scripts.insert_User import insert_admin
 
@@ -72,6 +73,7 @@ def setup_database():
     insert_submenus(os.environ['REST_USER'])
     insert_form_settings(os.environ['REST_USER'])
     insert_table_settings(os.environ['REST_USER'])
+    insert_table_column_settings(os.environ['REST_USER'])
 
 
 if __name__ == '__main__':

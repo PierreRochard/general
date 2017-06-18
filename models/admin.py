@@ -144,12 +144,12 @@ def create_admin_tables_view(session):
     #     """)
 
 
-class ColumnSettings(Base):
-    __tablename__ = 'column_settings'
+class TableColumnSettings(Base):
+    __tablename__ = 'table_column_settings'
     __table_args__ = (UniqueConstraint('user',
                                        'table_name',
                                        'column_name',
-                                       name='column_settings_unique_constraint'),
+                                       name='table_column_settings_unique_constraint'),
                       {'schema': 'admin'},
                       )
 
