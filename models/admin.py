@@ -184,12 +184,12 @@ def create_admin_columns_view(session):
     """)
 
     session.execute("""
-    CREATE OR REPLACE FUNCTION admin.column_settings_function()
+    CREATE OR REPLACE FUNCTION admin.table_column_settings_function()
       RETURNS TRIGGER AS
             $BODY$
                BEGIN
                 IF TG_OP = 'INSERT' THEN
-                    INSERT INTO admin.column_settings 
+                    INSERT INTO admin.table_column_settings 
                                           (table_name,
                                            column_name,
                                            
@@ -208,7 +208,7 @@ def create_admin_columns_view(session):
                                          NEW.is_visible);
                     RETURN NEW;
                   ELSIF TG_OP = 'UPDATE' THEN
-                    UPDATE admin.column_settings SET 
+                    UPDATE admin.table_column_settings SET 
                            can_update=NEW.can_update,
                            custom_name=NEW.custom_name,
                            format=NEW.format,
@@ -218,7 +218,7 @@ def create_admin_columns_view(session):
                    RETURN NEW;
                   ELSIF TG_OP = 'DELETE' THEN
                    DELETE 
-                      FROM admin.column_settings 
+                      FROM admin.table_column_settings 
                    WHERE id=OLD.id;
                    RETURN NULL; 
                 END IF;

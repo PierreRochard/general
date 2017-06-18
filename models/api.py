@@ -77,7 +77,7 @@ def create_api_datatable_view(session):
                c.column_name as field, 
                coalesce(cs.custom_name, c.column_name) as header
         FROM admin.columns c
-          LEFT OUTER JOIN admin.column_settings cs
+          LEFT OUTER JOIN admin.table_column_settings cs
             ON c.table_name = cs.table_name
                AND c.column_name = cs.column_name
                AND cs.user = current_user;
@@ -114,32 +114,32 @@ def create_api_table_settings(session):
 
 def create_api_column_settings(session):
     session.execute("""
-    CREATE OR REPLACE VIEW api.column_settings AS 
+    CREATE OR REPLACE VIEW api.table_column_settings AS 
       SELECT admin.columns.table_name,
              admin.columns.column_name,
              admin.columns.is_nullable,
              admin.columns.column_default,
              admin.columns.data_type,
-             admin.column_settings.id,
-             admin.column_settings.user,
+             admin.table_column_settings.id,
+             admin.table_column_settings.user,
             
-             admin.column_settings.can_update,
-             admin.column_settings.custom_name,
-             admin.column_settings.format,
-             admin.column_settings.index,
-             admin.column_settings.is_visible
+             admin.table_column_settings.can_update,
+             admin.table_column_settings.custom_name,
+             admin.table_column_settings.format,
+             admin.table_column_settings.index,
+             admin.table_column_settings.is_visible
       FROM admin.columns
-      LEFT OUTER JOIN admin.column_settings 
-          ON admin.columns.table_name = admin.column_settings.table_name
-          AND admin.columns.column_name = admin.column_settings.column_name
-          AND admin.column_settings.user = current_user;
+      LEFT OUTER JOIN admin.table_column_settings 
+          ON admin.columns.table_name = admin.table_column_settings.table_name
+          AND admin.columns.column_name = admin.table_column_settings.column_name
+          AND admin.table_column_settings.user = current_user;
         
-      DROP TRIGGER IF EXISTS column_settings_trigger ON api.column_settings;
+      DROP TRIGGER IF EXISTS column_settings_trigger ON api.table_column_settings;
       CREATE TRIGGER column_settings_trigger
       INSTEAD OF INSERT OR UPDATE OR DELETE
-      ON api.column_settings
+      ON api.table_column_settings
       FOR EACH ROW
-      EXECUTE PROCEDURE admin.column_settings_function();
+      EXECUTE PROCEDURE admin.table_column_settings_function();
     """)
 
 
