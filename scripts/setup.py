@@ -20,7 +20,8 @@ from models import (Base,
                     create_admin_forms_view,
                     create_api_column_settings, create_api_table_settings,
                     create_api_form_settings, create_api_submenus,
-                    create_api_menubar_views, create_api_form_field_settings)
+                    create_api_menubar_views, create_api_form_field_settings,
+                    create_api_datatable_view)
 from scripts import get_pg_url
 from scripts.setup_login import install_login_function
 from scripts.setup_users_table import install_user_table_functions
@@ -57,6 +58,7 @@ def setup_database():
     create_api_form_field_settings(session)
     create_api_menubar_views(session)
     create_api_submenus(session)
+    create_api_datatable_view(session)
 
     session.execute("""
         REFRESH MATERIALIZED VIEW admin.tables;
