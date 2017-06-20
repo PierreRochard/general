@@ -64,7 +64,8 @@ def create_api_submenus(session):
             api.items.icon, 
             api.items."routerLink" 
      FROM api.items
-     WHERE api.items.submenu_id IS NULL;
+     WHERE api.items.submenu_id IS NULL
+      ORDER BY icon DESC, label;
      
      GRANT SELECT, UPDATE, INSERT ON api.menubar TO anon;
     """)
