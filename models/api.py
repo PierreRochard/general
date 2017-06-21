@@ -28,7 +28,8 @@ def create_api_menubar_views(session):
              admin.table_settings.id AS id,
              admin.table_settings.submenu_id AS submenu_id,
              string_to_array('/' || admin.table_settings.table_name, ' ') 
-                AS "routerLink"
+                AS "routerLink",
+             admin.table_settings.is_visible
       FROM admin.tables
       LEFT OUTER JOIN admin.table_settings 
           ON admin.tables.table_name = admin.table_settings.table_name
@@ -40,7 +41,8 @@ def create_api_menubar_views(session):
       admin.form_settings.id,
       admin.form_settings.submenu_id AS submenu_id,
              string_to_array('/rpc/' || admin.form_settings.form_name, ' ') 
-                AS "routerLink"
+                AS "routerLink",
+      admin.form_settings.is_visible
       FROM admin.forms
       LEFT OUTER JOIN admin.form_settings
         ON admin.forms.form_name = admin.form_settings.form_name
@@ -55,14 +57,16 @@ def create_api_submenus(session):
      SELECT admin.submenus.id,
             admin.submenus.submenu_name AS label,
             admin.submenus.icon,
-            string_to_array('', '') as "routerLink"
+            string_to_array('', '') as "routerLink",
+            admin.submenus.is_visible
      FROM admin.submenus
      WHERE admin.submenus.user = current_user
      UNION
      SELECT api.items.id,
             api.items.label,
             api.items.icon, 
-            api.items."routerLink" 
+            api.items."routerLink",
+            api.items.is_visible
      FROM api.items
      WHERE api.items.submenu_id IS NULL
       ORDER BY icon DESC, label;

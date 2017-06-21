@@ -21,6 +21,7 @@ class Submenus(Base):
                   server_default=text('current_user'))
     submenu_name = Column(String, nullable=False)
     icon = Column(String)
+    is_visible = Column(Boolean, default=True)
 
 
 class TableSettings(Base):
