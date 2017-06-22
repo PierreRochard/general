@@ -136,7 +136,7 @@ def create_api_column_settings(session):
              admin.table_column_settings.can_update,
              admin.table_column_settings.custom_name,
              admin.table_column_settings.format,
-             admin.table_column_settings.index,
+             admin.table_column_settings.order_index,
              admin.table_column_settings.is_visible
       FROM admin.columns
       LEFT OUTER JOIN admin.table_column_settings 

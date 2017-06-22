@@ -22,6 +22,7 @@ class Submenus(Base):
     submenu_name = Column(String, nullable=False)
     icon = Column(String)
     is_visible = Column(Boolean, default=True)
+    order_index = Column(Integer)
 
 
 class TableSettings(Base):
@@ -47,6 +48,7 @@ class TableSettings(Base):
     submenu_id = Column(UUID, ForeignKey('admin.submenus.id'))
     icon = Column(String)
     is_visible = Column(Boolean, default=True)
+    order_index = Column(Integer)
 
 
 def create_admin_tables_view(session):
@@ -166,7 +168,7 @@ class TableColumnSettings(Base):
     can_update = Column(Boolean)
     custom_name = Column(String)
     format = Column(String)
-    index = Column(Integer)
+    order_index = Column(Integer)
     is_visible = Column(Boolean)
 
 
@@ -250,6 +252,7 @@ class FormSettings(Base):
     submenu_id = Column(UUID, ForeignKey('admin.submenus.id'))
     icon = Column(String)
     is_visible = Column(Boolean, default=True)
+    order_index = Column(Integer)
 
 
 class FormFieldSettings(Base):
@@ -270,6 +273,7 @@ class FormFieldSettings(Base):
     form_name = Column(String)
     form_field_name = Column(String)
     custom_name = Column(String)
+    order_index = Column(Integer)
 
 
 def create_admin_forms_view(session):
