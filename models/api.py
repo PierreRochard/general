@@ -34,6 +34,7 @@ def create_api_items(session):
       LEFT OUTER JOIN admin.table_settings 
           ON admin.tables.table_name = admin.table_settings.table_name
           AND admin.table_settings.user = current_user
+      WHERE current_user != 'anon'
       UNION
       SELECT coalesce(admin.form_settings.custom_name,
       admin.forms.form_name) as label,
@@ -47,7 +48,9 @@ def create_api_items(session):
       LEFT OUTER JOIN admin.form_settings
         ON admin.forms.form_name = admin.form_settings.form_name
         AND admin.form_settings.user = current_user
-      ORDER BY icon DESC, label;;
+      WHERE (current_user != 'anon' AND admin.forms.form_name != 'login')
+         OR (current_user  = 'anon' AND admin.forms.form_name  = 'login')
+      ORDER BY icon DESC, label;
     GRANT SELECT ON api.items TO anon;
           """)
 
@@ -62,6 +65,7 @@ def create_api_submenus(session):
             admin.submenus.is_visible
      FROM admin.submenus
      WHERE admin.submenus.user = current_user
+       AND current_user != 'anon'
      UNION
      SELECT api.items.id,
             api.items.label,

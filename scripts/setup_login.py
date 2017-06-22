@@ -62,6 +62,21 @@ def install_login_function(session):
     GRANT EXECUTE ON FUNCTION api.login(TEXT, TEXT) TO anon;
     ''')
 
+    session.execute("""
+    CREATE OR REPLACE FUNCTION
+      api.logout()
+      RETURNS VOID
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+    END;
+    $$;
+    """)
+    session.execute('''
+    GRANT EXECUTE ON FUNCTION api.logout() TO anon;
+    ''')
+
+
     # session.execute("""
     # CREATE OR REPLACE FUNCTION
     #     api.websocket_login(channel TEXT)
