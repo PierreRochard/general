@@ -19,7 +19,7 @@ class Messages(Base):
     body = Column(String)
 
 
-def create_api_menubar_views(session):
+def create_api_items(session):
     session.execute("""
     CREATE OR REPLACE VIEW api.items AS 
       SELECT coalesce(admin.table_settings.custom_name,
@@ -46,7 +46,8 @@ def create_api_menubar_views(session):
       FROM admin.forms
       LEFT OUTER JOIN admin.form_settings
         ON admin.forms.form_name = admin.form_settings.form_name
-        AND admin.form_settings.user = current_user;
+        AND admin.form_settings.user = current_user
+      ORDER BY icon DESC, label;;
     GRANT SELECT ON api.items TO anon;
           """)
 
