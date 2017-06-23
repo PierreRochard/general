@@ -37,7 +37,8 @@ def insert_table_settings(user):
             'custom_name': custom_name,
             'icon': 'fa-table',
             'submenu_id': str(submenu_id) if submenu_id else None,
-            'is_visible': is_visible
+            'is_visible': is_visible,
+            'order_index': 1,
         }
         new_record = TableSettings(**new_record_data)
         session.add(new_record)

@@ -10,6 +10,7 @@ def insert_submenus(user):
     new_record.user = user
     new_record.submenu_name = 'Settings'
     new_record.icon = 'fa-cogs'
+    new_record.order_index = 2
     try:
         session.add(new_record)
         session.commit()

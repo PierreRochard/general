@@ -193,6 +193,6 @@ def create_api_form_field_settings(session):
         CREATE OR REPLACE VIEW api.form_field_settings AS 
           SELECT f.form_name,
                  unnest(f.form_args) as form_field_name
-          FROM admin.forms;
+          FROM admin.forms f;
      GRANT SELECT ON api.form_field_settings TO anon;
     """)
