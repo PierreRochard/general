@@ -22,35 +22,37 @@ class Messages(Base):
 def create_api_items(session):
     session.execute("""
     CREATE OR REPLACE VIEW api.items AS 
-      SELECT coalesce(admin.table_settings.custom_name,
-                      admin.tables.table_name) AS label,
-             admin.table_settings.icon AS icon,
-             admin.table_settings.id AS id,
-             admin.table_settings.submenu_id AS submenu_id,
-             string_to_array('/' || admin.table_settings.table_name, ' ') 
+      SELECT coalesce(ts.custom_name,
+                      t.table_name) AS label,
+             ts.icon AS icon,
+             ts.id AS id,
+             ts.submenu_id AS submenu_id,
+             string_to_array('/' || ts.table_name, ' ') 
                 AS "routerLink",
-             admin.table_settings.is_visible
-      FROM admin.tables
-      LEFT OUTER JOIN admin.table_settings 
-          ON admin.tables.table_name = admin.table_settings.table_name
-          AND admin.table_settings.user = current_user
+             ts.is_visible,
+             ts.order_index
+      FROM admin.tables t
+      LEFT OUTER JOIN admin.table_settings ts
+          ON t.table_name = ts.table_name
+          AND ts.user = current_user
       WHERE current_user != 'anon'
       UNION
-      SELECT coalesce(admin.form_settings.custom_name,
-      admin.forms.form_name) as label,
-      admin.form_settings.icon,
-      admin.form_settings.id,
-      admin.form_settings.submenu_id AS submenu_id,
-             string_to_array('/rpc/' || admin.form_settings.form_name, ' ') 
+      SELECT coalesce(fs.custom_name,
+      f.form_name) as label,
+      fs.icon,
+      fs.id,
+      fs.submenu_id AS submenu_id,
+             string_to_array('/rpc/' || fs.form_name, ' ') 
                 AS "routerLink",
-      admin.form_settings.is_visible
-      FROM admin.forms
-      LEFT OUTER JOIN admin.form_settings
-        ON admin.forms.form_name = admin.form_settings.form_name
-        AND admin.form_settings.user = current_user
-      WHERE (current_user != 'anon' AND admin.forms.form_name != 'login')
-         OR (current_user  = 'anon' AND admin.forms.form_name  = 'login')
-      ORDER BY icon DESC, label;
+      fs.is_visible,
+      fs.order_index
+      FROM admin.forms f
+      LEFT OUTER JOIN admin.form_settings fs
+        ON f.form_name = fs.form_name
+        AND fs.user = current_user
+      WHERE (current_user != 'anon' AND f.form_name != 'login')
+         OR (current_user  = 'anon' AND f.form_name  = 'login')
+      ORDER BY order_index ASC NULLS LAST, label ASC NULLS LAST;
     GRANT SELECT ON api.items TO anon;
           """)
 
@@ -58,23 +60,25 @@ def create_api_items(session):
 def create_api_submenus(session):
     session.execute("""
     CREATE OR REPLACE VIEW api.menubar AS
-     SELECT admin.submenus.id,
-            admin.submenus.submenu_name AS label,
-            admin.submenus.icon,
+     SELECT s.id,
+            s.submenu_name AS label,
+            s.icon,
             string_to_array('', '') as "routerLink",
-            admin.submenus.is_visible
-     FROM admin.submenus
-     WHERE admin.submenus.user = current_user
+            s.is_visible,
+            s.order_index
+     FROM admin.submenus s
+     WHERE s.user = current_user
        AND current_user != 'anon'
      UNION
-     SELECT api.items.id,
-            api.items.label,
-            api.items.icon, 
-            api.items."routerLink",
-            api.items.is_visible
-     FROM api.items
-     WHERE api.items.submenu_id IS NULL
-      ORDER BY icon DESC, label;
+     SELECT i.id,
+            i.label,
+            i.icon, 
+            i."routerLink",
+            i.is_visible,
+            i.order_index
+     FROM api.items i
+     WHERE i.submenu_id IS NULL
+     ORDER BY order_index ASC NULLS LAST, label ASC NULLS LAST;
      
      GRANT SELECT, UPDATE, INSERT ON api.menubar TO anon;
     """)
@@ -85,32 +89,36 @@ def create_api_datatable_view(session):
       CREATE OR REPLACE VIEW api.datatable AS
         SELECT c.table_name, 
                c.column_name as field, 
-               coalesce(cs.custom_name, c.column_name) as header
+               coalesce(cs.custom_name, c.column_name) as header,
+               cs.order_index
         FROM admin.columns c
           LEFT OUTER JOIN admin.table_column_settings cs
             ON c.table_name = cs.table_name
                AND c.column_name = cs.column_name
-               AND cs.user = current_user;
+               AND cs.user = current_user
+      ORDER BY order_index ASC NULLS LAST, field ASC NULLS LAST;
     """)
 
 
 def create_api_table_settings(session):
     session.execute("""
     CREATE OR REPLACE VIEW api.table_settings AS 
-      SELECT admin.tables.table_name, 
-             admin.table_settings.id,
-             admin.table_settings.user,
-             admin.table_settings.custom_name,
-             admin.table_settings.submenu_id,
-             admin.table_settings.icon,
-             admin.table_settings.is_visible,
-             admin.table_settings.can_insert,
-             admin.table_settings.can_update,
-             admin.table_settings.can_delete
-      FROM admin.tables
-      LEFT OUTER JOIN admin.table_settings 
-          ON admin.tables.table_name = admin.table_settings.table_name
-          AND admin.table_settings.user = current_user;
+      SELECT t.table_name, 
+             ts.id,
+             ts.user,
+             ts.custom_name,
+             ts.submenu_id,
+             ts.icon,
+             ts.is_visible,
+             ts.can_insert,
+             ts.can_update,
+             ts.can_delete,
+             ts.order_index
+      FROM admin.tables t
+      LEFT OUTER JOIN admin.table_settings ts
+          ON t.table_name = ts.table_name
+          AND ts.user = current_user
+      ORDER BY ts.order_index ASC NULLS LAST, t.table_name ASC NULLS LAST;
     
     DROP TRIGGER IF EXISTS table_settings_trigger ON api.table_settings;
     CREATE TRIGGER table_settings_trigger
@@ -125,24 +133,24 @@ def create_api_table_settings(session):
 def create_api_column_settings(session):
     session.execute("""
     CREATE OR REPLACE VIEW api.table_column_settings AS 
-      SELECT admin.columns.table_name,
-             admin.columns.column_name,
-             admin.columns.is_nullable,
-             admin.columns.column_default,
-             admin.columns.data_type,
-             admin.table_column_settings.id,
-             admin.table_column_settings.user,
+      SELECT c.table_name,
+             c.column_name,
+             c.is_nullable,
+             c.column_default,
+             c.data_type,
+             tcs.id,
+             tcs.user,
             
-             admin.table_column_settings.can_update,
-             admin.table_column_settings.custom_name,
-             admin.table_column_settings.format,
-             admin.table_column_settings.order_index,
-             admin.table_column_settings.is_visible
-      FROM admin.columns
-      LEFT OUTER JOIN admin.table_column_settings 
-          ON admin.columns.table_name = admin.table_column_settings.table_name
-          AND admin.columns.column_name = admin.table_column_settings.column_name
-          AND admin.table_column_settings.user = current_user;
+             tcs.can_update,
+             tcs.custom_name,
+             tcs.format,
+             tcs.order_index,
+             tcs.is_visible
+      FROM admin.columns c
+      LEFT OUTER JOIN admin.table_column_settings tcs
+          ON c.table_name = tcs.table_name
+          AND c.column_name = tcs.column_name
+          AND tcs.user = current_user;
         
       DROP TRIGGER IF EXISTS column_settings_trigger ON api.table_column_settings;
       CREATE TRIGGER column_settings_trigger
@@ -156,20 +164,20 @@ def create_api_column_settings(session):
 def create_api_form_settings(session):
     session.execute("""
         CREATE OR REPLACE VIEW api.form_settings AS 
-          SELECT admin.forms.form_name,
-                 admin.forms.form_args,
-                 admin.forms.form_arg_types,
-                 admin.form_settings.id,
-                 admin.form_settings.user,
+          SELECT f.form_name,
+                 f.form_args,
+                 f.form_arg_types,
+                 fs.id,
+                 fs.user,
                 
-                 admin.form_settings.custom_name,
-                 admin.form_settings.submenu_id,
-                 admin.form_settings.icon,
-                 admin.form_settings.is_visible
-          FROM admin.forms
-          LEFT OUTER JOIN admin.form_settings 
-              ON admin.forms.form_name = admin.form_settings.form_name
-              AND admin.form_settings."user" = current_user;
+                 fs.custom_name,
+                 fs.submenu_id,
+                 fs.icon,
+                 fs.is_visible
+          FROM admin.forms f
+          LEFT OUTER JOIN admin.form_settings fs
+              ON f.form_name = fs.form_name
+              AND fs."user" = current_user;
       
       DROP TRIGGER IF EXISTS form_settings_trigger ON api.form_settings;
       CREATE TRIGGER form_settings_trigger
@@ -183,8 +191,8 @@ def create_api_form_settings(session):
 def create_api_form_field_settings(session):
     session.execute("""
         CREATE OR REPLACE VIEW api.form_field_settings AS 
-          SELECT admin.forms.form_name,
-                 unnest(admin.forms.form_args) as form_field_name
+          SELECT f.form_name,
+                 unnest(f.form_args) as form_field_name
           FROM admin.forms;
      GRANT SELECT ON api.form_field_settings TO anon;
     """)
