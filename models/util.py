@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 import os
 
 from sqlalchemy import create_engine
@@ -8,7 +9,9 @@ from sqlalchemy.orm import sessionmaker
 Base = declarative_base()
 
 
-def get_session():
+@contextmanager
+def session_scope():
+    """Provide a transactional scope around a series of operations."""
     pg_url = URL(drivername='postgresql+psycopg2',
                  username=os.environ['PGUSER'],
                  password=os.environ['PGPASSWORD'],
@@ -19,4 +22,12 @@ def get_session():
     engine = create_engine(pg_url, echo=False)
     session_maker = sessionmaker(bind=engine)
     session = session_maker()
-    return session
+
+    try:
+        yield session
+        session.commit()
+    except:
+        session.rollback()
+        raise
+    finally:
+        session.close()

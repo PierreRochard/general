@@ -14,17 +14,24 @@ from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.schema import DropTable
 
-from models import (Base,
-                    create_admin_tables_view,
-                    create_admin_columns_view,
-                    create_admin_forms_view,
-                    create_api_column_settings, create_api_table_settings,
-                    create_api_form_settings, create_api_submenus,
-                    create_api_items, create_api_form_field_settings,
-                    create_api_datatable_view)
+from models import Base
+
+from models.admin.form_settings import create_admin_forms_view
+from models.admin.table_column_settings import create_admin_columns_view
+from models.admin.table_settings import create_admin_tables_view
+
+from models.auth.users import install_user_table_functions
+
+from models.api.datatable import create_api_datatable_view
+from models.api.form_field_settings import create_api_form_field_settings
+from models.api.form_settings import create_api_form_settings
+from models.api.menubar import create_api_items, create_api_submenus
+from models.api.table_column_settings import create_api_column_settings
+from models.api.table_settings import create_api_table_settings
+
+
 from scripts import get_pg_url
 from scripts.setup_login import install_login_function
-from scripts.setup_users_table import install_user_table_functions
 from scripts.setup_notifications import setup_table_notifications
 
 
@@ -41,24 +48,24 @@ def setup_database():
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
 
-    create_admin_tables_view(session)
-    create_admin_columns_view(session)
-    create_admin_forms_view(session)
+    create_admin_tables_view()
+    create_admin_columns_view()
+    create_admin_forms_view()
 
-    install_user_table_functions(session)
-    install_login_function(session)
+    install_user_table_functions()
+    install_login_function()
 
     for schema, table in [('api', 'messages')]:
-        setup_table_notifications(session, schema, table)
+        setup_table_notifications(schema, table)
 
-    create_api_table_settings(session)
-    create_api_column_settings(session)
+    create_api_table_settings()
+    create_api_column_settings()
 
-    create_api_form_settings(session)
-    create_api_form_field_settings(session)
-    create_api_items(session)
-    create_api_submenus(session)
-    create_api_datatable_view(session)
+    create_api_form_settings()
+    create_api_form_field_settings()
+    create_api_items()
+    create_api_submenus()
+    create_api_datatable_view()
 
     session.execute("""
         REFRESH MATERIALIZED VIEW admin.tables;
