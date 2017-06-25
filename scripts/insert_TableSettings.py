@@ -2,17 +2,23 @@ from models import Submenus, TableSettings
 from models.util import session_scope
 
 custom_name_mappings = {
-    'form_field_settings': 'Form Fields',
-    'form_settings': 'Forms',
+    'form_field_settings':   'Form Fields',
+    'form_settings':         'Forms',
     'table_column_settings': 'Table Columns',
-    'table_settings': 'Tables',
+    'table_settings':        'Tables',
 }
-system_table_names = ['datatable', 'items', 'menubar']
+system_table_names = [
+    'datatable',
+    'datatable_columns',
+    'items',
+    'menubar'
+]
 
 
 def insert_table_settings(user):
     with session_scope() as session:
-        for table_name, in session.execute('SELECT table_name FROM admin.tables'):
+        for table_name, in session.execute(
+                'SELECT table_name FROM admin.tables'):
             submenu_id = None
 
             if table_name.endswith('settings'):
@@ -32,12 +38,12 @@ def insert_table_settings(user):
                 custom_name = table_name.replace('_', ' ').title()
 
             new_record_data = {
-                'user': user,
-                'table_name': table_name,
+                'user':        user,
+                'table_name':  table_name,
                 'custom_name': custom_name,
-                'icon': 'fa-table',
-                'submenu_id': str(submenu_id) if submenu_id else None,
-                'is_visible': is_visible,
+                'icon':        'fa-table',
+                'submenu_id':  str(submenu_id) if submenu_id else None,
+                'is_visible':  is_visible,
                 'order_index': 1,
             }
             new_record = TableSettings(**new_record_data)
