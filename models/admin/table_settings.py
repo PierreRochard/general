@@ -29,3 +29,4 @@ class TableSettings(Base):
     icon = Column(String)
     is_visible = Column(Boolean, default=True)
     order_index = Column(Integer)
+    row_limit = Column(Integer, default=10)

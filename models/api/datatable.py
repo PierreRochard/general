@@ -5,15 +5,15 @@ def create_api_datatable_view():
     with session_scope() as session:
         session.execute("""
           CREATE OR REPLACE VIEW api.datatable AS
-            SELECT c.table_name, 
-                   c.column_name as field, 
-                   coalesce(cs.custom_name, c.column_name) as header,
-                   cs.order_index
-            FROM admin.columns c
-              LEFT OUTER JOIN admin.table_column_settings cs
-                ON c.table_name = cs.table_name
-                   AND c.column_name = cs.column_name
-                   AND cs.user = current_user
-          ORDER BY order_index ASC NULLS LAST, field ASC NULLS LAST;
+            SELECT t.table_name, 
+                   coalesce(ts.custom_name, t.table_name) as header,
+                   ts.row_limit
+            FROM admin.tables t
+              LEFT OUTER JOIN admin.table_settings ts
+                ON t.table_name = ts.table_name
+                   AND ts.user = current_user;
         """)
 
+        session.execute("""
+         GRANT SELECT ON api.datatable TO anon;
+        """)

@@ -1,6 +1,6 @@
 from sqlalchemy.exc import ProgrammingError
 
-from models import session_scope
+from models.util import session_scope
 
 
 def install_login_function():

@@ -1,6 +1,7 @@
 import os
 import sys
 
+from models.admin.tables import create_admin_tables_view
 from scripts.insert_FormSettings import insert_form_settings
 from scripts.insert_Submenus import insert_submenus
 from scripts.insert_TableColumnSettings import insert_table_column_settings
@@ -18,7 +19,6 @@ from models import Base
 
 from models.admin.form_settings import create_admin_forms_view
 from models.admin.table_column_settings import create_admin_columns_view
-from models.admin.table_settings import create_admin_tables_view
 
 from models.auth.users import install_user_table_functions
 

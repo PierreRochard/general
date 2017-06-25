@@ -1,19 +1,13 @@
 import os
 
-from sqlalchemy.exc import IntegrityError
-
 from models.auth import Users
-from models.util import get_session
+from models.util import session_scope
 
 
 def insert_user(user_data):
-    session = get_session()
     new_user = Users(**user_data)
-    try:
+    with session_scope() as session:
         session.add(new_user)
-        session.commit()
-    except IntegrityError:
-        session.rollback()
 
 
 def insert_admin():
