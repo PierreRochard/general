@@ -30,3 +30,4 @@ class TableSettings(Base):
     is_visible = Column(Boolean, default=True)
     order_index = Column(Integer)
     row_limit = Column(Integer, default=10)
+    row_offset = Column(Integer, default=0)

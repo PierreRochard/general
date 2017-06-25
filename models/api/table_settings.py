@@ -16,7 +16,8 @@ def create_api_table_settings():
                  ts.can_update,
                  ts.can_delete,
                  ts.order_index,
-                 ts.row_limit
+                 ts.row_limit,
+                 ts.row_offset
           FROM admin.tables t
           LEFT OUTER JOIN admin.table_settings ts
               ON t.table_name = ts.table_name

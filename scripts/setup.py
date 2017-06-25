@@ -1,7 +1,7 @@
 import os
 import sys
 
-from models.admin.tables import create_admin_tables_view
+
 from scripts.insert_FormSettings import insert_form_settings
 from scripts.insert_Submenus import insert_submenus
 from scripts.insert_TableColumnSettings import insert_table_column_settings
@@ -17,12 +17,15 @@ from sqlalchemy.schema import DropTable
 
 from models import Base
 
+from models.admin.datatable import create_datatable_function
 from models.admin.form_settings import create_admin_forms_view
 from models.admin.table_column_settings import create_admin_columns_view
+from models.admin.tables import create_admin_tables_view
 
 from models.auth.users import install_user_table_functions
 
 from models.api.datatable import create_api_datatable_view
+from models.api.datatable_columns import create_api_datatable_columns_view
 from models.api.form_field_settings import create_api_form_field_settings
 from models.api.form_settings import create_api_form_settings
 from models.api.menubar import create_api_items, create_api_submenus
@@ -66,6 +69,8 @@ def setup_database():
     create_api_items()
     create_api_submenus()
     create_api_datatable_view()
+    create_datatable_function()
+    create_api_datatable_columns_view()
 
     session.execute("""
         REFRESH MATERIALIZED VIEW admin.tables;

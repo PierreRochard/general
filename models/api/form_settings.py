@@ -19,13 +19,6 @@ def create_api_form_settings():
               LEFT OUTER JOIN admin.form_settings fs
                   ON f.form_name = fs.form_name
                   AND fs."user" = current_user;
-          
-          DROP TRIGGER IF EXISTS form_settings_trigger ON api.form_settings;
-          CREATE TRIGGER form_settings_trigger
-          INSTEAD OF INSERT OR UPDATE OR DELETE
-          ON api.form_settings
-          FOR EACH ROW
-          EXECUTE PROCEDURE admin.form_settings_function();
         """)
 
         session.execute("""
