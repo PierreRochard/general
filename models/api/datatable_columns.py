@@ -8,7 +8,8 @@ def create_api_datatable_columns_view():
             SELECT c.table_name, 
                    c.column_name as value, 
                    coalesce(cs.custom_name, c.column_name) as label,
-                   cs.order_index
+                   cs.order_index,
+                   cs.is_visible
             FROM admin.columns c
               LEFT OUTER JOIN admin.table_column_settings cs
                 ON c.table_name = cs.table_name

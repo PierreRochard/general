@@ -27,7 +27,7 @@ class TableColumnSettings(Base):
     custom_name = Column(String)
     format = Column(String)
     order_index = Column(Integer)
-    is_visible = Column(Boolean)
+    is_visible = Column(Boolean, default=True)
 
 
 def create_admin_columns_view():
