@@ -21,3 +21,15 @@ def create_api_datatable_columns_view():
         session.execute("""
          GRANT SELECT ON api.datatable_columns TO anon;
         """)
+
+        session.execute("""
+          DROP TRIGGER IF EXISTS datatable_columns_trigger ON api.datatable_columns;
+        """)
+
+        session.execute("""
+          CREATE TRIGGER datatable_columns_trigger
+          INSTEAD OF INSERT OR UPDATE OR DELETE
+          ON api.datatable_columns
+          FOR EACH ROW
+          EXECUTE PROCEDURE admin.datatable_columns_function();
+        """)
