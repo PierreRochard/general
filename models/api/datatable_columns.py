@@ -8,6 +8,8 @@ def create_api_datatable_columns_view():
             SELECT c.table_name, 
                    c.column_name as value, 
                    coalesce(cs.custom_name, c.column_name) as label,
+                   cs.filter_match_mode,
+                   cs.filter_value,
                    cs.is_filterable,
                    cs.is_sortable,
                    cs.is_visible,
