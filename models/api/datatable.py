@@ -8,7 +8,9 @@ def create_api_datatable_view():
             SELECT t.table_name as name, 
                    coalesce(ts.custom_name, t.table_name) as header,
                    ts.row_limit as limit,
-                   ts.row_offset as offset
+                   ts.row_offset as offset,
+                   ts.sort_column,
+                   ts.sort_order
             FROM admin.tables t
               LEFT OUTER JOIN admin.table_settings ts
                 ON t.table_name = ts.table_name

@@ -25,9 +25,13 @@ class TableColumnSettings(Base):
 
     can_update = Column(Boolean)
     custom_name = Column(String)
+    filter_match_mode = Column(String, default='contains')
+    filter_value = Column(String)
     format = Column(String)
-    order_index = Column(Integer)
+    is_filterable = Column(Boolean, default=True)
+    is_sortable = Column(Boolean, default=True)
     is_visible = Column(Boolean, default=True)
+    order_index = Column(Integer)
 
 
 def create_admin_columns_view():

@@ -31,3 +31,5 @@ class TableSettings(Base):
     order_index = Column(Integer)
     row_limit = Column(Integer, default=10)
     row_offset = Column(Integer, default=0)
+    sort_column = Column(String)
+    sort_order = Column(Integer)
