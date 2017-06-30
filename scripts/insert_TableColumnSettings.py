@@ -10,6 +10,7 @@ def insert_table_column_settings(user):
                 'table_name': table_name,
                 'column_name': column_name,
                 'custom_name': column_name.replace('_', ' ').title(),
+                'is_filterable': False
             }
             new_record = TableColumnSettings(**new_record_data)
             session.add(new_record)
