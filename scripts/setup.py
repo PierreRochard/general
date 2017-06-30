@@ -1,6 +1,7 @@
 import os
 import sys
 
+from models.util import session_scope
 from scripts.insert_FormSettings import insert_form_settings
 from scripts.insert_Submenus import insert_submenus
 from scripts.insert_TableColumnSettings import insert_table_column_settings
@@ -8,11 +9,6 @@ from scripts.insert_TableSettings import insert_table_settings
 from scripts.insert_User import insert_admin
 
 sys.path.insert(0, '../')
-
-from sqlalchemy import create_engine
-from sqlalchemy.ext.compiler import compiles
-from sqlalchemy.orm import scoped_session, sessionmaker
-from sqlalchemy.schema import DropTable
 
 from models import Base
 
@@ -33,23 +29,18 @@ from models.api.table_column_settings import create_api_column_settings
 from models.api.table_settings import create_api_table_settings
 
 
-from scripts import get_pg_url
 from scripts.setup_login import install_login_function
 from scripts.setup_notifications import setup_table_notifications
 
 
-@compiles(DropTable, "postgresql")
-def _compile_drop_table(element, compiler, **kwargs):
-    return compiler.visit_drop_table(element) + " CASCADE"
+# @compiles(DropTable, "postgresql")
+# def _compile_drop_table(element, compiler, **kwargs):
+#     return compiler.visit_drop_table(element) + " CASCADE"
 
 
 def setup_database():
-    engine = create_engine(get_pg_url(), echo=False)
-    session = scoped_session(sessionmaker(bind=engine, autocommit=True))()
-    session.connection().connection.set_isolation_level(0)
-
-    Base.metadata.drop_all(bind=engine)
-    Base.metadata.create_all(bind=engine)
+    with session_scope() as session:
+        Base.metadata.create_all(session.connection())
 
     create_admin_tables_view()
     create_admin_columns_view()
@@ -73,11 +64,12 @@ def setup_database():
     create_api_datatable_columns_view()
     create_datatable_columns_function()
 
-    session.execute("""
-        REFRESH MATERIALIZED VIEW admin.tables;
-        REFRESH MATERIALIZED VIEW admin.columns;
-        REFRESH MATERIALIZED VIEW admin.forms;
-        """)
+    with session_scope() as session:
+        session.execute("""
+                REFRESH MATERIALIZED VIEW admin.tables;
+                REFRESH MATERIALIZED VIEW admin.columns;
+                REFRESH MATERIALIZED VIEW admin.forms;
+                """)
 
     insert_submenus('anon')
     insert_form_settings('anon')

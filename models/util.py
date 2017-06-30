@@ -3,6 +3,7 @@ import os
 
 from sqlalchemy import create_engine
 from sqlalchemy.engine.url import URL
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -26,6 +27,8 @@ def session_scope():
     try:
         yield session
         session.commit()
+    except IntegrityError:
+        session.rollback()
     except:
         session.rollback()
         raise

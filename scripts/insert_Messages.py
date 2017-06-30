@@ -1,13 +1,13 @@
+from sqlalchemy.orm import scoped_session
+
 from models.api import Messages
-from models.util import get_session
 
 
 def insert_messages():
-    session = get_session()
-    for i in range(0, 50):
-        new_message = Messages(user='you', subject='test')
-        session.add(new_message)
-        session.commit()
+    with scoped_session() as session:
+        for i in range(0, 50):
+            new_message = Messages(user='you', subject='test')
+            session.add(new_message)
 
 
 if __name__ == '__main__':

@@ -10,7 +10,6 @@ def insert_submenus(user):
     new_record.order_index = 2
     with session_scope() as session:
         session.add(new_record)
-        session.commit()
 
 
 if __name__ == '__main__':
