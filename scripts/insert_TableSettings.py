@@ -48,7 +48,6 @@ def insert_table_settings(user):
             }
             new_record = TableSettings(**new_record_data)
             session.add(new_record)
-            session.commit()
 
 
 if __name__ == '__main__':

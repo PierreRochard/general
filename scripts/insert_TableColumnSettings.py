@@ -13,7 +13,6 @@ def insert_table_column_settings(user):
             }
             new_record = TableColumnSettings(**new_record_data)
             session.add(new_record)
-            session.commit()
 
 
 if __name__ == '__main__':
