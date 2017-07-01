@@ -1,12 +1,13 @@
 import os
 import sys
 
-from models.util import session_scope
-from scripts.insert_FormSettings import insert_form_settings
 from scripts.insert_Submenus import insert_submenus
 from scripts.insert_TableColumnSettings import insert_table_column_settings
 from scripts.insert_TableSettings import insert_table_settings
 from scripts.insert_User import insert_admin
+
+from models.util import session_scope
+from scripts.admin.insert_FormSettings import insert_form_settings
 
 sys.path.insert(0, '../')
 
@@ -29,8 +30,8 @@ from models.api.table_column_settings import create_api_column_settings
 from models.api.table_settings import create_api_table_settings
 
 
-from scripts.setup_login import install_login_function
-from scripts.setup_notifications import setup_table_notifications
+from scripts.auth.setup_login import install_login_function
+from scripts.api.setup_notifications import setup_table_notifications
 
 
 # @compiles(DropTable, "postgresql")
