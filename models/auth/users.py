@@ -63,7 +63,7 @@ def install_user_table_functions():
         BEGIN
           IF tg_op = 'INSERT' OR new.password <> old.password
           THEN
-            new.password = crypt(new.password, gen_salt('bf', 8));
+            new.password = auth.crypt(new.password, auth.gen_salt('bf', 8));
           END IF;
           RETURN new;
         END

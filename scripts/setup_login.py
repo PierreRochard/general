@@ -5,7 +5,14 @@ from models.util import session_scope
 
 def install_login_function():
     with session_scope() as session:
-        session.execute( """
+        # Todo: there are namespacing problems with extensions
+        # Fix this in ansible, not in here
+        # Dirty hack is to add schemas to the search path in postgres config
+        # session.execute("""
+        # CREATE EXTENSION pgcrypto SCHEMA auth;
+        # CREATE EXTENSION pgjwt SCHEMA auth;
+        # """)
+        session.execute("""
         CREATE OR REPLACE FUNCTION
           auth.user_role(_email TEXT, _password TEXT)
           RETURNS NAME
@@ -16,7 +23,7 @@ def install_login_function():
             SELECT role
             FROM auth.users
             WHERE users.email = _email
-                  AND users.password = crypt(_password, users.password)
+                  AND users.password = auth.crypt(_password, users.password)
           );
         END;
         $$;
@@ -49,7 +56,7 @@ def install_login_function():
             USING MESSAGE = 'Invalid email or password';
           END IF;
     
-          SELECT sign(row_to_json(r), current_setting('app.jwt_secret')) AS token
+          SELECT auth.sign(row_to_json(r), current_setting('app.jwt_secret')) AS token
           FROM (
                  SELECT
                    _role            AS role,
