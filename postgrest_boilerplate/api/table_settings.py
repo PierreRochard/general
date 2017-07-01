@@ -1,4 +1,4 @@
-from models.util import session_scope
+from postgrest_boilerplate.models.util import session_scope
 
 
 def create_api_table_settings():

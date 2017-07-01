@@ -1,13 +1,13 @@
-from logging.config import fileConfig
 import os
 import sys
+from logging.config import fileConfig
 
 from alembic import context
 from sqlalchemy import create_engine
 from sqlalchemy.engine.url import URL
 
 sys.path.append('.')
-from models import Base
+from postgrest_boilerplate.models import Base
 
 config = context.config
 fileConfig(config.config_file_name)
