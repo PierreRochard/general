@@ -16,6 +16,29 @@ def create_admin_tables_view():
                 WHERE pg_namespace.nspname = 'api' 
                 AND pg_class.relkind IN ('v', 'm', 'r');
         """)
+
+        session.execute("""
+                CREATE OR REPLACE FUNCTION admin.refresh_admin_tables()
+                  RETURNS event_trigger AS
+                        $BODY$
+                           BEGIN
+                           REFRESH MATERIALIZED VIEW admin.tables;
+                           END;
+                        $BODY$
+                  LANGUAGE plpgsql VOLATILE
+                  COST 100;
+            """)
+
+        session.execute("""
+          DROP EVENT TRIGGER IF EXISTS refresh_admin_tables_trigger ON pg_class;
+        """)
+
+        session.execute("""
+        CREATE EVENT TRIGGER refresh_admin_tables_trigger
+          ON ddl_command_end
+          EXECUTE PROCEDURE admin.refresh_admin_tables();
+        """)
+
         session.execute("""
                 CREATE OR REPLACE FUNCTION admin.table_settings_function()
                   RETURNS TRIGGER AS
