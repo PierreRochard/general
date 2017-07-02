@@ -17,11 +17,11 @@ target_metadata = Base.metadata
 
 def get_url():
     return URL(drivername='postgresql+psycopg2',
-               username=os.environ['PGREST_DB_ADMIN_USER'],
-               password=os.environ['PGREST_DB_ADMIN_PASSWORD'],
-               host=os.environ['PGREST_DB_HOST'],
-               port=os.environ['PGREST_DB_PORT'],
-               database=os.environ['PGREST_DB_NAME'],
+               username=os.environ['PGUSER'],
+               password=os.environ['PGPASSWORD'],
+               host=os.environ['PGHOST'],
+               port=os.environ['PGPORT'],
+               database=os.environ['PGDATABASE'],
                query=None)
 
 

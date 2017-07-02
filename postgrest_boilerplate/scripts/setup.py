@@ -1,36 +1,39 @@
 import os
-import sys
 
-from models.util import session_scope
-from scripts.insert_Submenus import insert_submenus
-from scripts.insert_TableColumnSettings import insert_table_column_settings
-from scripts.insert_TableSettings import insert_table_settings
-from scripts.insert_User import insert_admin
-
-from postgrest_boilerplate.scripts.admin import insert_form_settings
-
-sys.path.insert(0, '../')
+from postgrest_boilerplate.models.util import session_scope
+from postgrest_boilerplate.scripts.admin import (
+    insert_submenus,
+    insert_form_settings,
+    insert_table_settings,
+    insert_table_column_settings
+)
 
 from postgrest_boilerplate.models import Base
-
-from postgrest_boilerplate.models.admin import create_datatable_function
-from postgrest_boilerplate.models.admin import create_datatable_columns_function
-from postgrest_boilerplate.models.admin import create_admin_forms_view
-from postgrest_boilerplate.models.admin import create_admin_columns_view
-from postgrest_boilerplate.models.admin import create_admin_tables_view
+from postgrest_boilerplate.models.admin import (
+    create_datatable_function,
+    create_datatable_columns_function,
+    create_admin_forms_view,
+    create_admin_columns_view,
+    create_admin_tables_view
+)
 
 from postgrest_boilerplate.models.auth.users import install_user_table_functions
 
-from postgrest_boilerplate.api import create_api_datatable_view
-from postgrest_boilerplate.api import create_api_datatable_columns_view
-from postgrest_boilerplate.api import create_api_form_field_settings
-from postgrest_boilerplate.api import create_api_form_settings
-from postgrest_boilerplate.api import create_api_items, create_api_submenus
-from postgrest_boilerplate.api import create_api_column_settings
-from postgrest_boilerplate.api import create_api_table_settings
+from postgrest_boilerplate.api import (
+    create_api_datatable_view,
+    create_api_datatable_columns_view,
+    create_api_form_field_settings,
+    create_api_form_settings,
+    create_api_items,
+    create_api_submenus,
+    create_api_column_settings,
+    create_api_table_settings
+)
 
-
-from postgrest_boilerplate.scripts.auth import install_login_function
+from postgrest_boilerplate.scripts.auth import (
+    install_login_function,
+    insert_admin
+)
 from postgrest_boilerplate.scripts.api import setup_table_notifications
 
 
