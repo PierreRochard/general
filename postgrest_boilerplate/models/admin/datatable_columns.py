@@ -9,10 +9,13 @@ def create_datatable_columns_function():
                         $BODY$
                            BEGIN
                               IF TG_OP = 'UPDATE' THEN
-                                UPDATE admin.table_column_settings SET is_visible=NEW.is_visible
-                                WHERE admin.table_column_settings.user = current_user
-                                  AND admin.table_column_settings.table_name = NEW.table_name
-                                  AND admin.table_column_settings.column_name = NEW.value;
+                                INSERT INTO admin.table_column_settings (table_name, column_name, is_visible)
+                                VALUES (NEW.table_name, NEW.value, NEW.is_visible)
+                                ON CONFLICT ("user", table_name, column_name) 
+                                DO UPDATE SET is_visible = NEW.is_visible
+                                    WHERE admin.table_column_settings.user = current_user
+                                      AND admin.table_column_settings.table_name = NEW.table_name
+                                      AND admin.table_column_settings.column_name = NEW.value;
                                RETURN NEW;
                             END IF;
                             RETURN NEW;
