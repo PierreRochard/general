@@ -9,7 +9,7 @@ class Messages(Base):
     __table_args__ = {'schema': 'api'}
 
     id = Column(UUID(as_uuid=True),
-                server_default=text('gen_random_uuid()'),
+                server_default=text('auth.gen_random_uuid()'),
                 primary_key=True)
     time = Column(DateTime, nullable=False, server_default=text('now()'))
     from_user = Column(String, nullable=False,

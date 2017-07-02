@@ -9,7 +9,7 @@ class Users(Base):
     __table_args__ = {'schema': 'auth'}
 
     id = Column(UUID(as_uuid=True),
-                server_default=text('gen_random_uuid()'),
+                server_default=text('auth.gen_random_uuid()'),
                 primary_key=True)
     email = Column(String, unique=True)
     password = Column(String)

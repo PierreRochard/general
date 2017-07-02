@@ -1,5 +1,6 @@
 from contextlib import contextmanager
 import os
+from pprint import pformat
 
 from sqlalchemy import create_engine
 from sqlalchemy.engine.url import URL
@@ -27,7 +28,8 @@ def session_scope():
     try:
         yield session
         session.commit()
-    except IntegrityError:
+    except IntegrityError as err:
+        print(pformat(err))
         session.rollback()
     except:
         session.rollback()

@@ -1,5 +1,4 @@
-from models import Submenus
-
+from postgrest_boilerplate.models.admin import Submenus
 from postgrest_boilerplate.models.util import session_scope
 
 

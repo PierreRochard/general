@@ -1,5 +1,4 @@
-from models import FormSettings
-
+from postgrest_boilerplate.models.admin import FormSettings
 from postgrest_boilerplate.models.util import session_scope
 
 
