@@ -13,7 +13,7 @@ class Users(Base):
                 primary_key=True)
     email = Column(String, unique=True)
     password = Column(String)
-    role = Column(String)
+    role = Column(String, unique=True)
     active = Column(Boolean)
     confirmed_at = Column(DateTime(timezone=True))
     last_login_at = Column(DateTime(timezone=True))
