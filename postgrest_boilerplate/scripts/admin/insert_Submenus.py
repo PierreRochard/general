@@ -1,3 +1,5 @@
+from sqlalchemy.orm.exc import NoResultFound
+
 from postgrest_boilerplate.models.admin import Submenus, TableSettings
 from postgrest_boilerplate.models.auth import Users
 from postgrest_boilerplate.models.util import session_scope
@@ -37,13 +39,19 @@ def insert_user_submenu(user: str, name: str, icon: str, order_index: int,
                     .filter(Submenus.user == user)
                     .scalar()
             )
-            setting = (
-                session
-                    .query(TableSettings)
-                    .filter(TableSettings.table_name == item)
-                    .filter(TableSettings.user == user)
-                    .one()
-            )
+            try:
+                setting = (
+                    session
+                        .query(TableSettings)
+                        .filter(TableSettings.table_name == item)
+                        .filter(TableSettings.user == user)
+                        .one()
+                )
+            except NoResultFound:
+                setting = TableSettings()
+                setting.user = user
+                setting.table_name = item
+                session.add(setting)
             setting.submenu_id = str(submenu_id)
 
 
