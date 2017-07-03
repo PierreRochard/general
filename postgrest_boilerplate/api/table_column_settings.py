@@ -17,7 +17,11 @@ def create_api_column_settings():
                  coalesce(tcs.custom_name, initcap(replace(c.column_name, '_', ' '))) as custom_name,
                  coalesce(tcs.filter_match_mode, 'contains') as filter_match_mode,
                  tcs.filter_value,
-                 tcs.format_pattern,
+                 coalesce(tcs.format_pattern, 
+                 CASE WHEN c.data_type = 'timestamp without time zone' THEN 'shortDate'
+                      WHEN c.data_type = 'numeric' THEN '1.2-2'
+                      ELSE NULL
+                  END) as format_pattern,
                  coalesce(tcs.is_filterable, TRUE) as is_filterable,
                  coalesce(tcs.is_sortable, TRUE) as is_sortable,
                  coalesce(tcs.is_visible, TRUE) as is_visible,                

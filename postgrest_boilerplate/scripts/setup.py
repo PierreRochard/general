@@ -8,8 +8,6 @@ from postgrest_boilerplate.scripts.admin import (
 
 from postgrest_boilerplate.models import Base
 from postgrest_boilerplate.models.admin import (
-    create_datatable_function,
-    create_datatable_columns_function,
     create_admin_forms_view,
     create_admin_columns_view,
     create_admin_tables_view
@@ -62,9 +60,7 @@ def setup_database():
     create_api_items()
     create_api_submenus()
     create_api_datatable_view()
-    create_datatable_function()
     create_api_datatable_columns_view()
-    create_datatable_columns_function()
 
     with session_scope() as session:
         session.execute("""

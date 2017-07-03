@@ -7,16 +7,17 @@ def create_api_datatable_columns_view():
           CREATE OR REPLACE VIEW api.datatable_columns AS
             SELECT (row_number() OVER())::INT id, *
             FROM (
-                    SELECT tcs.table_name, 
-                           tcs.column_name AS value, 
-                           tcs.custom_name AS label,
+                    SELECT tcs.data_type,
                            tcs.filter_match_mode,
                            tcs.filter_value,
+                           tcs.format_pattern,
                            tcs.is_filterable,
                            tcs.is_sortable,
                            tcs.is_visible,
-                           tcs.order_index,
-                           tcs.data_type
+                           tcs.custom_name AS label,
+                           tcs.table_name,
+                           tcs.column_name AS value
+                           
                     FROM api.table_column_settings tcs
                   ORDER BY order_index ASC
           ) sub;
