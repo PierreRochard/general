@@ -7,10 +7,10 @@ def create_api_datatable_view():
           CREATE OR REPLACE VIEW api.datatable AS
             SELECT t.table_name as name, 
                    coalesce(ts.custom_name, t.table_name) as header,
-                   ts.row_limit as limit,
-                   ts.row_offset as offset,
+                   coalesce(ts.row_limit, 10) as "limit",
+                   coalesce(ts.row_offset, 0) as "offset",
                    ts.sort_column,
-                   ts.sort_order
+                   coalesce(ts.sort_order, 0) as sort_order
             FROM admin.tables t
               LEFT OUTER JOIN admin.table_settings ts
                 ON t.table_name = ts.table_name
