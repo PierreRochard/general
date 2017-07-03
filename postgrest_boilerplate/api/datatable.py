@@ -5,13 +5,17 @@ def create_api_datatable_view():
     with session_scope() as session:
         session.execute("""
           CREATE OR REPLACE VIEW api.datatable AS
-            SELECT ts.table_name AS name, 
-                   ts.custom_name AS header,
-                   ts.row_limit AS "limit",
-                   ts.row_offset AS "offset",
-                   ts.sort_column,
-                   ts.sort_order
-            FROM api.table_settings ts;
+          
+            SELECT (row_number() OVER())::INT id, *
+            FROM (
+                SELECT ts.table_name AS name, 
+                       ts.custom_name AS header,
+                       ts.row_limit AS "limit",
+                       ts.row_offset AS "offset",
+                       ts.sort_column,
+                       ts.sort_order
+                FROM api.table_settings ts
+            ) sub;
         """)
 
         session.execute("""
