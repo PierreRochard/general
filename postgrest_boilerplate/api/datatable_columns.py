@@ -5,21 +5,17 @@ def create_api_datatable_columns_view():
     with session_scope() as session:
         session.execute("""
           CREATE OR REPLACE VIEW api.datatable_columns AS
-            SELECT c.table_name, 
-                   c.column_name as value, 
-                   coalesce(cs.custom_name, initcap(replace(c.column_name, '_', ' '))) as label,
-                   coalesce(cs.filter_match_mode, 'contains') as filter_match_mode,
-                   cs.filter_value,
-                   coalesce(cs.is_filterable, TRUE) as is_filterable,
-                   coalesce(cs.is_sortable, TRUE) as is_sortable,
-                   coalesce(cs.is_visible, TRUE) as is_visible,
-                   cs.order_index
-            FROM admin.columns c
-              LEFT OUTER JOIN admin.table_column_settings cs
-                ON c.table_name = cs.table_name
-                   AND c.column_name = cs.column_name
-                   AND cs.user = current_user
-          ORDER BY order_index ASC NULLS LAST;
+            SELECT tcs.table_name, 
+                   tcs.column_name as value, 
+                   tcs.custom_name as label,
+                   tcs.filter_match_mode,
+                   tcs.filter_value,
+                   tcs.is_filterable,
+                   tcs.is_sortable,
+                   tcs.is_visible,
+                   tcs.order_index
+            FROM api.table_column_settings tcs
+          ORDER BY order_index ASC;
         """)
 
         session.execute("""

@@ -6,18 +6,18 @@ def create_api_table_settings():
         session.execute("""
         CREATE OR REPLACE VIEW api.table_settings AS 
           SELECT t.table_name, 
-                 ts.id,
-                 ts.user,
-                 ts.custom_name,
+                 coalesce(ts.id, auth.gen_random_uuid()) as id,
+                 coalesce(ts."user", current_user) as "user",
+                 coalesce(ts.custom_name, initcap(replace(t.table_name, '_', ' '))) as custom_name,
                  ts.submenu_id,
-                 ts.icon,
-                 ts.is_visible,
-                 ts.can_insert,
-                 ts.can_update,
-                 ts.can_delete,
-                 ts.order_index,
-                 ts.row_limit,
-                 ts.row_offset
+                 coalesce(ts.icon, 'fa-table') AS icon,
+                 coalesce(ts.is_visible, TRUE) AS is_visible,
+                 coalesce(ts.can_insert, TRUE) AS can_insert,
+                 coalesce(ts.can_update, TRUE) AS can_update,
+                 coalesce(ts.can_delete, TRUE) AS can_delete,
+                 coalesce(ts.order_index, 0) AS order_index,
+                 coalesce(ts.row_limit, 10) AS row_limit,
+                 coalesce(ts.row_offset, 0) as row_offset
           FROM admin.tables t
           LEFT OUTER JOIN admin.table_settings ts
               ON t.table_name = ts.table_name

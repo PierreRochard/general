@@ -2,9 +2,7 @@ import os
 
 from postgrest_boilerplate.models.util import session_scope
 from postgrest_boilerplate.scripts.admin import (
-    insert_submenus,
     insert_form_settings,
-    insert_table_settings,
     insert_table_column_settings
 )
 
@@ -75,15 +73,11 @@ def setup_database():
                 REFRESH MATERIALIZED VIEW admin.forms;
                 """)
 
-    insert_submenus('anon')
     insert_form_settings('anon')
-    insert_table_settings('anon')
 
     insert_admin()
 
-    insert_submenus(os.environ['REST_USER'])
     insert_form_settings(os.environ['REST_USER'])
-    insert_table_settings(os.environ['REST_USER'])
     insert_table_column_settings(os.environ['REST_USER'])
 
 

@@ -26,7 +26,7 @@ class TableColumnSettings(Base):
     custom_name = Column(String)
     filter_match_mode = Column(String, default='contains')
     filter_value = Column(String)
-    format = Column(String)
+    format_pattern = Column(String)
     is_filterable = Column(Boolean, default=True)
     is_sortable = Column(Boolean, default=True)
     is_visible = Column(Boolean, default=True)

@@ -5,19 +5,24 @@ def create_api_column_settings():
     with session_scope() as session:
         session.execute("""
         CREATE OR REPLACE VIEW api.table_column_settings AS 
-          SELECT c.table_name,
+          SELECT coalesce(tcs.id, auth.gen_random_uuid()) as id,
+                 coalesce(tcs."user", current_user) as "user",
+                 c.table_name,
                  c.column_name,
                  c.is_nullable,
                  c.column_default,
                  c.data_type,
-                 tcs.id,
-                 tcs.user,
-                
+                 
                  tcs.can_update,
-                 tcs.custom_name,
-                 tcs.format,
-                 tcs.order_index,
-                 tcs.is_visible
+                 coalesce(tcs.custom_name, initcap(replace(c.column_name, '_', ' '))) as custom_name,
+                 coalesce(tcs.filter_match_mode, 'contains') as filter_match_mode,
+                 tcs.filter_value,
+                 tcs.format_pattern,
+                 coalesce(tcs.is_filterable, TRUE) as is_filterable,
+                 coalesce(tcs.is_sortable, TRUE) as is_sortable,
+                 coalesce(tcs.is_visible, TRUE) as is_visible,                
+                 coalesce(tcs.order_index, 0) as order_index
+
           FROM admin.columns c
           LEFT OUTER JOIN admin.table_column_settings tcs
               ON c.table_name = tcs.table_name

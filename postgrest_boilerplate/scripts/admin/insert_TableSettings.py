@@ -16,7 +16,7 @@ system_table_names = [
 ]
 
 
-def insert_table_settings(user):
+def insert_table_setting(user: str, name: str, icon: str, ):
     with session_scope() as session:
         table_names = session.execute('SELECT table_name FROM admin.tables')
 

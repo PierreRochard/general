@@ -1,3 +1,9 @@
+"""
+    params.set('select', 'label, icon, routerLink, items{label, icon, routerLink}');
+    params.set('is_visible', 'is.true');
+    return this.restClient.get('/menubar', params);
+"""
+
 from postgrest_boilerplate.models.util import session_scope
 
 
@@ -5,23 +11,17 @@ def create_api_items():
     with session_scope() as session:
         session.execute("""
         CREATE OR REPLACE VIEW api.items AS 
-          SELECT coalesce(ts.custom_name,
-                          t.table_name) AS label,
-                 ts.icon AS icon,
-                 ts.id AS id,
-                 ts.submenu_id AS submenu_id,
-                 string_to_array('/' || ts.table_name, ' ') 
-                    AS "routerLink",
+          SELECT ts.custom_name AS label,
+                 ts.icon,
+                 ts.id,
+                 ts.submenu_id,
+                 string_to_array('/' || ts.table_name, ' ') AS "routerLink",
                  ts.is_visible,
                  ts.order_index
-          FROM admin.tables t
-          LEFT OUTER JOIN admin.table_settings ts
-              ON t.table_name = ts.table_name
-              AND ts.user = current_user
+          FROM api.table_settings ts
           WHERE current_user != 'anon'
           UNION
-          SELECT coalesce(fs.custom_name,
-                          f.form_name) as label,
+          SELECT coalesce(fs.custom_name, f.form_name) as label,
                           fs.icon,
                           fs.id,
                           fs.submenu_id AS submenu_id,
@@ -36,7 +36,6 @@ def create_api_items():
           WHERE (current_user != 'anon' AND f.form_name != 'login')
              OR (current_user  = 'anon' AND f.form_name  = 'login')
           ORDER BY order_index ASC NULLS LAST, label ASC NULLS LAST;
-        GRANT SELECT ON api.items TO anon;
           """)
 
         session.execute("""
