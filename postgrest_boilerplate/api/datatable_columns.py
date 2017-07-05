@@ -16,7 +16,8 @@ def create_api_datatable_columns_view():
                            tcs.is_visible,
                            tcs.custom_name AS label,
                            tcs.table_name,
-                           tcs.column_name AS value
+                           tcs.column_name AS value,
+                           tcs.can_update as editable
                            
                     FROM api.table_column_settings tcs
                   ORDER BY order_index ASC
@@ -32,25 +33,26 @@ def create_api_datatable_columns_view():
         """)
 
         session.execute("""
-            CREATE OR REPLACE FUNCTION admin.datatable_columns_function()
-              RETURNS TRIGGER AS
-                    $BODY$
-                       BEGIN
-                          IF TG_OP = 'UPDATE' THEN
-                            INSERT INTO admin.table_column_settings (table_name, column_name, is_visible)
-                            VALUES (NEW.table_name, NEW.value, NEW.is_visible)
-                            ON CONFLICT ("user", table_name, column_name) 
-                            DO UPDATE SET is_visible = NEW.is_visible
-                                WHERE admin.table_column_settings.user = current_user
-                                  AND admin.table_column_settings.table_name = NEW.table_name
-                                  AND admin.table_column_settings.column_name = NEW.value;
-                           RETURN NEW;
-                        END IF;
-                        RETURN NEW;
-                      END;
-                    $BODY$
-              LANGUAGE plpgsql VOLATILE
-              COST 100;
+CREATE OR REPLACE FUNCTION admin.datatable_columns_function()
+  RETURNS TRIGGER AS
+    $BODY$
+       BEGIN
+          IF TG_OP = 'UPDATE' THEN
+            INSERT INTO admin.table_column_settings (table_name, column_name, is_visible, can_update)
+            VALUES (NEW.table_name, NEW.value, NEW.is_visible, NEW.editable)
+            ON CONFLICT ("user", table_name, column_name) 
+            DO UPDATE SET is_visible = NEW.is_visible,
+                          can_update = NEW.editable
+                WHERE admin.table_column_settings.user = current_user
+                  AND admin.table_column_settings.table_name = NEW.table_name
+                  AND admin.table_column_settings.column_name = NEW.value;
+           RETURN NEW;
+        END IF;
+        RETURN NEW;
+      END;
+    $BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
                         """)
 
         session.execute("""
