@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Integer, String, UniqueConstraint, text
+from sqlalchemy import Boolean, Column, Integer, String, text, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 
 from postgrest_boilerplate.models.util import Base
