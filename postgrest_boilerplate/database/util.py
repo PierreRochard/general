@@ -3,7 +3,7 @@ import os
 
 from sqlalchemy import create_engine
 from sqlalchemy.engine.url import URL
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, ProgrammingError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -11,7 +11,9 @@ Base = declarative_base()
 
 
 @contextmanager
-def session_scope(echo=False, raise_integrity_error=False):
+def session_scope(echo=False,
+                  raise_integrity_error=False,
+                  raise_programming_error=True):
     """Provide a transactional scope around a series of operations."""
     pg_url = URL(drivername='postgresql+psycopg2',
                  username=os.environ['PGUSER'],
@@ -30,6 +32,10 @@ def session_scope(echo=False, raise_integrity_error=False):
     except IntegrityError:
         session.rollback()
         if raise_integrity_error:
+            raise
+    except ProgrammingError:
+        session.rollback()
+        if raise_programming_error:
             raise
     except:
         session.rollback()

@@ -7,6 +7,9 @@ def create_authenticate_user_email_function():
     """
     with session_scope() as session:
         session.execute("""
+            DROP FUNCTION IF EXISTS auth.authenticate_user_email(_email TEXT, _password TEXT) CASCADE;
+        """)
+        session.execute("""
             CREATE OR REPLACE FUNCTION
               auth.authenticate_user_email(_email TEXT, _password TEXT)
               RETURNS NAME
@@ -22,3 +25,6 @@ def create_authenticate_user_email_function():
             END;
             $$;
         """)
+
+if __name__ == '__main__':
+    create_authenticate_user_email_function()
