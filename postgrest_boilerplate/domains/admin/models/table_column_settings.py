@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, Integer, String, UniqueConstraint, text
 from sqlalchemy.dialects.postgresql import UUID
 
-from postgrest_boilerplate.database.util import Base, session_scope
+from postgrest_boilerplate.database.util import Base
 
 
 class TableColumnSettings(Base):

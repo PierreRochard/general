@@ -36,3 +36,9 @@ def session_scope(echo=False, raise_integrity_error=False):
         raise
     finally:
         session.close()
+
+
+
+# @compiles(DropTable, "postgresql")
+# def _compile_drop_table(element, compiler, **kwargs):
+#     return compiler.visit_drop_table(element) + " CASCADE"
