@@ -10,6 +10,9 @@ def create_menubar_api_view():
     """
     with session_scope() as session:
         session.execute("""
+        DROP VIEW IF EXISTS api.menubar CASCADE;
+        """)
+        session.execute("""
         CREATE OR REPLACE VIEW api.menubar AS
          SELECT s.id,
                 s.submenu_name AS label,
@@ -34,3 +37,6 @@ def create_menubar_api_view():
         session.execute("""
         GRANT SELECT ON api.menubar TO anon;
         """)
+
+if __name__ == '__main__':
+    create_menubar_api_view()

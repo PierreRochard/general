@@ -96,9 +96,6 @@ def create_datatable_settings_api_trigger():
         EXECUTE PROCEDURE admin.datatable_settings_function();
         """)
 
-        session.execute("""
-        GRANT SELECT ON api.datatable_settings TO anon;
-        """)
 
 if __name__ == '__main__':
     create_datatable_settings_api_view()

@@ -54,4 +54,3 @@ def create_admin_api_views():
     # PrimeNG datatable component's columns
     create_datatable_columns_api_view()
     create_datatable_columns_api_trigger()
-

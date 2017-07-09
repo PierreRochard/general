@@ -4,6 +4,9 @@ from postgrest_boilerplate.database.util import session_scope
 def create_form_settings_api_view():
     with session_scope() as session:
         session.execute("""
+        DROP VIEW IF EXISTS api.form_settings CASCADE;
+        """)
+        session.execute("""
             CREATE OR REPLACE VIEW api.form_settings AS 
               SELECT f.form_name,
                      f.form_args,
@@ -21,13 +24,16 @@ def create_form_settings_api_view():
                   AND fs."user" = current_user;
         """)
 
+        session.execute("""
+         GRANT SELECT ON api.form_settings TO anon;
+        """)
+
 
 def create_form_settings_api_trigger():
     with session_scope() as session:
         session.execute("""
-          DROP TRIGGER IF EXISTS form_settings_trigger ON api.form_settings;
+            DROP FUNCTION IF EXISTS admin.form_settings_function() CASCADE;
         """)
-
         session.execute("""
         CREATE OR REPLACE FUNCTION admin.form_settings_function()
           RETURNS TRIGGER AS
@@ -64,9 +70,17 @@ def create_form_settings_api_trigger():
         """)
 
         session.execute("""
+          DROP TRIGGER IF EXISTS form_settings_trigger ON api.form_settings;
+        """)
+
+        session.execute("""
               CREATE TRIGGER form_settings_trigger
               INSTEAD OF INSERT OR UPDATE OR DELETE
               ON api.form_settings
               FOR EACH ROW
               EXECUTE PROCEDURE admin.form_settings_function();
             """)
+
+if __name__ == '__main__':
+    create_form_settings_api_view()
+    create_form_settings_api_trigger()

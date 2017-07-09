@@ -8,6 +8,9 @@ def create_items_api_view():
     """
     with session_scope() as session:
         session.execute("""
+        DROP VIEW IF EXISTS api.items CASCADE;
+        """)
+        session.execute("""
         CREATE OR REPLACE VIEW api.items AS 
           SELECT coalesce(ts.custom_name, initcap(replace(t.table_name, '_', ' '))) as label,
                  coalesce(ts.icon, 'fa-table') AS icon,
@@ -41,3 +44,6 @@ def create_items_api_view():
         session.execute("""
         GRANT SELECT ON api.items TO anon;
         """)
+
+if __name__ == '__main__':
+    create_items_api_view()

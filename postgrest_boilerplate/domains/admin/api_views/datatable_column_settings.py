@@ -4,6 +4,9 @@ from postgrest_boilerplate.database.util import session_scope
 def create_datatable_column_settings_api_view():
     with session_scope() as session:
         session.execute("""
+        DROP VIEW IF EXISTS api.datatable_column_settings CASCADE;
+        """)
+        session.execute("""
         CREATE OR REPLACE VIEW api.datatable_column_settings AS 
           SELECT coalesce(tcs.id, auth.gen_random_uuid()) as id,
                  coalesce(tcs."user", current_user) as "user",
@@ -28,7 +31,7 @@ def create_datatable_column_settings_api_view():
                  coalesce(tcs.order_index, 0) as order_index
 
           FROM admin.columns c
-          LEFT OUTER JOIN admin.datatable_column_settings tcs
+          LEFT OUTER JOIN admin.table_column_settings tcs
               ON c.table_name = tcs.table_name
               AND c.column_name = tcs.column_name
               AND tcs.user = current_user;
@@ -38,7 +41,7 @@ def create_datatable_column_settings_api_view():
 def create_datatable_column_settings_api_trigger():
     with session_scope() as session:
         session.execute("""
-          DROP TRIGGER IF EXISTS datatable_column_settings_trigger ON api.datatable_column_settings;
+            DROP FUNCTION IF EXISTS admin.datatable_column_settings_function() CASCADE;
         """)
 
         session.execute("""
@@ -88,9 +91,17 @@ def create_datatable_column_settings_api_trigger():
         """)
 
         session.execute("""
+          DROP TRIGGER IF EXISTS datatable_column_settings_trigger ON api.datatable_column_settings;
+        """)
+
+        session.execute("""
           CREATE TRIGGER datatable_column_settings_trigger
           INSTEAD OF INSERT OR UPDATE OR DELETE
           ON api.datatable_column_settings
           FOR EACH ROW
           EXECUTE PROCEDURE admin.table_column_settings_function();
         """)
+
+if __name__ == '__main__':
+    create_datatable_column_settings_api_view()
+    create_datatable_column_settings_api_trigger()

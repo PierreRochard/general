@@ -4,6 +4,9 @@ from postgrest_boilerplate.database.util import session_scope
 def create_form_field_settings_api_view():
     with session_scope() as session:
         session.execute("""
+        DROP VIEW IF EXISTS api.form_field_settings CASCADE;
+        """)
+        session.execute("""
             CREATE OR REPLACE VIEW api.form_field_settings AS 
             SELECT (row_number() OVER())::INT id, *
             FROM (
@@ -16,3 +19,6 @@ def create_form_field_settings_api_view():
         session.execute("""
          GRANT SELECT ON api.form_field_settings TO anon;
         """)
+
+if __name__ == '__main__':
+    create_form_field_settings_api_view()

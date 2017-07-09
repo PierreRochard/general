@@ -4,6 +4,9 @@ from postgrest_boilerplate.database.util import session_scope
 def create_datatable_api_view():
     with session_scope() as session:
         session.execute("""
+        DROP VIEW IF EXISTS api.datatable CASCADE;
+        """)
+        session.execute("""
           CREATE OR REPLACE VIEW api.datatable AS
             SELECT (row_number() OVER())::INT id, *
             FROM (
@@ -17,15 +20,11 @@ def create_datatable_api_view():
             ) sub;
         """)
 
-        session.execute("""
-         GRANT SELECT ON api.datatable TO anon;
-        """)
-
 
 def create_datatable_api_trigger():
     with session_scope() as session:
         session.execute("""
-          DROP TRIGGER IF EXISTS datatable_trigger ON api.datatable;
+            DROP FUNCTION IF EXISTS admin.datatable_function() CASCADE;
         """)
 
         session.execute("""
@@ -51,6 +50,10 @@ def create_datatable_api_trigger():
               LANGUAGE plpgsql VOLATILE
               COST 100;
                     """)
+
+        session.execute("""
+          DROP TRIGGER IF EXISTS datatable_trigger ON api.datatable;
+        """)
 
         session.execute("""
           CREATE TRIGGER datatable_trigger

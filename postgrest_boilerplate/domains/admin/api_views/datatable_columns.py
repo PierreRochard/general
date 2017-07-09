@@ -4,6 +4,9 @@ from postgrest_boilerplate.database.util import session_scope
 def create_datatable_columns_api_view():
     with session_scope() as session:
         session.execute("""
+        DROP VIEW IF EXISTS api.datatable_columns CASCADE;
+        """)
+        session.execute("""
           CREATE OR REPLACE VIEW api.datatable_columns AS
             SELECT (row_number() OVER())::INT id, *
             FROM (
@@ -32,9 +35,8 @@ def create_datatable_columns_api_view():
 def create_datatable_columns_api_trigger():
     with session_scope() as session:
         session.execute("""
-          DROP TRIGGER IF EXISTS datatable_columns_trigger ON api.datatable_columns;
+            DROP FUNCTION IF EXISTS admin.datatable_columns_function() CASCADE;
         """)
-
         session.execute("""
             CREATE OR REPLACE FUNCTION admin.datatable_columns_function()
               RETURNS TRIGGER AS
@@ -67,9 +69,16 @@ def create_datatable_columns_api_trigger():
                         """)
 
         session.execute("""
+          DROP TRIGGER IF EXISTS datatable_columns_trigger ON api.datatable_columns CASCADE;
+        """)
+        session.execute("""
           CREATE TRIGGER datatable_columns_trigger
           INSTEAD OF INSERT OR UPDATE OR DELETE
           ON api.datatable_columns
           FOR EACH ROW
           EXECUTE PROCEDURE admin.datatable_columns_function();
         """)
+
+if __name__ == '__main__':
+    create_datatable_columns_api_view()
+    create_datatable_columns_api_trigger()
