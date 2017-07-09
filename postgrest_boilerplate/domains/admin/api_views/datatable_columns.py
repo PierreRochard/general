@@ -27,10 +27,6 @@ def create_datatable_columns_api_view():
           ) sub;
         """)
 
-        session.execute("""
-         GRANT SELECT ON api.datatable_columns TO anon;
-        """)
-
 
 def create_datatable_columns_api_trigger():
     with session_scope() as session:
