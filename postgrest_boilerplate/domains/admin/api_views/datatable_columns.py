@@ -22,7 +22,7 @@ def create_datatable_columns_api_view():
                            tcs.column_name AS value,
                            tcs.can_update as editable
                            
-                    FROM api.table_column_settings tcs
+                    FROM api.datatable_column_settings tcs
                   ORDER BY order_index ASC
           ) sub;
         """)
