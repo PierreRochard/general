@@ -10,19 +10,19 @@ def create_datatable_columns_api_view():
           CREATE OR REPLACE VIEW api.datatable_columns AS
             SELECT (row_number() OVER())::INT id, *
             FROM (
-                    SELECT tcs.data_type,
-                           tcs.filter_match_mode,
-                           tcs.filter_value,
-                           tcs.format_pattern,
-                           tcs.is_filterable,
-                           tcs.is_sortable,
-                           tcs.is_visible,
-                           tcs.custom_name AS label,
-                           tcs.table_name,
-                           tcs.column_name AS value,
-                           tcs.can_update as editable
+                    SELECT dtcs.data_type,
+                           dtcs.filter_match_mode,
+                           dtcs.filter_value,
+                           dtcs.format_pattern,
+                           dtcs.is_filterable,
+                           dtcs.is_sortable,
+                           dtcs.is_visible,
+                           dtcs.custom_name AS label,
+                           dtcs.table_name,
+                           dtcs.column_name AS value,
+                           dtcs.can_update as editable
                            
-                    FROM api.datatable_column_settings tcs
+                    FROM api.default_datatable_column_settings dtcs
                   ORDER BY order_index ASC
           ) sub;
         """)

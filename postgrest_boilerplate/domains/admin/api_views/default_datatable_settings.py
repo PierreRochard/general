@@ -1,13 +1,13 @@
 from postgrest_boilerplate.database.util import session_scope
 
 
-def create_datatable_settings_api_view():
+def create_default_datatable_settings_api_view():
     with session_scope() as session:
         session.execute("""
-        DROP VIEW IF EXISTS api.datatable_settings CASCADE;
+        DROP VIEW IF EXISTS api.default_datatable_settings CASCADE;
         """)
         session.execute("""
-        CREATE OR REPLACE VIEW api.datatable_settings AS 
+        CREATE OR REPLACE VIEW api.default_datatable_settings AS 
           SELECT coalesce(ts.id, auth.gen_random_uuid()) as id,
                  coalesce(ts."user", current_user) as "user",
                  t.table_name,
@@ -32,7 +32,7 @@ def create_datatable_settings_api_view():
         """)
 
 
-def create_datatable_settings_api_trigger():
+def create_default_datatable_settings_api_trigger():
     with session_scope() as session:
         session.execute("""
             DROP FUNCTION IF EXISTS admin.datatable_settings_function() CASCADE;
@@ -86,17 +86,17 @@ def create_datatable_settings_api_trigger():
                 """)
 
         session.execute("""
-          DROP TRIGGER IF EXISTS datatable_settings_trigger ON api.datatable_settings CASCADE;
+          DROP TRIGGER IF EXISTS default_datatable_settings_trigger ON api.default_datatable_settings CASCADE;
         """)
         session.execute("""
-        CREATE TRIGGER datatable_settings_trigger
+        CREATE TRIGGER default_datatable_settings_trigger
             INSTEAD OF INSERT OR UPDATE OR DELETE
-            ON api.datatable_settings
+            ON api.default_datatable_settings
             FOR EACH ROW
         EXECUTE PROCEDURE admin.datatable_settings_function();
         """)
 
 
 if __name__ == '__main__':
-    create_datatable_settings_api_view()
-    create_datatable_settings_api_trigger()
+    create_default_datatable_settings_api_view()
+    create_default_datatable_settings_api_trigger()

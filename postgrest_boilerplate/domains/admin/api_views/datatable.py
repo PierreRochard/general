@@ -10,13 +10,13 @@ def create_datatable_api_view():
           CREATE OR REPLACE VIEW api.datatable AS
             SELECT (row_number() OVER())::INT id, *
             FROM (
-                SELECT ts.table_name AS name, 
-                       ts.custom_name AS header,
-                       ts.row_limit AS "limit",
-                       ts.row_offset AS "offset",
-                       ts.sort_column,
-                       ts.sort_order
-                FROM api.datatable_settings ts
+                SELECT dts.table_name AS name, 
+                       dts.custom_name AS header,
+                       dts.row_limit AS "limit",
+                       dts.row_offset AS "offset",
+                       dts.sort_column,
+                       dts.sort_order
+                FROM api.default_datatable_settings dts
             ) sub;
         """)
 
