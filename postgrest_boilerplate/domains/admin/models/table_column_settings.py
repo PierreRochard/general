@@ -31,19 +31,3 @@ class TableColumnSettings(Base):
     is_sortable = Column(Boolean, default=True)
     is_visible = Column(Boolean, default=True)
     order_index = Column(Integer)
-
-
-def create_admin_columns_view():
-    with session_scope() as session:
-        session.execute("""
-            DROP MATERIALIZED VIEW IF EXISTS admin.columns CASCADE;
-            CREATE MATERIALIZED VIEW admin.columns AS
-                SELECT table_name, 
-                       column_name, 
-                       is_nullable,
-                       column_default,
-                       data_type
-                FROM information_schema.columns
-                WHERE table_schema = 'api';
-    
-        """)

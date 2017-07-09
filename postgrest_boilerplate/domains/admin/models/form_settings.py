@@ -26,17 +26,3 @@ class FormSettings(Base):
     is_visible = Column(Boolean, default=True)
     order_index = Column(Integer)
 
-
-def create_admin_forms_view():
-    with session_scope() as session:
-        session.execute("""
-            DROP MATERIALIZED VIEW IF EXISTS admin.forms CASCADE;
-            CREATE MATERIALIZED VIEW admin.forms AS
-                SELECT pg_proc.proname as form_name,
-                       pg_proc.proargnames as form_args,
-                       pg_proc.proargtypes AS form_arg_types
-                FROM pg_proc
-                LEFT OUTER JOIN pg_namespace ON pg_namespace.OID = pg_proc.pronamespace
-                WHERE pg_namespace.nspname = 'api';
-        """)
-
