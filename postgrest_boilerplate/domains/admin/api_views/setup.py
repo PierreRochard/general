@@ -11,7 +11,7 @@ from .default_datatable_column_settings import (
     create_default_datatable_column_settings_api_view,
     create_default_datatable_column_settings_api_trigger
 )
-from .default_form_field_settings import create_form_field_settings_api_view
+from .default_form_field_settings import create_default_form_field_settings_api_view
 from .default_form_settings import (
     create_form_settings_api_view,
     create_form_settings_api_trigger
@@ -34,7 +34,7 @@ def create_admin_api_views():
     create_form_settings_api_view()
     create_form_settings_api_trigger()
 
-    create_form_field_settings_api_view()
+    create_default_form_field_settings_api_view()
 
     """
     Create API views that are specifically designed to be consumed by 
