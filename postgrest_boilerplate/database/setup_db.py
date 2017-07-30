@@ -15,8 +15,8 @@ from postgrest_boilerplate.domains.auth.functions.setup import (
 from postgrest_boilerplate.domains.auth.models.setup_triggers import (
     create_auth_table_triggers
 )
-from postgrest_boilerplate.domains.auth.privileges.users_table import (
-    grant_privileges_on_users
+from postgrest_boilerplate.domains.auth.grant_privileges.users_table import (
+    grant_privileges_to_anon
 )
 from postgrest_boilerplate.domains.auth.types.jwt_token import (
     create_type_auth_jwt_token
@@ -39,7 +39,7 @@ def setup_database():
     create_auth_functions()
     create_auth_api_functions()
     create_auth_table_triggers()
-    grant_privileges_on_users()
+    grant_privileges_to_anon()
 
 
 if __name__ == '__main__':
