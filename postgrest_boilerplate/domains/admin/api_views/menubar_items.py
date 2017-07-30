@@ -24,11 +24,14 @@ def create_items_api_view():
               AND ts.user = current_user
           WHERE current_user != 'anon' AND ts.is_visible
           UNION
-          SELECT coalesce(fs.custom_name, f.form_name) as label,
-                          fs.icon,
+          SELECT coalesce(fs.custom_name, initcap(replace(f.form_name, '_', ' ')))::name as label,
+                          CASE WHEN f.form_name = 'logout' 
+                               THEN 'fa-sign-out' 
+                               ELSE coalesce('fa-pencil-square-o', fs.icon)
+                          END AS icon,
                           fs.id,
                           fs.submenu_id AS submenu_id,
-                                 string_to_array('/rpc/' || fs.form_name, ' ') 
+                                 string_to_array('/rpc/' || f.form_name, ' ') 
                                     AS "routerLink",
                           fs.order_index
           FROM admin.forms f
