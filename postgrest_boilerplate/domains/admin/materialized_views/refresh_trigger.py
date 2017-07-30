@@ -18,24 +18,24 @@ def create_materialized_views_refresh_trigger():
         """)
 
         session.execute("""
-          DROP EVENT TRIGGER IF EXISTS refresh_admin_tables_trigger;
+          DROP EVENT TRIGGER IF EXISTS refresh_admin_views_trigger;
         """)
 
         session.execute("""
-            CREATE EVENT TRIGGER refresh_admin_tables_trigger
+            CREATE EVENT TRIGGER refresh_admin_views_trigger
               ON ddl_command_end
               WHEN tag IN (
                     'ALTER FUNCTION',
                     'CREATE FUNCTION',
                     'DROP FUNCTION',
-                    'ALTER VIEW',
+                    'ALTER VIEW',g
                     'CREATE VIEW',
                     'DROP VIEW',
                     'ALTER TABLE',
                     'CREATE TABLE', 
                     'CREATE TABLE AS',
                     'DROP TABLE')
-              EXECUTE PROCEDURE admin.refresh_admin_tables();
+              EXECUTE PROCEDURE admin.refresh_admin_views();
         """)
 
         session.execute("""
