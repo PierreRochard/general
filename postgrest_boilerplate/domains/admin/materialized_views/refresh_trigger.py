@@ -28,7 +28,7 @@ def create_materialized_views_refresh_trigger():
                     'ALTER FUNCTION',
                     'CREATE FUNCTION',
                     'DROP FUNCTION',
-                    'ALTER VIEW',g
+                    'ALTER VIEW',
                     'CREATE VIEW',
                     'DROP VIEW',
                     'ALTER TABLE',

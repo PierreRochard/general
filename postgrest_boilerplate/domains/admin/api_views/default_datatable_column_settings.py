@@ -99,7 +99,7 @@ def create_default_datatable_column_settings_api_trigger():
           INSTEAD OF INSERT OR UPDATE OR DELETE
           ON api.default_datatable_column_settings
           FOR EACH ROW
-          EXECUTE PROCEDURE admin.table_column_settings_function();
+          EXECUTE PROCEDURE admin.datatable_column_settings_function();
         """)
 
 if __name__ == '__main__':

@@ -10,8 +10,7 @@ def create_default_form_field_settings_api_view():
             CREATE OR REPLACE VIEW api.default_form_field_settings AS 
             SELECT (row_number() OVER())::INT id, *
             FROM (
-                      SELECT coalesce(ffs.id, auth.gen_random_uuid()) as id,
-                             coalesce(ffs."user", current_user) as "user",
+                      SELECT coalesce(ffs."user", current_user) as "user",
                              f.form_name,
                              unnest(f.form_args) AS form_field_name
                       FROM admin.forms f
@@ -22,7 +21,7 @@ def create_default_form_field_settings_api_view():
         """)
 
         session.execute("""
-         GRANT SELECT ON api.form_field_settings TO anon;
+         GRANT SELECT ON api.default_form_field_settings TO anon;
         """)
 
 if __name__ == '__main__':
