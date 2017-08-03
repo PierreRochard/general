@@ -14,7 +14,7 @@ class Users(Base):
     email = Column(String, unique=True)
     password = Column(String)
     role = Column(String, unique=True)
-    active = Column(Boolean)
+    active = Column(Boolean, nullable=False)
     confirmed_at = Column(DateTime(timezone=True))
     last_login_at = Column(DateTime(timezone=True))
     current_login_at = Column(DateTime(timezone=True))
