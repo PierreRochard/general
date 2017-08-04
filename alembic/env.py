@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine.url import URL
 
 sys.path.append('.')
-from postgrest_boilerplate.models import Base
+from general.models import Base
 
 config = context.config
 fileConfig(config.config_file_name)
