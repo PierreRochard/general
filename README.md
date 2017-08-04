@@ -1,3 +1,7 @@
+![General Insignia][insignia]
+
+[logo]: https://github.com/PierreRochard/general/blob/master/general_insignia.png "General Insignia"
+
 # General
 
 General is a framework that integrates mature open source libraries to 
