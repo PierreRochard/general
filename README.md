@@ -1,6 +1,6 @@
 ![General Insignia][insignia]
 
-[logo]: https://github.com/PierreRochard/general/blob/master/general_insignia.png "General Insignia"
+[insignia]: https://github.com/PierreRochard/general/blob/master/general_insignia.png "General Insignia"
 
 # General
 
