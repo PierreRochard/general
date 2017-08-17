@@ -14,6 +14,7 @@ def create_datatable_columns_api_view():
                            dtcs.filter_match_mode,
                            dtcs.filter_value,
                            dtcs.format_pattern,
+                           dtcs.input_type,
                            dtcs.is_filterable,
                            dtcs.is_sortable,
                            dtcs.is_visible,
