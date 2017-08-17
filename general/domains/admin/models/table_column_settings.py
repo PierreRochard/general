@@ -28,7 +28,7 @@ class TableColumnSettings(Base):
     filter_value = Column(String)
     format_pattern = Column(String)
     input_type = Column(String, default='text')
-    is_filterable = Column(Boolean, default=True)
+    is_filterable = Column(Boolean, default=False)
     is_sortable = Column(Boolean, default=True)
     is_visible = Column(Boolean, default=True)
     order_index = Column(Integer)
