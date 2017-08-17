@@ -14,7 +14,8 @@ def create_columns_admin_materialized_view():
                        column_default,
                        data_type
                 FROM information_schema.columns
-                WHERE table_schema = 'api';
+                WHERE table_schema LIKE '%api'
+                  AND column_name NOT LIKE '%_select_items';
     
         """)
 
