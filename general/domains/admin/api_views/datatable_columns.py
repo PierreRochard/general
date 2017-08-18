@@ -1,4 +1,6 @@
 from general.database.util import session_scope
+from general.domains.admin.grant_privileges.all_users import \
+    grant_admin_schema_privileges_to_users
 
 
 def create_datatable_columns_api_view():
@@ -79,3 +81,4 @@ def create_datatable_columns_api_trigger():
 if __name__ == '__main__':
     create_datatable_columns_api_view()
     create_datatable_columns_api_trigger()
+    grant_admin_schema_privileges_to_users()
