@@ -18,7 +18,7 @@ class Schema(object):
                 """)
 
     @staticmethod
-    def grant_privileges(schema_name, privilege_definitions: dict):
+    def grant_privileges(schema_name: str, privilege_definitions: dict):
         for db_object_type, objects in privilege_definitions.items():
             for object_name, privileges in objects.items():
                 for privilege_name, users in privileges.items():
@@ -31,4 +31,4 @@ class Schema(object):
                             session.execute(f'GRANT {privilege_name} '
                                             f'ON {db_object_type} '
                                             f'{path}'
-                                            f' TO {user};')
+                                            f' TO "{user}";')

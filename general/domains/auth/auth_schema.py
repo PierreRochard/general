@@ -39,11 +39,23 @@ class AuthSchema(Schema):
                 """)
 
     def grant_auth_privileges(self):
-        privileges = {
-            'TABLE': {
-                'users': {
-                    'SELECT': ['anon']
+        with session_scope() as session:
+            privileges = {
+                'ALL TABLES IN SCHEMA': {
+                    'admin': {
+                        'SELECT, UPDATE, INSERT': [u.role for u in
+                                                   session.query(Users).all()]
+                    }
+                },
+                'SCHEMA': {
+                    'auth': {
+                        'USAGE': [u.role for u in session.query(Users).all()]
+                    }
+                },
+                'TABLE': {
+                    'users': {
+                        'SELECT': ['anon']
+                    }
                 }
             }
-        }
         self.grant_privileges(self.name, privileges)
