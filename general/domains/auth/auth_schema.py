@@ -38,16 +38,12 @@ class AuthSchema(Schema):
                 );
                 """)
 
-    @staticmethod
-    def grant_table_privileges():
-        with session_scope(raise_programming_error=True) as session:
-            session.execute('GRANT SELECT ON TABLE auth.users TO anon;')
-
-    @staticmethod
-    def grant_schema_privileges():
-        with session_scope(raise_programming_error=True) as session:
-            session.execute('GRANT USAGE ON SCHEMA api TO anon;')
-            session.execute('GRANT SELECT ON TABLE auth.users TO anon;')
-
-            for user in session.query(Users).all():
-                session.execute(f'GRANT USAGE ON SCHEMA api TO "{user.role}";')
+    def grant_auth_privileges(self):
+        privileges = {
+            'TABLE': {
+                'users': {
+                    'SELECT': ['anon']
+                }
+            }
+        }
+        self.grant_privileges(self.name, privileges)
