@@ -8,7 +8,7 @@ class Messages(Base):
     __tablename__ = 'messages'
     __table_args__ = {'schema': 'messaging'}
 
-    id = Column(UUID(as_uuid=True),
+    id = Column(UUID,
                 server_default=text('auth.gen_random_uuid()'),
                 primary_key=True)
     time = Column(DateTime, nullable=False, server_default=text('now()'))

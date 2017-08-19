@@ -8,7 +8,7 @@ class NotificationChannels(Base):
     __tablename__ = 'notification_channels'
     __table_args__ = {'schema': 'auth'}
 
-    id = Column(UUID(as_uuid=True),
+    id = Column(UUID,
                 server_default=text('auth.gen_random_uuid()'),
                 primary_key=True)
     channel_name = Column(String, unique=True)
