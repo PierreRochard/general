@@ -23,7 +23,7 @@ class Schema(object):
             for object_name, privileges in objects.items():
                 for privilege_name, users in privileges.items():
                     for user in users:
-                        if object_name in ('TABLE', 'FUNCTION'):
+                        if object_name in ('FUNCTION', 'TABLE', 'VIEW'):
                             path = f'{schema_name}.{object_name}'
                         else:
                             path = f'{object_name}'

@@ -9,26 +9,38 @@ class AdminApiSchema(Schema):
     def __init__(self):
         super(AdminApiSchema, self).__init__()
 
-
-        # for user in session.query(Users).all():
-        #     session.execute(f'GRANT SELECT ON api.menubar TO "{user.role}";')
-        #     session.execute(f'GRANT SELECT ON api.items TO "{user.role}";')
-        #     session.execute(f'GRANT SELECT, UPDATE ON api.datatable TO "{user.role}";')
-        #     session.execute(f'GRANT SELECT, UPDATE ON api.datatable_columns TO "{user.role}";')
-
     def grant_admin_privileges(self):
         with session_scope() as session:
             privileges = {
                 'ALL TABLES IN SCHEMA': {
-                    'admin': {
+                    'admin_api': {
                         'SELECT, UPDATE, INSERT': [u.role for u in
                                                    session.query(Users).all()]
                     }
                 },
-                'SCHEMA': {
-                    'admin': {
+                'SCHEMA':               {
+                    'admin_api': {
                         'USAGE': [u.role for u in session.query(Users).all()]
+                                     .append('anon')
                     }
                 },
+                'VIEW':                 {
+                    'menubar':   {
+                        'SELECT': [u.role for u in session.query(Users).all()]
+                                      .append('anon')
+                    },
+                    'items':     {
+                        'SELECT': [u.role for u in session.query(Users).all()]
+                                      .append('anon')
+                    },
+                    'datatable': {
+                        'SELECT, UPDATE': [u.role for u in
+                                           session.query(Users).all()]
+                    },
+                    'datatable_columns': {
+                        'SELECT, UPDATE': [u.role for u in
+                                           session.query(Users).all()]
+                    }
+                }
             }
         self.grant_privileges(self.name, privileges)
