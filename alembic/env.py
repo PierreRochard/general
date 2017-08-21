@@ -32,28 +32,27 @@ def before_cursor_execute(conn, cursor, statement, parameters, context,
 
 
 def include_object(object_, name, type_, reflected, compare_to):
-    # print(object_)
-    # print(name)
-    # print(type_)
-    # print(reflected)
-    # print(compare_to)
-    if str(object_).split('.')[0] in ['admin', 'auth']:
+    schemas = ['admin', 'auth']
+    if str(object_).split('.')[0] in schemas:
         return True
     else:
         if isinstance(object_, Table):
             return False
-        print('-----')
-        print(type(object_))
-        # print(object_)
-        print(object_.table.schema)
-        # print(pformat(dir(object_)))
-        # print(pformat(dir(object_.table)))
-        # print(name)
-        # print(type_)
-        # print(reflected)
-        # print(compare_to)
-        print('-----')
-        return False
+        if object_.table.schema in schemas:
+            return True
+        else:
+            print('-----')
+            print(type(object_))
+            print(object_)
+            print(object_.table.schema)
+            print(pformat(dir(object_)))
+            print(pformat(dir(object_.table)))
+            print(name)
+            print(type_)
+            print(reflected)
+            print(compare_to)
+            print('-----')
+            raise Exception()
 
 
 def get_url():
