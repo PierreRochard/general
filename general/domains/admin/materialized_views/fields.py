@@ -1,7 +1,7 @@
 from general.database.util import session_scope
 
 
-def create_fields_admin_intermediate_view():
+def create_fields_intermediate_view():
     with session_scope() as session:
         session.execute("""
         DROP VIEW IF EXISTS admin.fields_intermediate CASCADE;
@@ -45,7 +45,7 @@ def create_fields_admin_intermediate_view():
         """)
 
 
-def create_fields_admin_materialized_view():
+def create_fields_materialized_view():
     with session_scope() as session:
         session.execute("""
             DROP MATERIALIZED VIEW IF EXISTS admin.fields CASCADE;
@@ -64,7 +64,7 @@ def create_fields_admin_materialized_view():
         """)
 
 if __name__ == '__main__':
-    create_fields_admin_materialized_view()
+    create_fields_materialized_view()
 
 # SELECT (row_number() OVER())::INT id, sub1.* FROM
 # (SELECT pg_proc.proname as form_name,
