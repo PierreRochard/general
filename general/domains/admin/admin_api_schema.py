@@ -4,11 +4,9 @@ from general.domains.auth.models import Users
 
 
 class AdminApiSchema(Schema):
-    name = 'admin_api'
 
     def __init__(self):
-        super(AdminApiSchema, self).__init__()
-
+        super(AdminApiSchema, self).__init__(name='admin_api')
 
     def create_admin_api_views():
         """

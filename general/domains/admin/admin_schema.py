@@ -12,10 +12,9 @@ from general.domains.auth.models import Users
 
 
 class AdminSchema(Schema):
-    name = 'auth'
 
     def __init__(self):
-        super(AdminSchema, self).__init__()
+        super(AdminSchema, self).__init__(name='auth')
 
     def grant_admin_privileges(self):
         with session_scope() as session:

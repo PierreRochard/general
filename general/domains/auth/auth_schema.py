@@ -8,10 +8,9 @@ from .models.users import Users
 
 
 class AuthSchema(Schema):
-    name = 'auth'
 
     def __init__(self):
-        super(AuthSchema, self).__init__()
+        super(AuthSchema, self).__init__(name='auth')
 
     def create_extensions(self):
         extensions = ('pgcrypto', 'pgjwt')

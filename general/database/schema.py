@@ -3,18 +3,26 @@ from general.database.util import session_scope
 
 class Schema(object):
 
-    @staticmethod
-    def create_extension(schema_name, extension_name):
+    def __init__(self, name):
+        self.name = name
+
+    def create_schema(self):
         with session_scope(raise_programming_error=True) as session:
             session.execute(f"""
-                 CREATE EXTENSION {schema_name} SCHEMA {extension_name};
+            CREATE SCHEMA IF NOT EXISTS {self.name};
+                """)
+
+    def create_extension(self, extension_name):
+        with session_scope(raise_programming_error=True) as session:
+            session.execute(f"""
+             CREATE EXTENSION IF NOT EXISTS {extension_name} SCHEMA {self.name};
                 """)
 
     @staticmethod
-    def drop_extension(schema_name):
+    def drop_extension(extension_name):
         with session_scope(raise_programming_error=True) as session:
             session.execute(f"""
-                    DROP EXTENSION IF EXISTS {schema_name} CASCADE;
+                    DROP EXTENSION IF EXISTS {extension_name} CASCADE;
                 """)
 
     @staticmethod

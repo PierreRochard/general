@@ -6,15 +6,13 @@ from .api_functions import create_login_api_trigger, create_logout_api_trigger
 
 
 class AuthApiSchema(Schema):
-    name = 'auth_api'
 
     def __init__(self):
-        super(AuthApiSchema, self).__init__()
+        super(AuthApiSchema, self).__init__(name='auth_api')
 
-    @classmethod
-    def create_functions(cls):
-        create_login_api_trigger(cls.name)
-        create_logout_api_trigger(cls.name)
+    def create_functions(self):
+        create_login_api_trigger(self.name)
+        create_logout_api_trigger(self.name)
 
     def grant_auth_privileges(self):
         with session_scope() as session:
