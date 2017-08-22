@@ -147,3 +147,5 @@ ENV/
 
 .idea
 libraries
+
+alembic/versions
