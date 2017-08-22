@@ -4,15 +4,15 @@ from general.database.util import session_scope
 def create_default_form_settings_api_view():
     with session_scope() as session:
         session.execute("""
-        DROP VIEW IF EXISTS api.default_form_settings CASCADE;
+        DROP VIEW IF EXISTS admin.default_form_settings CASCADE;
         """)
         session.execute("""
-            CREATE OR REPLACE VIEW api.default_form_settings AS 
+            CREATE OR REPLACE VIEW admin.default_form_settings AS 
               SELECT f.form_name,
                      f.form_args,
                      f.form_arg_types,
                      fs.id,
-                     fs.user,
+                     u.user,
                     
                      fs.custom_name,
                      fs.submenu_id,
@@ -21,11 +21,12 @@ def create_default_form_settings_api_view():
               FROM admin.forms f
               LEFT OUTER JOIN admin.form_settings fs
                   ON f.form_name = fs.form_name
-                  AND fs."user" = current_user;
+              LEFT JOIN auth.users u 
+                ON fs.user_id = u.id
         """)
 
         session.execute("""
-         GRANT SELECT ON api.default_form_settings TO anon;
+         GRANT SELECT ON admin.default_form_settings TO anon;
         """)
 
 

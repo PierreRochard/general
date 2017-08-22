@@ -4,12 +4,12 @@ from general.database.util import session_scope
 def create_default_datatable_settings_api_view():
     with session_scope() as session:
         session.execute("""
-        DROP VIEW IF EXISTS api.default_datatable_settings CASCADE;
+        DROP VIEW IF EXISTS admin.default_datatable_settings CASCADE;
         """)
         session.execute("""
-        CREATE OR REPLACE VIEW api.default_datatable_settings AS 
+        CREATE OR REPLACE VIEW admin.default_datatable_settings AS 
           SELECT coalesce(ts.id, auth.gen_random_uuid()) as id,
-                 coalesce(ts."user", current_user) as "user",
+                 coalesce(u.role, current_user) as "user",
                  t.table_name,
                  
                  coalesce(ts.can_delete, TRUE) AS can_delete,
@@ -27,7 +27,8 @@ def create_default_datatable_settings_api_view():
           FROM admin.tables t
           LEFT OUTER JOIN admin.table_settings ts
               ON t.table_name = ts.table_name
-              AND ts.user = current_user
+          LEFT JOIN auth.users u
+            ON ts.user_id = u.id
           ORDER BY ts.order_index ASC, t.table_name ASC;
         """)
 

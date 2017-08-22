@@ -4,10 +4,10 @@ from general.database.util import session_scope
 def create_datatable_api_view():
     with session_scope() as session:
         session.execute("""
-        DROP VIEW IF EXISTS api.datatable CASCADE;
+        DROP VIEW IF EXISTS admin_api.datatable CASCADE;
         """)
         session.execute("""
-          CREATE OR REPLACE VIEW api.datatable AS
+          CREATE OR REPLACE VIEW admin_api.datatable AS
             SELECT (row_number() OVER())::INT id, *
             FROM (
                 SELECT dts.table_name AS name, 
@@ -15,8 +15,10 @@ def create_datatable_api_view():
                        dts.row_limit AS "limit",
                        dts.row_offset AS "offset",
                        dts.sort_column,
-                       dts.sort_order
-                FROM api.default_datatable_settings dts
+                       dts.sort_order,
+                       dts.order_index
+                FROM admin.default_datatable_settings dts
+                WHERE dts.user = current_user
             ) sub;
         """)
 

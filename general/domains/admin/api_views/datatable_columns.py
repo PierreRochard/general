@@ -1,15 +1,13 @@
 from general.database.util import session_scope
-from general.domains.admin.grant_privileges.all_users import \
-    grant_admin_schema_privileges_to_users
 
 
 def create_datatable_columns_api_view():
     with session_scope() as session:
         session.execute("""
-        DROP VIEW IF EXISTS api.datatable_columns CASCADE;
+        DROP VIEW IF EXISTS admin_api.datatable_columns CASCADE;
         """)
         session.execute("""
-          CREATE OR REPLACE VIEW api.datatable_columns AS
+          CREATE OR REPLACE VIEW admin_api.datatable_columns AS
             SELECT (row_number() OVER())::INT id, *
             FROM (
                     SELECT dtcs.data_type,
@@ -25,7 +23,8 @@ def create_datatable_columns_api_view():
                            dtcs.column_name AS value,
                            dtcs.can_update as editable
                            
-                    FROM api.default_datatable_column_settings dtcs
+                    FROM admin.default_datatable_column_settings dtcs
+                  WHERE dtcs.user = current_user
                   ORDER BY order_index ASC
           ) sub;
         """)
@@ -81,4 +80,3 @@ def create_datatable_columns_api_trigger():
 if __name__ == '__main__':
     create_datatable_columns_api_view()
     create_datatable_columns_api_trigger()
-    grant_admin_schema_privileges_to_users()

@@ -9,6 +9,42 @@ class AdminApiSchema(Schema):
     def __init__(self):
         super(AdminApiSchema, self).__init__()
 
+
+    def create_admin_api_views():
+        """
+        Base API views introduce sensible defaults
+            and limit access to the current user
+        """
+        create_default_datatable_settings_api_view()
+        create_default_datatable_settings_api_trigger()
+    
+        create_default_datatable_column_settings_api_view()
+        create_default_datatable_column_settings_api_trigger()
+    
+        create_form_settings_api_view()
+        create_form_settings_api_trigger()
+    
+        create_default_form_field_settings_api_view()
+    
+        """
+        Create API views that are specifically designed to be consumed by 
+            frontend components
+        """
+    
+        # The frontend joins these two views to provide a menubar with submenus
+        create_items_api_view()
+        create_menubar_api_view()
+    
+        # The frontend consumes the datatable endpoint to parameterize the
+        # PrimeNG datatable component
+        create_datatable_api_view()
+        create_datatable_api_trigger()
+    
+        # The frontend consumes the datatable_columns endpoint to parameterize the
+        # PrimeNG datatable component's columns
+        create_datatable_columns_api_view()
+        create_datatable_columns_api_trigger()
+
     def grant_admin_privileges(self):
         with session_scope() as session:
             privileges = {
