@@ -1,5 +1,7 @@
 from general.database.schema import Schema
 from general.database.util import session_scope
+from general.domains.auth.models import Users
+
 from .materialized_views import (
     create_columns_materialized_view,
     create_fields_intermediate_view,
@@ -8,7 +10,12 @@ from .materialized_views import (
     create_materialized_views_refresh_trigger,
     create_tables_materialized_view
 )
-from general.domains.auth.models import Users
+from .views import (
+    create_default_datatable_column_settings_view,
+    create_default_datatable_settings_view,
+    create_default_form_field_settings_view,
+    create_default_form_settings_view
+)
 
 
 class AdminSchema(Schema):
@@ -34,10 +41,25 @@ class AdminSchema(Schema):
         self.grant_privileges(self.name, privileges)
 
     @staticmethod
-    def create_materialized_views(self):
+    def create_materialized_views():
+        """
+        Materialized views that pull from system tables and a
+            refresh trigger for to keep the data fresh
+        """
         create_columns_materialized_view()
         create_fields_intermediate_view()
         create_fields_materialized_view()
         create_forms_materialized_view()
         create_tables_materialized_view()
         create_materialized_views_refresh_trigger()
+
+    @staticmethod
+    def create_admin_views():
+        """
+        Base views introduce sensible defaults
+            and limit access to the current user
+        """
+        create_default_datatable_column_settings_view()
+        create_default_datatable_settings_view()
+        create_default_form_field_settings_view()
+        create_default_form_settings_view()

@@ -1,7 +1,7 @@
 from general.database.util import session_scope
 
 
-def create_datatable_api_view():
+def create_datatable_view():
     with session_scope() as session:
         session.execute("""
         DROP VIEW IF EXISTS admin_api.datatable CASCADE;
@@ -23,7 +23,7 @@ def create_datatable_api_view():
         """)
 
 
-def create_datatable_api_trigger():
+def create_datatable_trigger():
     with session_scope() as session:
         session.execute("""
             DROP FUNCTION IF EXISTS admin.datatable_function() CASCADE;
@@ -66,5 +66,5 @@ def create_datatable_api_trigger():
         """)
 
 if __name__ == '__main__':
-    create_datatable_api_view()
-    create_datatable_api_trigger()
+    create_datatable_view()
+    create_datatable_trigger()

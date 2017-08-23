@@ -1,6 +1,8 @@
 from general.database.schema import Schema
 from general.database.util import session_scope
+
 from general.domains.auth.models import Users
+
 
 
 class AdminApiSchema(Schema):
@@ -8,22 +10,8 @@ class AdminApiSchema(Schema):
     def __init__(self):
         super(AdminApiSchema, self).__init__(name='admin_api')
 
+    @staticmethod
     def create_admin_api_views():
-        """
-        Base API views introduce sensible defaults
-            and limit access to the current user
-        """
-        create_default_datatable_settings_api_view()
-        create_default_datatable_settings_api_trigger()
-    
-        create_default_datatable_column_settings_api_view()
-        create_default_datatable_column_settings_api_trigger()
-    
-        create_form_settings_api_view()
-        create_form_settings_api_trigger()
-    
-        create_default_form_field_settings_api_view()
-    
         """
         Create API views that are specifically designed to be consumed by 
             frontend components

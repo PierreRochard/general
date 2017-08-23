@@ -1,7 +1,7 @@
 from general.database.util import session_scope
 
 
-def create_default_form_field_settings_api_view():
+def create_default_form_field_settings_view():
     with session_scope() as session:
         session.execute("""
         DROP VIEW IF EXISTS admin.default_form_field_settings CASCADE;
@@ -26,4 +26,4 @@ def create_default_form_field_settings_api_view():
         """)
 
 if __name__ == '__main__':
-    create_default_form_field_settings_api_view()
+    create_default_form_field_settings_view()

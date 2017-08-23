@@ -3,9 +3,6 @@ from sqlalchemy.sql.ddl import DropTable
 
 from general.database.util import session_scope, Base
 
-from general.domains.admin.api_views.setup import (
-    create_admin_api_views
-)
 
 # Necessary for models to register with Base
 import general.domains.admin.models
