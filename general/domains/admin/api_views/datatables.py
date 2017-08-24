@@ -1,13 +1,13 @@
 from general.database.util import session_scope
 
 
-def create_datatable_view():
+def create_datatables_view():
     with session_scope() as session:
         session.execute("""
-        DROP VIEW IF EXISTS admin_api.datatable CASCADE;
+        DROP VIEW IF EXISTS admin_api.datatables CASCADE;
         """)
         session.execute("""
-          CREATE OR REPLACE VIEW admin_api.datatable AS
+          CREATE OR REPLACE VIEW admin_api.datatables AS
             SELECT (row_number() OVER())::INT id, *
             FROM (
                 SELECT dts.table_name AS name, 
@@ -23,14 +23,14 @@ def create_datatable_view():
         """)
 
 
-def create_datatable_trigger():
+def create_datatables_trigger():
     with session_scope() as session:
         session.execute("""
-            DROP FUNCTION IF EXISTS admin.datatable_function() CASCADE;
+            DROP FUNCTION IF EXISTS admin.datatables_function() CASCADE;
         """)
 
         session.execute("""
-            CREATE OR REPLACE FUNCTION admin.datatable_function()
+            CREATE OR REPLACE FUNCTION admin.datatables_function()
               RETURNS TRIGGER AS
                     $BODY$
                        BEGIN
@@ -54,17 +54,17 @@ def create_datatable_trigger():
                     """)
 
         session.execute("""
-          DROP TRIGGER IF EXISTS datatable_trigger ON api.datatable;
+          DROP TRIGGER IF EXISTS datatables_trigger ON admin_api.datatables;
         """)
 
         session.execute("""
-          CREATE TRIGGER datatable_trigger
+          CREATE TRIGGER datatables_trigger
           INSTEAD OF INSERT OR UPDATE OR DELETE
-          ON api.datatable
+          ON admin_api.datatables
           FOR EACH ROW
-          EXECUTE PROCEDURE admin.datatable_function();
+          EXECUTE PROCEDURE admin.datatables_function();
         """)
 
 if __name__ == '__main__':
-    create_datatable_view()
-    create_datatable_trigger()
+    create_datatables_view()
+    create_datatables_trigger()

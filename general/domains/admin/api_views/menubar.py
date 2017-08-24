@@ -1,7 +1,7 @@
 from general.database.util import session_scope
 
 
-def create_menubar_api_view():
+def create_menubar_view():
     """
     Frontend usage:
     params.set('select', 'label, icon, routerLink, items{label, icon, routerLink}');
@@ -37,4 +37,4 @@ def create_menubar_api_view():
         """)
 
 if __name__ == '__main__':
-    create_menubar_api_view()
+    create_menubar_view()

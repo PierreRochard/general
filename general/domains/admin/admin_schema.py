@@ -23,23 +23,6 @@ class AdminSchema(Schema):
     def __init__(self):
         super(AdminSchema, self).__init__(name='auth')
 
-    def grant_admin_privileges(self):
-        with session_scope() as session:
-            privileges = {
-                'ALL TABLES IN SCHEMA': {
-                    'admin': {
-                        'SELECT, UPDATE, INSERT': [u.role for u in
-                                                   session.query(Users).all()]
-                    }
-                },
-                'SCHEMA': {
-                    'admin': {
-                        'USAGE': [u.role for u in session.query(Users).all()]
-                    }
-                },
-            }
-        self.grant_privileges(self.name, privileges)
-
     @staticmethod
     def create_materialized_views():
         """
@@ -63,3 +46,20 @@ class AdminSchema(Schema):
         create_default_datatable_settings_view()
         create_default_form_field_settings_view()
         create_default_form_settings_view()
+
+    def grant_admin_privileges(self):
+        with session_scope() as session:
+            privileges = {
+                'ALL TABLES IN SCHEMA': {
+                    'admin': {
+                        'SELECT, UPDATE, INSERT': [u.role for u in
+                                                   session.query(Users).all()]
+                    }
+                },
+                'SCHEMA': {
+                    'admin': {
+                        'USAGE': [u.role for u in session.query(Users).all()]
+                    }
+                },
+            }
+        self.grant_privileges(self.name, privileges)

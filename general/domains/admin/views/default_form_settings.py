@@ -12,7 +12,7 @@ def create_default_form_settings_view():
                      f.form_args,
                      f.form_arg_types,
                      fs.id,
-                     u.user,
+                     u.role as "user",
                     
                      fs.custom_name,
                      fs.submenu_id,

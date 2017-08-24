@@ -60,7 +60,7 @@ def create_fields_materialized_view():
                 FROM admin.fields_intermediate fi
                 LEFT JOIN pg_namespace ON pg_namespace.OID = fi.schema_id
                 LEFT JOIN pg_type on pg_type.oid = fi.arg_type
-                WHERE pg_namespace.nspname = 'api';
+                WHERE pg_namespace.nspname LIKE '%api';
         """)
 
 if __name__ == '__main__':

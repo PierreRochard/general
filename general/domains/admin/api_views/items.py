@@ -1,7 +1,7 @@
 from general.database.util import session_scope
 
 
-def create_items_api_view():
+def create_items_view():
     """
     NB: we can't use the api.table_settings view in the items view as
     this will break our ability to join with submenu
@@ -49,4 +49,4 @@ def create_items_api_view():
           """)
 
 if __name__ == '__main__':
-    create_items_api_view()
+    create_items_view()
