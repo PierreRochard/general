@@ -8,9 +8,13 @@ def create_default_form_field_settings_view():
         """)
         session.execute("""
             CREATE OR REPLACE VIEW admin.default_form_field_settings AS 
-              SELECT coalesce(u.role, current_user) as "user",
+              SELECT coalesce(ffs.id, auth.gen_random_uuid()) as id,
+                     coalesce(u.role, current_user) as "user",
                      f.form_name,
-                     f.name
+                     f.field_name,
+                     f.field_type,
+                     
+                     coalesce(ffs.custom_name, initcap(replace(f.field_name, '_', ' '))) as custom_name
               FROM admin.fields f
               LEFT OUTER JOIN admin.form_field_settings ffs
                 ON f.form_name = ffs.form_name

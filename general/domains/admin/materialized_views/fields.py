@@ -55,7 +55,7 @@ def create_fields_materialized_view():
                 SELECT 
                     pg_namespace.nspname as schema_name,
                     fi.form_name,
-                    fi.name,
+                    fi.name as field_name,
                     pg_type.typname as field_type
                 FROM admin.fields_intermediate fi
                 LEFT JOIN pg_namespace ON pg_namespace.OID = fi.schema_id
