@@ -10,13 +10,13 @@ def create_form_fields_view():
             CREATE OR REPLACE VIEW admin.form_fields AS 
             SELECT (row_number() OVER())::INT id, *
             FROM (
-                      SELECT dfs.form_name,
-                             dfs.
-                      FROM admin.default_form_settings. dfs
-                      LEFT OUTER JOIN admin.form_field_settings ffs
-                        ON f.form_name = ffs.form_name
-                      LEFT JOIN auth.users u 
-                        ON ffs.user_id = u.id 
+                      SELECT dffs.form_name,
+                             dffs.field_name,
+                             dffs.field_type,
+                             dffs.custom_name
+                      FROM admin.default_form_field_settings dffs
+                  WHERE dffs.user = current_user
+                  ORDER BY dffs.order_index ASC
               ) sub;
         """)
 
@@ -25,4 +25,4 @@ def create_form_fields_view():
         """)
 
 if __name__ == '__main__':
-    create_default_form_field_settings_view()
+    create_form_fields_view()

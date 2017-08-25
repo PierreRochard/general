@@ -25,7 +25,7 @@ def create_datatable_columns_view():
                            
                     FROM admin.default_datatable_column_settings dtcs
                   WHERE dtcs.user = current_user
-                  ORDER BY order_index ASC
+                  ORDER BY dtcs.order_index ASC
           ) sub;
         """)
 
