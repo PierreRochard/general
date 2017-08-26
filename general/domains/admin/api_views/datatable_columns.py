@@ -67,12 +67,12 @@ def create_datatable_columns_trigger():
                         """)
 
         session.execute("""
-          DROP TRIGGER IF EXISTS datatable_columns_trigger ON api.datatable_columns CASCADE;
+          DROP TRIGGER IF EXISTS datatable_columns_trigger ON admin_api.datatable_columns CASCADE;
         """)
         session.execute("""
           CREATE TRIGGER datatable_columns_trigger
           INSTEAD OF INSERT OR UPDATE OR DELETE
-          ON api.datatable_columns
+          ON admin_api.datatable_columns
           FOR EACH ROW
           EXECUTE PROCEDURE admin.datatable_columns_function();
         """)

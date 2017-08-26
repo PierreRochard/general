@@ -1,8 +1,7 @@
 from general.database.schema import Schema
-from general.database.util import session_scope
-from general.domains.auth.models import Users
+from general.database.util import session_scope, Base
 
-from .materialized_views import (
+from general.domains.admin.materialized_views import (
     create_columns_materialized_view,
     create_fields_intermediate_view,
     create_fields_materialized_view,
@@ -10,7 +9,7 @@ from .materialized_views import (
     create_materialized_views_refresh_trigger,
     create_tables_materialized_view
 )
-from .views import (
+from general.domains.admin.views import (
     create_default_datatable_column_settings_view,
     create_default_datatable_settings_view,
     create_default_form_field_settings_view,
@@ -22,6 +21,12 @@ class AdminSchema(Schema):
 
     def __init__(self):
         super(AdminSchema, self).__init__(name='auth')
+
+    @staticmethod
+    def create_tables():
+        import general.domains.admin.models
+        with session_scope() as session:
+            Base.metadata.create_all(session.connection())
 
     @staticmethod
     def create_materialized_views():
@@ -48,6 +53,7 @@ class AdminSchema(Schema):
         create_default_form_settings_view()
 
     def grant_admin_privileges(self):
+        from general.domains.auth.models import Users
         with session_scope() as session:
             privileges = {
                 'ALL TABLES IN SCHEMA': {
@@ -63,3 +69,10 @@ class AdminSchema(Schema):
                 },
             }
         self.grant_privileges(self.name, privileges)
+
+if __name__ == '__main__':
+    admin_schema = AdminSchema()
+    admin_schema.create_tables()
+    admin_schema.create_materialized_views()
+    admin_schema.create_admin_views()
+    admin_schema.grant_admin_privileges()

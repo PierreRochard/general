@@ -1,13 +1,11 @@
 from general.database.schema import Schema
 from general.database.util import session_scope
 
-from general.domains.auth.models import Users
-
-from .api_views import (
+from general.domains.admin.api_views import (
     create_datatable_columns_trigger,
     create_datatable_columns_view,
-    create_datatable_trigger,
-    create_datatable_view,
+    create_datatables_trigger,
+    create_datatables_view,
     create_items_view,
     create_menubar_view
 )
@@ -31,8 +29,8 @@ class AdminApiSchema(Schema):
     
         # The frontend consumes the datatable endpoint to parameterize the
         # PrimeNG datatable component
-        create_datatable_view()
-        create_datatable_trigger()
+        create_datatables_view()
+        create_datatables_trigger()
     
         # The frontend consumes the datatable_columns endpoint to parameterize the
         # PrimeNG datatable component's columns
@@ -40,6 +38,7 @@ class AdminApiSchema(Schema):
         create_datatable_columns_trigger()
 
     def grant_admin_privileges(self):
+        from general.domains.auth.models import Users
         with session_scope() as session:
             privileges = {
                 'SCHEMA':               {
@@ -48,18 +47,18 @@ class AdminApiSchema(Schema):
                     }
                 },
                 'VIEW':                 {
-                    'menubar':   {
+                    'admin_api.menubar':   {
                         'SELECT': [u.role for u in session.query(Users).all()]
                     },
-                    'items':     {
+                    'admin_api.items':     {
                         'SELECT': [u.role for u in session.query(Users).all()]
                     },
-                    'datatable': {
+                    'admin_api.datatable': {
                         'SELECT, UPDATE': [u.role for u in
                                            session.query(Users).all()
                                            if u.role != 'anon']
                     },
-                    'datatable_columns': {
+                    'admin_api.datatable_columns': {
                         'SELECT, UPDATE': [u.role for u in
                                            session.query(Users).all()
                                            if u.role != 'anon']
@@ -67,3 +66,8 @@ class AdminApiSchema(Schema):
                 }
             }
         self.grant_privileges(self.name, privileges)
+
+if __name__ == '__main__':
+    admin_api_schema = AdminApiSchema()
+    admin_api_schema.create_admin_api_views()
+    admin_api_schema.grant_admin_privileges()
