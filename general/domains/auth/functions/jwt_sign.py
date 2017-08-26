@@ -4,8 +4,7 @@ from general.database.util import session_scope
 def create_jwt_sign_function():
     with session_scope() as session:
         session.execute("""
-            DROP FUNCTION IF EXISTS auth.jwt_sign(payload   JSON, secret TEXT,
-                                              algorithm TEXT DEFAULT 'HS256' :: TEXT) CASCADE;
+            DROP FUNCTION IF EXISTS auth.jwt_sign(payload   JSON, secret TEXT, algorithm TEXT) CASCADE;
         """)
 
         session.execute("""
