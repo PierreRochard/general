@@ -2,10 +2,11 @@ from general.database.schema import Schema
 from general.database.util import session_scope, Base
 
 from general.domains.admin.materialized_views import (
-    create_columns_materialized_view,
-    create_fields_materialized_view,
+    create_form_fields_materialized_view,
     create_forms_materialized_view,
     create_materialized_views_refresh_trigger,
+    create_schemas_materialized_view,
+    create_table_columns_materialized_view,
     create_tables_materialized_view
 )
 from general.domains.admin.views import (
@@ -33,9 +34,10 @@ class AdminSchema(Schema):
         Materialized views that pull from system tables and a
             refresh trigger for to keep the data fresh
         """
-        create_columns_materialized_view()
-        create_fields_materialized_view()
+        create_form_fields_materialized_view()
         create_forms_materialized_view()
+        create_schemas_materialized_view()
+        create_table_columns_materialized_view()
         create_tables_materialized_view()
         create_materialized_views_refresh_trigger()
 
