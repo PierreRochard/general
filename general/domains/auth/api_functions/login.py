@@ -4,11 +4,11 @@ from general.database.util import session_scope
 def create_login_api_trigger():
     with session_scope() as session:
         session.execute("""
-            DROP FUNCTION IF EXISTS api.login(email TEXT, password TEXT) CASCADE;
+            DROP FUNCTION IF EXISTS auth_api.login(email TEXT, password TEXT) CASCADE;
         """)
         session.execute("""
                 CREATE OR REPLACE FUNCTION
-                  api.login(email TEXT, password TEXT)
+                  auth_api.login(email TEXT, password TEXT)
                   RETURNS auth.JWT_TOKEN
                 LANGUAGE plpgsql
                 AS $$
@@ -37,7 +37,7 @@ def create_login_api_trigger():
                 $$;
                 """)
         session.execute('''
-                GRANT EXECUTE ON FUNCTION api.login(TEXT, TEXT) TO anon;
+                GRANT EXECUTE ON FUNCTION auth_api.login(TEXT, TEXT) TO anon;
                 ''')
 
 

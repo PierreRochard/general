@@ -5,7 +5,7 @@ def create_logout_api_trigger():
     with session_scope() as session:
         session.execute("""
                 CREATE OR REPLACE FUNCTION
-                  api.logout()
+                  auth_api.logout()
                   RETURNS VOID
                 LANGUAGE plpgsql
                 AS $$
