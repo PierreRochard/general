@@ -53,6 +53,16 @@ class AdminApiSchema(Schema):
                     'items':     {
                         'SELECT': [u.role for u in session.query(Users).all()]
                     },
+                    'forms':     {
+                        'SELECT': [u.role for u in session.query(Users).all()],
+                        'UPDATE': [u.role for u in session.query(Users).all()
+                                   if u.role != 'anon']
+                    },
+                    'form_fields':     {
+                        'SELECT': [u.role for u in session.query(Users).all()],
+                        'UPDATE': [u.role for u in session.query(Users).all()
+                                   if u.role != 'anon']
+                    },
                     'datatables': {
                         'SELECT, UPDATE': [u.role for u in
                                            session.query(Users).all()

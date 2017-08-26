@@ -16,4 +16,3 @@ def create_forms_view():
                 WHERE dfs.user = current_user
             ) sub;
         """)
-
