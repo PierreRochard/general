@@ -1,9 +1,14 @@
 from general.database.schema import Schema
 from general.database.util import session_scope
 
-from .functions import (create_authenticate_user_email_function,
-                        create_check_if_role_exists_function,
-                        create_encrypt_password_function)
+from .functions import (
+    create_authenticate_user_email_function,
+    create_check_if_role_exists_function,
+    create_encrypt_password_function,
+    create_jwt_algorithm_sign_function,
+    create_jwt_sign_function,
+    create_jwt_url_encode_function
+)
 from .models.users import Users
 
 
@@ -13,15 +18,17 @@ class AuthSchema(Schema):
         super(AuthSchema, self).__init__(name='auth')
 
     def create_extensions(self):
-        extensions = ('pgcrypto', 'pgjwt')
-        for extension in extensions:
-            self.create_extension(self.name, extension)
+        self.create_extension('pgcrypto')
 
     @staticmethod
     def create_functions():
         create_authenticate_user_email_function()
         create_check_if_role_exists_function()
         create_encrypt_password_function()
+
+        create_jwt_url_encode_function()
+        create_jwt_algorithm_sign_function()
+        create_jwt_sign_function()
 
     @staticmethod
     def create_table_triggers():

@@ -1,3 +1,6 @@
 from .authenticate_user_email import create_authenticate_user_email_function
 from .check_if_role_exists import create_check_if_role_exists_function
 from .encrypt_password import create_encrypt_password_function
+from .jwt_algorithm_sign import create_jwt_algorithm_sign_function
+from .jwt_sign import create_jwt_sign_function
+from .jwt_url_encode import create_jwt_url_encode_function
