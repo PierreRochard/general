@@ -9,8 +9,6 @@ def create_default_form_settings_view():
         session.execute("""
             CREATE OR REPLACE VIEW admin.default_form_settings AS 
               SELECT f.form_name,
-                     f.form_args,
-                     f.form_arg_types,
                      fs.id,
                      u.role as "user",
                     

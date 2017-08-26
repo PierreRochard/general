@@ -8,12 +8,10 @@ def create_forms_materialized_view():
         """)
         session.execute("""
             CREATE MATERIALIZED VIEW admin.forms AS
-                SELECT pg_proc.proname as form_name,
-                       pg_proc.proargnames as form_args,
-                       pg_proc.proargtypes AS form_arg_types
-                FROM pg_proc
-                LEFT OUTER JOIN pg_namespace ON pg_namespace.OID = pg_proc.pronamespace
-                WHERE pg_namespace.nspname = 'api';
+                SELECT specific_schema as schema_name,
+                       routine_name as form_name
+                FROM information_schema.routines
+                WHERE specific_schema LIKE '%_api';
         """)
 
 if __name__ == '__main__':

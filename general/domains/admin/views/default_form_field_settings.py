@@ -16,7 +16,7 @@ def create_default_form_field_settings_view():
                      
                      coalesce(ffs.order_index, 0) AS order_index,
                      coalesce(ffs.custom_name, initcap(replace(f.field_name, '_', ' '))) as custom_name
-              FROM admin.fields f
+              FROM admin.form_fields f
               LEFT OUTER JOIN admin.form_field_settings ffs
                 ON f.form_name = ffs.form_name
               LEFT JOIN auth.users u 

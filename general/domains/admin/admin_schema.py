@@ -3,7 +3,6 @@ from general.database.util import session_scope, Base
 
 from general.domains.admin.materialized_views import (
     create_columns_materialized_view,
-    create_fields_intermediate_view,
     create_fields_materialized_view,
     create_forms_materialized_view,
     create_materialized_views_refresh_trigger,
@@ -35,7 +34,6 @@ class AdminSchema(Schema):
             refresh trigger for to keep the data fresh
         """
         create_columns_materialized_view()
-        create_fields_intermediate_view()
         create_fields_materialized_view()
         create_forms_materialized_view()
         create_tables_materialized_view()
