@@ -6,6 +6,8 @@ from general.domains.admin.api_views import (
     create_datatable_columns_view,
     create_datatables_trigger,
     create_datatables_view,
+    create_form_fields_view,
+    create_forms_view,
     create_items_view,
     create_menubar_view
 )
@@ -36,6 +38,9 @@ class AdminApiSchema(Schema):
         # PrimeNG datatable component's columns
         create_datatable_columns_view()
         create_datatable_columns_trigger()
+
+        create_forms_view()
+        create_form_fields_view()
 
     def grant_admin_privileges(self):
         from general.domains.auth.models import Users
