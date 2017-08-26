@@ -31,12 +31,19 @@ class Schema(object):
             for object_name, privileges in objects.items():
                 for privilege_name, users in privileges.items():
                     for user in users:
-                        if object_name in ('FUNCTION', 'TABLE', 'VIEW'):
-                            path = f'{schema_name}.{object_name}'
-                        else:
-                            path = f'{object_name}'
                         with session_scope(raise_programming_error=True) as session:
-                            session.execute(f'GRANT {privilege_name} '
-                                            f'ON {db_object_type} '
-                                            f'{path}'
-                                            f' TO "{user}";')
+                            if db_object_type in ('FUNCTION', 'TABLE'):
+                                session.execute(f'GRANT {privilege_name} '
+                                                f'ON {db_object_type} '
+                                                f'{schema_name}.{object_name}'
+                                                f' TO "{user}";')
+                            elif db_object_type == 'VIEW':
+                                session.execute(f'GRANT {privilege_name} '
+                                                f'ON '
+                                                f'{schema_name}.{object_name}'
+                                                f' TO "{user}";')
+                            else:
+                                session.execute(f'GRANT {privilege_name} '
+                                                f'ON {db_object_type} '
+                                                f'{object_name}'
+                                                f' TO "{user}";')

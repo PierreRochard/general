@@ -47,18 +47,18 @@ class AdminApiSchema(Schema):
                     }
                 },
                 'VIEW':                 {
-                    'admin_api.menubar':   {
+                    'menubar':   {
                         'SELECT': [u.role for u in session.query(Users).all()]
                     },
-                    'admin_api.items':     {
+                    'items':     {
                         'SELECT': [u.role for u in session.query(Users).all()]
                     },
-                    'admin_api.datatable': {
+                    'datatables': {
                         'SELECT, UPDATE': [u.role for u in
                                            session.query(Users).all()
                                            if u.role != 'anon']
                     },
-                    'admin_api.datatable_columns': {
+                    'datatable_columns': {
                         'SELECT, UPDATE': [u.role for u in
                                            session.query(Users).all()
                                            if u.role != 'anon']
