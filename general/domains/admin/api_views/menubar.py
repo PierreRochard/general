@@ -1,7 +1,7 @@
 from general.database.util import session_scope
 
 
-def create_menubar_api_view():
+def create_menubar_view():
     """
     Frontend usage:
     params.set('select', 'label, icon, routerLink, items{label, icon, routerLink}');
@@ -10,17 +10,19 @@ def create_menubar_api_view():
     """
     with session_scope() as session:
         session.execute("""
-        DROP VIEW IF EXISTS api.menubar CASCADE;
+        DROP VIEW IF EXISTS admin_api.menubar CASCADE;
         """)
         session.execute("""
-        CREATE OR REPLACE VIEW api.menubar AS
+        CREATE OR REPLACE VIEW admin_api.menubar AS
          SELECT s.id,
                 s.submenu_name AS label,
                 s.icon,
                 string_to_array('', '') as "routerLink",
                 s.order_index
          FROM admin.submenus s
-         WHERE s.user = current_user
+         LEFT JOIN auth.users u 
+          ON u.id = s.user_id
+         WHERE u.role = current_user
            AND s.is_visible
            AND current_user != 'anon'
          UNION
@@ -29,14 +31,10 @@ def create_menubar_api_view():
                 i.icon, 
                 i."routerLink",
                 i.order_index
-         FROM api.items i
+         FROM admin_api.items i
          WHERE i.submenu_id IS NULL
          ORDER BY order_index ASC NULLS LAST, label ASC NULLS LAST;
         """)
 
-        session.execute("""
-        GRANT SELECT ON api.menubar TO anon;
-        """)
-
 if __name__ == '__main__':
-    create_menubar_api_view()
+    create_menubar_view()

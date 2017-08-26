@@ -1,7 +1,7 @@
 from general.database.util import session_scope
 
 
-def create_forms_admin_materialized_view():
+def create_forms_materialized_view():
     with session_scope() as session:
         session.execute("""
             DROP MATERIALIZED VIEW IF EXISTS admin.forms CASCADE;
@@ -17,4 +17,4 @@ def create_forms_admin_materialized_view():
         """)
 
 if __name__ == '__main__':
-    create_forms_admin_materialized_view()
+    create_forms_materialized_view()

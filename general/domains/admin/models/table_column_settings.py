@@ -1,24 +1,24 @@
-from sqlalchemy import Boolean, Column, Integer, String, UniqueConstraint, text
+from sqlalchemy import (Boolean, Column, ForeignKey, Integer, String,
+                        UniqueConstraint, text)
+
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
 from general.database.util import Base
 
 
 class TableColumnSettings(Base):
     __tablename__ = 'table_column_settings'
-    __table_args__ = (UniqueConstraint('user',
+    __table_args__ = (UniqueConstraint('user_id',
                                        'table_name',
                                        'column_name',
                                        name='table_column_settings_unique_constraint'),
                       {'schema': 'admin'},
                       )
 
-    id = Column(UUID(as_uuid=True),
+    id = Column(UUID,
                 server_default=text('auth.gen_random_uuid()'),
                 primary_key=True)
-    user = Column(String,
-                  nullable=False,
-                  server_default=text('current_user'))
     table_name = Column(String, nullable=False)
     column_name = Column(String, nullable=False)
 
@@ -32,3 +32,11 @@ class TableColumnSettings(Base):
     is_sortable = Column(Boolean, default=True)
     is_visible = Column(Boolean, default=True)
     order_index = Column(Integer)
+
+    user_id = Column(UUID,
+                     ForeignKey('auth.users.id',
+                                onupdate='CASCADE',
+                                ondelete='CASCADE'),
+                     nullable=False)
+
+    user = relationship('Users')

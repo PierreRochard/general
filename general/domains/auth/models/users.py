@@ -8,7 +8,7 @@ class Users(Base):
     __tablename__ = 'users'
     __table_args__ = {'schema': 'auth'}
 
-    id = Column(UUID(as_uuid=True),
+    id = Column(UUID,
                 server_default=text('auth.gen_random_uuid()'),
                 primary_key=True)
     email = Column(String, unique=True)
@@ -24,26 +24,26 @@ class Users(Base):
     current_login_ip = Column(String)
     login_count = Column(Integer)
 
+    @staticmethod
+    def create_constraint_triggers_on_users():
+        with session_scope() as session:
+            session.execute("""
+            DROP TRIGGER IF EXISTS ensure_user_role_exists
+            ON auth.users;
+            CREATE CONSTRAINT TRIGGER ensure_user_role_exists
+            AFTER INSERT OR UPDATE ON auth.users
+            FOR EACH ROW
+            EXECUTE PROCEDURE auth.check_if_role_exists();
+            """)
 
-def create_constraint_triggers_on_users():
-    with session_scope() as session:
-        session.execute("""
-        DROP TRIGGER IF EXISTS ensure_user_role_exists
-        ON auth.users;
-        CREATE CONSTRAINT TRIGGER ensure_user_role_exists
-        AFTER INSERT OR UPDATE ON auth.users
-        FOR EACH ROW
-        EXECUTE PROCEDURE auth.check_if_role_exists();
-        """)
-
-
-def create_triggers_on_users():
-    with session_scope() as session:
-        session.execute("""
-        DROP TRIGGER IF EXISTS encrypt_password
-        ON auth.users;
-        CREATE TRIGGER encrypt_password
-        BEFORE INSERT OR UPDATE ON auth.users
-        FOR EACH ROW
-        EXECUTE PROCEDURE auth.encrypt_password();
-        """)
+    @staticmethod
+    def create_triggers_on_users():
+        with session_scope() as session:
+            session.execute("""
+            DROP TRIGGER IF EXISTS encrypt_password
+            ON auth.users;
+            CREATE TRIGGER encrypt_password
+            BEFORE INSERT OR UPDATE ON auth.users
+            FOR EACH ROW
+            EXECUTE PROCEDURE auth.encrypt_password();
+            """)

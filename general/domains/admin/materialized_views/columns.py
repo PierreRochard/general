@@ -1,7 +1,7 @@
 from general.database.util import session_scope
 
 
-def create_columns_admin_materialized_view():
+def create_columns_materialized_view():
     with session_scope() as session:
         session.execute("""
             DROP MATERIALIZED VIEW IF EXISTS admin.columns CASCADE;
@@ -21,4 +21,4 @@ def create_columns_admin_materialized_view():
 
 
 if __name__ == '__main__':
-    create_columns_admin_materialized_view()
+    create_columns_materialized_view()

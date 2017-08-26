@@ -1,7 +1,7 @@
 from general.database.util import session_scope
 
 
-def create_fields_admin_intermediate_view():
+def create_fields_intermediate_view():
     with session_scope() as session:
         session.execute("""
         DROP VIEW IF EXISTS admin.fields_intermediate CASCADE;
@@ -45,7 +45,7 @@ def create_fields_admin_intermediate_view():
         """)
 
 
-def create_fields_admin_materialized_view():
+def create_fields_materialized_view():
     with session_scope() as session:
         session.execute("""
             DROP MATERIALIZED VIEW IF EXISTS admin.fields CASCADE;
@@ -55,16 +55,16 @@ def create_fields_admin_materialized_view():
                 SELECT 
                     pg_namespace.nspname as schema_name,
                     fi.form_name,
-                    fi.name,
+                    fi.name as field_name,
                     pg_type.typname as field_type
                 FROM admin.fields_intermediate fi
                 LEFT JOIN pg_namespace ON pg_namespace.OID = fi.schema_id
                 LEFT JOIN pg_type on pg_type.oid = fi.arg_type
-                WHERE pg_namespace.nspname = 'api';
+                WHERE pg_namespace.nspname LIKE '%api';
         """)
 
 if __name__ == '__main__':
-    create_fields_admin_materialized_view()
+    create_fields_materialized_view()
 
 # SELECT (row_number() OVER())::INT id, sub1.* FROM
 # (SELECT pg_proc.proname as form_name,

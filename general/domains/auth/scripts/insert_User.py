@@ -1,6 +1,8 @@
 import os
 
-from general.models import Users, session_scope
+from general.database.util import session_scope
+
+from ..models import Users
 
 
 def insert_user(user_data):

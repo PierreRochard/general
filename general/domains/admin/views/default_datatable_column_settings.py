@@ -1,15 +1,15 @@
 from general.database.util import session_scope
 
 
-def create_default_datatable_column_settings_api_view():
+def create_default_datatable_column_settings_view():
     with session_scope() as session:
         session.execute("""
-        DROP VIEW IF EXISTS api.default_datatable_column_settings CASCADE;
+        DROP VIEW IF EXISTS admin.default_datatable_column_settings CASCADE;
         """)
         session.execute("""
-        CREATE OR REPLACE VIEW api.default_datatable_column_settings AS 
+        CREATE OR REPLACE VIEW admin.default_datatable_column_settings AS 
           SELECT coalesce(tcs.id, auth.gen_random_uuid()) as id,
-                 coalesce(tcs."user", current_user) as "user",
+                 coalesce(u.role, current_user) as "user",
                  c.table_name,
                  c.column_name,
                  c.is_nullable,
@@ -35,11 +35,12 @@ def create_default_datatable_column_settings_api_view():
           LEFT OUTER JOIN admin.table_column_settings tcs
               ON c.table_name = tcs.table_name
               AND c.column_name = tcs.column_name
-              AND tcs.user = current_user;
+          LEFT JOIN auth.users u 
+            ON tcs.user_id = u.id
         """)
 
 
-def create_default_datatable_column_settings_api_trigger():
+def create_default_datatable_column_settings_trigger():
     with session_scope() as session:
         session.execute("""
             DROP FUNCTION IF EXISTS admin.datatable_column_settings_function() CASCADE;
@@ -104,5 +105,5 @@ def create_default_datatable_column_settings_api_trigger():
         """)
 
 if __name__ == '__main__':
-    create_default_datatable_column_settings_api_view()
-    create_default_datatable_column_settings_api_trigger()
+    create_default_datatable_column_settings_view()
+    create_default_datatable_column_settings_trigger()
