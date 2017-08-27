@@ -10,15 +10,15 @@ def create_default_form_field_settings_view():
             CREATE OR REPLACE VIEW admin.default_form_field_settings AS 
               SELECT coalesce(ffs.id, auth.gen_random_uuid()) as id,
                      coalesce(u.role, current_user) as "user",
-                     f.form_name,
-                     f.field_name,
-                     f.field_type,
+                     ff.form_name,
+                     ff.field_name,
+                     ff.field_type,
                      
-                     coalesce(ffs.order_index, 0) AS order_index,
-                     coalesce(ffs.custom_name, initcap(replace(f.field_name, '_', ' '))) as custom_name
-              FROM admin.form_fields f
+                     coalesce(ffs.order_index, ff.ordinal_position) AS order_index,
+                     coalesce(ffs.custom_name, initcap(replace(ff.field_name, '_', ' '))) as custom_name
+              FROM admin.form_fields ff
               LEFT OUTER JOIN admin.form_field_settings ffs
-                ON f.form_name = ffs.form_name
+                ON ff.form_name = ffs.form_name
               LEFT JOIN auth.users u 
                 ON ffs.user_id = u.id;
         """)
