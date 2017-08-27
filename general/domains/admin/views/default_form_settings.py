@@ -8,14 +8,14 @@ def create_default_form_settings_view():
         """)
         session.execute("""
             CREATE OR REPLACE VIEW admin.default_form_settings AS 
-              SELECT f.form_name,
-                     fs.id,
-                     u.role as "user",
-                    
-                     fs.custom_name,
+              SELECT coalesce(fs.id, auth.gen_random_uuid()) as id, 
+                     coalesce(u.role, current_user) as "user",
+                     f.form_name,
+                     
+                     coalesce(fs.custom_name, initcap(replace(f.form_name, '_', ' '))) as custom_name,
                      fs.submenu_id,
-                     fs.icon,
-                     fs.is_visible
+                     coalesce(fs.icon, 'fa-pencil-square-o') AS icon,
+                     coalesce(fs.is_visible, TRUE) as is_visible
               FROM admin.forms f
               LEFT OUTER JOIN admin.form_settings fs
                   ON f.form_name = fs.form_name

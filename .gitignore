@@ -149,3 +149,4 @@ ENV/
 libraries
 
 alembic/versions
+!/general/domains/admin/admin_api_schema.py

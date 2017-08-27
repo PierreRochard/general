@@ -70,9 +70,8 @@ class AdminSchema(Schema):
             }
         self.grant_privileges(self.name, privileges)
 
-if __name__ == '__main__':
-    admin_schema = AdminSchema()
-    admin_schema.create_tables()
-    admin_schema.create_materialized_views()
-    admin_schema.create_admin_views()
-    admin_schema.grant_admin_privileges()
+    def setup(self):
+        self.create_tables()
+        self.create_materialized_views()
+        self.create_admin_views()
+        self.grant_admin_privileges()

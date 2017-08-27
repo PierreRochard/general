@@ -82,7 +82,6 @@ class AdminApiSchema(Schema):
             }
         self.grant_privileges(self.name, privileges)
 
-if __name__ == '__main__':
-    admin_api_schema = AdminApiSchema()
-    admin_api_schema.create_admin_api_views()
-    admin_api_schema.grant_admin_privileges()
+    def setup(self):
+        self.create_admin_api_views()
+        self.grant_admin_privileges()
