@@ -42,6 +42,7 @@ class AdminApiSchema(Schema):
         create_forms_view()
         create_form_fields_view()
 
+
     def grant_admin_privileges(self):
         from general.domains.auth.models import Users
         with session_scope() as session:

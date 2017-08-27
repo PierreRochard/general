@@ -1,3 +1,5 @@
+import os
+
 from general.database.schema import Schema
 from general.database.util import session_scope, Base
 
@@ -52,6 +54,33 @@ class AdminSchema(Schema):
         create_default_form_field_settings_view()
         create_default_form_settings_view()
 
+    @staticmethod
+    def insert_admin_feature():
+        from general.domains.admin.models.feature_sets import FeatureSets
+        from general.domains.admin.models.feature_sets_users import FeatureSetsUsers
+        from general.domains.auth.models.users import Users
+        with session_scope(raise_integrity_error=False) as session:
+            new_feature_set = FeatureSets()
+            new_feature_set.name = 'admin'
+            session.add(new_feature_set)
+
+        with session_scope(raise_integrity_error=False) as session:
+            admin_feature_set = (
+                session.query(FeatureSets)
+                    .filter(FeatureSets.name == 'admin')
+                    .one()
+            )
+            user_role = os.environ['PGUSER']
+            user = (
+                session.query(Users)
+                    .filter(Users.role == user_role)
+                    .one()
+            )
+            new_feature_sets_users = FeatureSetsUsers()
+            new_feature_sets_users.user_id = user.id
+            new_feature_sets_users.feature_set_id = admin_feature_set.id
+            session.add(new_feature_sets_users)
+
     def grant_admin_privileges(self):
         from general.domains.auth.models import Users
         with session_scope() as session:
@@ -74,4 +103,5 @@ class AdminSchema(Schema):
         self.create_tables()
         self.create_materialized_views()
         self.create_admin_views()
+        self.insert_admin_feature()
         self.grant_admin_privileges()
