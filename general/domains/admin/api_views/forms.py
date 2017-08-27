@@ -10,7 +10,7 @@ def create_forms_view():
           CREATE OR REPLACE VIEW admin_api.forms AS
             SELECT (row_number() OVER())::INT id, *
             FROM (
-                SELECT dfs.form_name AS name, 
+                SELECT dfs.form_name AS form_name, 
                        dfs.custom_name AS custom_name
                 FROM admin.default_form_settings dfs
                 WHERE dfs.user = current_user
