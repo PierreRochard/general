@@ -41,10 +41,10 @@ def create_items_view():
             ON f.form_name = fs.form_name
           LEFT JOIN auth.users u
             ON fs.user_id = u.id
-          WHERE u.role = current_user
+          WHERE (u.role = current_user OR u.role IS NULL)
             AND (current_user != 'anon' AND f.form_name != 'login')
              OR (current_user  = 'anon' AND f.form_name  = 'login')
-             AND fs.is_visible
+             AND (fs.is_visible IS TRUE OR fs.is_visible IS NULL)
           ORDER BY order_index ASC NULLS LAST, label ASC NULLS LAST;
           """)
 
