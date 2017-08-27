@@ -23,8 +23,9 @@ def create_items_view():
               ON t.table_name = ts.table_name
           LEFT JOIN auth.users u
             ON ts.user_id = u.id
-          WHERE u.role = current_user
-            AND current_user != 'anon' AND ts.is_visible
+          WHERE (u.role = current_user OR u.role IS NULL)
+            AND current_user != 'anon' 
+            AND (ts.is_visible IS TRUE OR ts.is_visible IS NULL)
           UNION
           SELECT coalesce(fs.custom_name, initcap(replace(f.form_name, '_', ' ')))::name as label,
                           CASE WHEN f.form_name = 'logout' 
