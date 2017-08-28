@@ -20,7 +20,7 @@ class Submenus(Base):
     submenu_name = Column(String, nullable=False)
     icon = Column(String)
     is_visible = Column(Boolean, default=True)
-    order_index = Column(Integer)
+    order_index = Column(Integer, default=2)
 
     user_id = Column(UUID,
                      ForeignKey('auth.users.id',

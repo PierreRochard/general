@@ -10,19 +10,19 @@ def create_default_datatable_column_settings_view():
         CREATE OR REPLACE VIEW admin.default_datatable_column_settings AS 
           SELECT coalesce(tcs.id, auth.gen_random_uuid()) as id,
                  coalesce(u.role, current_user) as "user",
-                 c.table_name,
-                 c.column_name,
-                 c.is_nullable,
-                 c.column_default,
-                 c.data_type,
+                 tc.table_name,
+                 tc.column_name,
+                 tc.is_nullable,
+                 tc.column_default,
+                 tc.data_type,
                  
                  coalesce(tcs.can_update, FALSE) as can_update,
-                 coalesce(tcs.custom_name, initcap(replace(c.column_name, '_', ' '))) as custom_name,
+                 coalesce(tcs.custom_name, initcap(replace(tc.column_name, '_', ' '))) as custom_name,
                  coalesce(tcs.filter_match_mode, 'contains') as filter_match_mode,
                  tcs.filter_value,
                  coalesce(tcs.format_pattern, 
-                 CASE WHEN c.data_type = 'timestamp without time zone' THEN 'shortDate'
-                      WHEN c.data_type = 'numeric' THEN '1.2-2'
+                 CASE WHEN tc.data_type = 'timestamp without time zone' THEN 'shortDate'
+                      WHEN tc.data_type = 'numeric' THEN '1.2-2'
                       ELSE NULL
                   END) as format_pattern,
                  coalesce(tcs.input_type, 'text') as input_type,
@@ -31,10 +31,11 @@ def create_default_datatable_column_settings_view():
                  coalesce(tcs.is_visible, TRUE) as is_visible,                
                  coalesce(tcs.order_index, 0) as order_index
 
-          FROM admin.columns c
+          FROM admin.table_columns tc
           LEFT OUTER JOIN admin.table_column_settings tcs
-              ON c.table_name = tcs.table_name
-              AND c.column_name = tcs.column_name
+              ON  tc.schema_name = tcs.schema_Name
+              AND tc.table_name = tcs.table_name
+              AND tc.column_name = tcs.column_name
           LEFT JOIN auth.users u 
             ON tcs.user_id = u.id
         """)

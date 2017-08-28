@@ -26,6 +26,7 @@ def create_default_datatable_settings_view():
                  coalesce(ts.sort_order, 1) as sort_order
           FROM admin.tables t
           LEFT OUTER JOIN admin.table_settings ts
+              ON t.table_schema
               ON t.table_name = ts.table_name
           LEFT JOIN auth.users u
             ON ts.user_id = u.id

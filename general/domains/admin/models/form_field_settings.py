@@ -9,6 +9,7 @@ from general.database.util import Base
 class FormFieldSettings(Base):
     __tablename__ = 'form_field_settings'
     __table_args__ = (UniqueConstraint('user_id',
+                                       'schema_name',
                                        'form_name',
                                        'form_field_name',
                                        name='form_field_settings_unique_constraint'),
@@ -19,8 +20,9 @@ class FormFieldSettings(Base):
                 server_default=text('auth.gen_random_uuid()'),
                 primary_key=True)
 
-    form_name = Column(String)
-    form_field_name = Column(String)
+    schema_name = Column(String, nullable=False)
+    form_name = Column(String, nullable=False)
+    form_field_name = Column(String, nullable=False)
     custom_name = Column(String)
     order_index = Column(Integer)
 

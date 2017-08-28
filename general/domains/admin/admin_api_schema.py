@@ -42,6 +42,27 @@ class AdminApiSchema(Schema):
         create_forms_view()
         create_form_fields_view()
 
+    @staticmethod
+    def insert_feature_records():
+        from general.domains.auth.models.users import Users
+        from general.domains.admin.models.feature_sets import FeatureSets
+        from general.domains.admin.models.feature_sets_users import FeatureSetsUsers
+        from general.domains.admin.models.submenus import Submenus
+        with session_scope() as session:
+            users = (
+                session
+                    .query(FeatureSetsUsers)
+                    .filter(FeatureSets.name == 'admin')
+                    .all()
+            )
+            for user in users:
+                new_submenu = Submenus()
+                new_submenu.user_id = user.id
+                new_submenu.submenu_name = 'Settings'
+                new_submenu.icon = 'fa-cogs'
+                with session_scope(raise_integrity_error=False) as inner_session:
+                    inner_session.add(new_submenu)
+
 
     def grant_admin_privileges(self):
         from general.domains.auth.models import Users
@@ -85,4 +106,5 @@ class AdminApiSchema(Schema):
 
     def setup(self):
         self.create_admin_api_views()
+        self.insert_feature_records()
         self.grant_admin_privileges()

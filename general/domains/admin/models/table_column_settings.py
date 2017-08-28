@@ -10,6 +10,7 @@ from general.database.util import Base
 class TableColumnSettings(Base):
     __tablename__ = 'table_column_settings'
     __table_args__ = (UniqueConstraint('user_id',
+                                       'schema_name',
                                        'table_name',
                                        'column_name',
                                        name='table_column_settings_unique_constraint'),
@@ -19,6 +20,7 @@ class TableColumnSettings(Base):
     id = Column(UUID,
                 server_default=text('auth.gen_random_uuid()'),
                 primary_key=True)
+    schema_name = Column(String, nullable=False)
     table_name = Column(String, nullable=False)
     column_name = Column(String, nullable=False)
 

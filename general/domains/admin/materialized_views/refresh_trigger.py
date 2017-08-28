@@ -9,8 +9,9 @@ def create_materialized_views_refresh_trigger():
                     $BODY$
                        BEGIN
                        REFRESH MATERIALIZED VIEW admin.tables;
-                       REFRESH MATERIALIZED VIEW admin.columns;
+                       REFRESH MATERIALIZED VIEW admin.table_columns;
                        REFRESH MATERIALIZED VIEW admin.forms;
+                       REFRESH MATERIALIZED VIEW admin.form_fields;
                        END;
                     $BODY$
               LANGUAGE plpgsql VOLATILE
@@ -40,8 +41,9 @@ def create_materialized_views_refresh_trigger():
 
         session.execute("""
                 REFRESH MATERIALIZED VIEW admin.tables;
-                REFRESH MATERIALIZED VIEW admin.columns;
+                REFRESH MATERIALIZED VIEW admin.table_columns;
                 REFRESH MATERIALIZED VIEW admin.forms;
+                REFRESH MATERIALIZED VIEW admin.form_fields;
                 """)
 
 if __name__ == '__main__':

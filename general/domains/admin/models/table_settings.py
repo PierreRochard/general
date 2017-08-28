@@ -9,6 +9,7 @@ from general.database.util import Base
 class TableSettings(Base):
     __tablename__ = 'table_settings'
     __table_args__ = (UniqueConstraint('user_id',
+                                       'schema_name',
                                        'table_name',
                                        name='table_settings_unique_constraint'),
                       {'schema': 'admin'},
@@ -17,6 +18,7 @@ class TableSettings(Base):
     id = Column(UUID,
                 server_default=text('auth.gen_random_uuid()'),
                 primary_key=True)
+    schema_name = Column(String, nullable=False)
     table_name = Column(String, nullable=False)
 
     can_delete = Column(Boolean, default=True)

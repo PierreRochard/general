@@ -9,7 +9,7 @@ def create_tables_materialized_view():
         session.execute("""
             CREATE MATERIALIZED VIEW admin.tables AS
                 SELECT
-                   table_schema,
+                   table_schema AS schema_name,
                    table_name,
                    table_type
                 FROM information_schema.tables
