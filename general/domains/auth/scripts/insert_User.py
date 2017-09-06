@@ -1,6 +1,6 @@
 import os
 
-from general.database.util import session_scope
+from general.database.session_scope import session_scope
 
 from ..models import Users
 

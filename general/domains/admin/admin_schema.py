@@ -1,7 +1,8 @@
 import os
 
+from general.database.base import Base
 from general.database.schema import Schema
-from general.database.util import session_scope, Base
+from general.database.session_scope import session_scope
 
 from general.domains.admin.materialized_views import (
     create_form_fields_materialized_view,

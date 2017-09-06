@@ -1,5 +1,5 @@
 from general.database.schema import Schema
-from general.database.util import session_scope, Base
+from general.database.session_scope import session_scope, Base
 
 from general.domains.auth.functions import (
     create_authenticate_user_email_function,
@@ -71,12 +71,11 @@ class AuthSchema(Schema):
             }
         self.grant_privileges(self.name, privileges)
 
-if __name__ == '__main__':
-    auth_schema = AuthSchema()
-    auth_schema.create_schema()
-    auth_schema.create_extensions()
-    auth_schema.create_types()
-    auth_schema.create_tables()
-    auth_schema.create_table_triggers()
-    auth_schema.create_functions()
-    auth_schema.grant_auth_privileges()
+    def setup(self):
+        self.create_schema()
+        self.create_extensions()
+        self.create_types()
+        self.create_tables()
+        self.create_table_triggers()
+        self.create_functions()
+        self.grant_auth_privileges()

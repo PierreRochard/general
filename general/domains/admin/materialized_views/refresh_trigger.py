@@ -1,4 +1,4 @@
-from general.database.util import session_scope
+from general.database.session_scope import session_scope
 
 
 def create_materialized_views_refresh_trigger():

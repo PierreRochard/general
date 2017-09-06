@@ -1,5 +1,5 @@
 from general.database.schema import Schema
-from general.database.util import session_scope
+from general.database.session_scope import session_scope
 from general.domains.auth.models import Users
 
 from general.domains.auth.api_functions import (
@@ -37,8 +37,7 @@ class AuthApiSchema(Schema):
             }
         self.grant_privileges(self.name, privileges)
 
-if __name__ == '__main__':
-    auth_api_schema = AuthApiSchema()
-    auth_api_schema.create_schema()
-    auth_api_schema.create_functions()
-    auth_api_schema.grant_auth_privileges()
+    def setup(self):
+        self.create_schema()
+        self.create_functions()
+        self.grant_auth_privileges()

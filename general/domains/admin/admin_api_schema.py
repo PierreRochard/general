@@ -1,5 +1,5 @@
 from general.database.schema import Schema
-from general.database.util import session_scope
+from general.database.session_scope import session_scope
 
 from general.domains.admin.api_views import (
     create_datatable_columns_trigger,
@@ -62,7 +62,6 @@ class AdminApiSchema(Schema):
                 new_submenu.icon = 'fa-cogs'
                 with session_scope(raise_integrity_error=False) as inner_session:
                     inner_session.add(new_submenu)
-
 
     def grant_admin_privileges(self):
         from general.domains.auth.models import Users
