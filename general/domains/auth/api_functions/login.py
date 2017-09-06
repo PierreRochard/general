@@ -24,7 +24,7 @@ def create_login_api_trigger():
                     USING MESSAGE = 'Invalid email or password';
                   END IF;
             
-                  SELECT auth.sign(row_to_json(r), current_setting('app.jwt_secret')) AS token
+                  SELECT auth.jwt_sign(row_to_json(r), current_setting('app.jwt_secret')) AS token
                   FROM (
                          SELECT
                            _role            AS role,
