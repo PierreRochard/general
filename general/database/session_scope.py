@@ -10,7 +10,7 @@ from sqlalchemy.orm import sessionmaker
 
 @contextmanager
 def session_scope(echo=False,
-                  raise_integrity_error=False,
+                  raise_integrity_error=True,
                   raise_programming_error=True):
     """Provide a transactional scope around a series of operations."""
     pg_url = URL(drivername='postgresql+psycopg2',
@@ -19,8 +19,7 @@ def session_scope(echo=False,
                  host=os.environ['PGHOST'],
                  port=os.environ['PGPORT'],
                  database=os.environ['PGDATABASE'])
-    print(pg_url)
-    engine = create_engine(pg_url, echo=True)
+    engine = create_engine(pg_url, echo=echo)
     session_maker = sessionmaker(bind=engine)
     session = session_maker()
 

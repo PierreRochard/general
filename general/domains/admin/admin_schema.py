@@ -1,5 +1,7 @@
 import os
 
+from sqlalchemy.orm.exc import NoResultFound
+
 from general.database.base import Base
 from general.database.schema import Schema
 from general.database.session_scope import session_scope
@@ -56,6 +58,22 @@ class AdminSchema(Schema):
         create_default_form_settings_view()
 
     @staticmethod
+    def insert_anon():
+        from general.domains.auth.models import Users
+        with session_scope() as session:
+            try:
+                user = (
+                    session.query(Users)
+                        .filter(Users.role == 'anon')
+                        .one()
+                )
+            except NoResultFound:
+                user = Users()
+                user.role = 'anon'
+                user.active = True
+                session.add(user)
+
+    @staticmethod
     def insert_admin_feature():
         from general.domains.admin.models.feature_sets import FeatureSets
         from general.domains.admin.models.feature_sets_users import FeatureSetsUsers
@@ -72,11 +90,18 @@ class AdminSchema(Schema):
                     .one()
             )
             user_role = os.environ['PGUSER']
-            user = (
-                session.query(Users)
-                    .filter(Users.role == user_role)
-                    .one()
-            )
+            try:
+                user = (
+                    session.query(Users)
+                        .filter(Users.role == user_role)
+                        .one()
+                )
+            except NoResultFound:
+                user = Users()
+                user.role = user_role
+                user.active = True
+                session.add(user)
+                session.commit()
             new_feature_sets_users = FeatureSetsUsers()
             new_feature_sets_users.user_id = user.id
             new_feature_sets_users.feature_set_id = admin_feature_set.id
@@ -105,5 +130,6 @@ class AdminSchema(Schema):
         self.create_tables()
         self.create_materialized_views()
         self.create_admin_views()
+        self.insert_anon()
         self.insert_admin_feature()
         self.grant_admin_privileges()
