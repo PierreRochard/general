@@ -3,7 +3,7 @@ from sqlalchemy import (Column, ForeignKey, Integer, String, text,
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
-from general.database.util import Base
+from general.database.base import Base
 
 
 class FormFieldSettings(Base):

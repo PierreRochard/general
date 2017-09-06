@@ -1,5 +1,6 @@
+from general.database.base import Base
 from general.database.schema import Schema
-from general.database.session_scope import session_scope, Base
+from general.database.session_scope import session_scope
 
 from general.domains.auth.functions import (
     create_authenticate_user_email_function,
@@ -76,6 +77,6 @@ class AuthSchema(Schema):
         self.create_extensions()
         self.create_types()
         self.create_tables()
-        self.create_table_triggers()
         self.create_functions()
+        self.create_table_triggers()
         self.grant_auth_privileges()

@@ -23,7 +23,7 @@ from general.domains.admin.views import (
 class AdminSchema(Schema):
 
     def __init__(self):
-        super(AdminSchema, self).__init__(name='auth')
+        super(AdminSchema, self).__init__(name='admin')
 
     @staticmethod
     def create_tables():
@@ -101,6 +101,7 @@ class AdminSchema(Schema):
         self.grant_privileges(self.name, privileges)
 
     def setup(self):
+        self.create_schema()
         self.create_tables()
         self.create_materialized_views()
         self.create_admin_views()

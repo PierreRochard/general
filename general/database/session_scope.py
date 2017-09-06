@@ -18,9 +18,9 @@ def session_scope(echo=False,
                  password=os.environ['PGPASSWORD'],
                  host=os.environ['PGHOST'],
                  port=os.environ['PGPORT'],
-                 database='rest')
-
-    engine = create_engine(pg_url, echo=echo)
+                 database=os.environ['PGDATABASE'])
+    print(pg_url)
+    engine = create_engine(pg_url, echo=True)
     session_maker = sessionmaker(bind=engine)
     session = session_maker()
 

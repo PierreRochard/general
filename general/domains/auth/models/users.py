@@ -1,7 +1,8 @@
 from sqlalchemy import Boolean, Column, DateTime, Integer, String, text
 from sqlalchemy.dialects.postgresql import UUID
 
-from general.database.util import Base, session_scope
+from general.database.base import Base
+from general.database.session_scope import session_scope
 
 
 class Users(Base):

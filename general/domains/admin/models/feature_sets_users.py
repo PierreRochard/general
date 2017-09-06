@@ -1,7 +1,7 @@
 from sqlalchemy import (Column, ForeignKey, text, UniqueConstraint)
 from sqlalchemy.dialects.postgresql import UUID
 
-from general.database.util import Base
+from general.database.base import Base
 from general.domains.auth.models.users import Users
 
 

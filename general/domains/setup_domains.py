@@ -3,8 +3,8 @@ from general.domains.auth.setup_auth import setup_auth
 
 
 def setup_domains():
-    setup_admin()
     setup_auth()
+    setup_admin()
 
 if __name__ == '__main__':
     setup_domains()

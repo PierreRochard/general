@@ -33,7 +33,7 @@ def create_default_datatable_column_settings_view():
 
           FROM admin.table_columns tc
           LEFT OUTER JOIN admin.table_column_settings tcs
-              ON  tc.schema_name = tcs.schema_Name
+              ON  tc.schema_name = tcs.schema_name
               AND tc.table_name = tcs.table_name
               AND tc.column_name = tcs.column_name
           LEFT JOIN auth.users u 

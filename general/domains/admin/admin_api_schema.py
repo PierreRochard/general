@@ -104,6 +104,7 @@ class AdminApiSchema(Schema):
         self.grant_privileges(self.name, privileges)
 
     def setup(self):
+        self.create_schema()
         self.create_admin_api_views()
         self.insert_feature_records()
         self.grant_admin_privileges()

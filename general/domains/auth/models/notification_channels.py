@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String, text
 from sqlalchemy.dialects.postgresql import UUID
 
-from general.database.util import Base
+from general.database.base import Base
 
 
 class NotificationChannels(Base):

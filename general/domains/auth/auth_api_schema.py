@@ -27,10 +27,10 @@ class AuthApiSchema(Schema):
                     }
                 },
                 'FUNCTION': {
-                    'auth_api.login(TEXT, TEXT)': {
+                    'login(TEXT, TEXT)': {
                         'EXECUTE': ['anon']
                     },
-                    'auth_api.logout()': {
+                    'logout()': {
                         'EXECUTE': [u.role for u in session.query(Users).all()]
                     },
                 },
