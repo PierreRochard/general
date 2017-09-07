@@ -1,3 +1,5 @@
+from sqlalchemy.orm.exc import NoResultFound
+
 from general.database.schema import Schema
 from general.database.session_scope import session_scope
 
@@ -11,10 +13,10 @@ from general.domains.admin.api_views import (
     create_items_view,
     create_menubar_view
 )
+from general.domains.admin.models import TableSettings
 
 
 class AdminApiSchema(Schema):
-
     def __init__(self):
         super(AdminApiSchema, self).__init__(name='admin_api')
 
@@ -24,16 +26,16 @@ class AdminApiSchema(Schema):
         Create API views that are specifically designed to be consumed by 
             frontend components
         """
-    
+
         # The frontend joins these two views to provide a menubar with submenus
         create_items_view()
         create_menubar_view()
-    
+
         # The frontend consumes the datatable endpoint to parameterize the
         # PrimeNG datatable component
         create_datatables_view()
         create_datatables_trigger()
-    
+
         # The frontend consumes the datatable_columns endpoint to parameterize the
         # PrimeNG datatable component's columns
         create_datatable_columns_view()
@@ -46,60 +48,86 @@ class AdminApiSchema(Schema):
     def insert_feature_records():
         from general.domains.auth.models.users import Users
         from general.domains.admin.models.feature_sets import FeatureSets
-        from general.domains.admin.models.feature_sets_users import FeatureSetsUsers
+        from general.domains.admin.models.feature_sets_users import \
+            FeatureSetsUsers
         from general.domains.admin.models.submenus import Submenus
         with session_scope() as session:
-            users = (
+            feature_sets_users = (
                 session
                     .query(FeatureSetsUsers)
                     .filter(FeatureSets.name == 'admin')
                     .all()
             )
-            for user in users:
-                # Todo: check if exists
-                new_submenu = Submenus()
-                new_submenu.user_id = user.user_id
-                new_submenu.submenu_name = 'Settings'
-                new_submenu.icon = 'fa-cogs'
-                with session_scope(raise_integrity_error=False) as inner_session:
-                    inner_session.add(new_submenu)
+            for feature_set_user in feature_sets_users:
+                schema_name = 'admin_api'
+                user_id = feature_set_user.user_id
+                submenu_name = 'Settings'
+                try:
+                    submenu = (
+                        session.query(Submenus)
+                            .filter(Submenus.submenu_name == submenu_name)
+                            .filter(Submenus.user_id == user_id)
+                            .one()
+                    )
+                except NoResultFound:
+                    submenu = Submenus()
+                    submenu.user_id = feature_set_user.user_id
+                    submenu.submenu_name = submenu_name
+                    submenu.icon = 'fa-cogs'
+                    session.add(submenu)
+                    session.commit()
 
-                datatable_settings = [
-                    {
-                        'schema_name': 'admin_api',
-                        'table_name': 'datatables',
-                        'submenu_id':
-                    }
-                ]
-                for datatable_setting in datatable_settings:
+                api_view_names = ['datatable_columns',
+                                  'datatables',
+                                  'form_fields',
+                                  'forms']
+                for api_view_name in api_view_names:
+                    try:
+                        api_view_setting = (
+                            session.query(TableSettings)
+                            .filter(TableSettings.user_id == user_id)
+                            .filter(TableSettings.table_name == api_view_name)
+                            .filter(TableSettings.schema_name == schema_name)
+                            .one()
+                        )
+                    except NoResultFound:
+                        api_view_setting_data = {
+                                'schema_name': schema_name,
+                                'table_name':  api_view_name,
+                                'user_id':     user_id
+                            }
+                        api_view_setting = TableSettings(**api_view_setting_data)
+                        session.add(api_view_setting)
+                        session.commit()
+                    api_view_setting.submenu_id = submenu.id
 
     def grant_admin_privileges(self):
         from general.domains.auth.models import Users
         with session_scope() as session:
             privileges = {
-                'SCHEMA':               {
+                'SCHEMA': {
                     'admin_api': {
                         'USAGE': [u.role for u in session.query(Users).all()]
                     }
                 },
-                'VIEW':                 {
-                    'menubar':   {
+                'VIEW':   {
+                    'menubar':           {
                         'SELECT': [u.role for u in session.query(Users).all()]
                     },
-                    'items':     {
+                    'items':             {
                         'SELECT': [u.role for u in session.query(Users).all()]
                     },
-                    'forms':     {
+                    'forms':             {
                         'SELECT': [u.role for u in session.query(Users).all()],
                         'UPDATE': [u.role for u in session.query(Users).all()
                                    if u.role != 'anon']
                     },
-                    'form_fields':     {
+                    'form_fields':       {
                         'SELECT': [u.role for u in session.query(Users).all()],
                         'UPDATE': [u.role for u in session.query(Users).all()
                                    if u.role != 'anon']
                     },
-                    'datatables': {
+                    'datatables':        {
                         'SELECT, UPDATE': [u.role for u in
                                            session.query(Users).all()
                                            if u.role != 'anon']
