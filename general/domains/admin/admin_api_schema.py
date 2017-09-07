@@ -56,12 +56,22 @@ class AdminApiSchema(Schema):
                     .all()
             )
             for user in users:
+                # Todo: check if exists
                 new_submenu = Submenus()
-                new_submenu.user_id = user.id
+                new_submenu.user_id = user.user_id
                 new_submenu.submenu_name = 'Settings'
                 new_submenu.icon = 'fa-cogs'
                 with session_scope(raise_integrity_error=False) as inner_session:
                     inner_session.add(new_submenu)
+
+                datatable_settings = [
+                    {
+                        'schema_name': 'admin_api',
+                        'table_name': 'datatables',
+                        'submenu_id':
+                    }
+                ]
+                for datatable_setting in datatable_settings:
 
     def grant_admin_privileges(self):
         from general.domains.auth.models import Users
