@@ -83,7 +83,7 @@ class AdminApiSchema(Schema):
                                   'forms']
                 for api_view_name in api_view_names:
                     try:
-                        api_view_setting = (
+                        menubar_view_setting = (
                             session.query(TableSettings)
                             .filter(TableSettings.user_id == user_id)
                             .filter(TableSettings.table_name == api_view_name)
@@ -91,15 +91,36 @@ class AdminApiSchema(Schema):
                             .one()
                         )
                     except NoResultFound:
-                        api_view_setting_data = {
+                        menubar_view_setting_data = {
                                 'schema_name': schema_name,
                                 'table_name':  api_view_name,
                                 'user_id':     user_id
                             }
-                        api_view_setting = TableSettings(**api_view_setting_data)
-                        session.add(api_view_setting)
+                        menubar_view_setting = TableSettings(**menubar_view_setting_data)
+                        session.add(menubar_view_setting)
                         session.commit()
-                    api_view_setting.submenu_id = submenu.id
+                    menubar_view_setting.submenu_id = submenu.id
+
+                menubar_view_names = ['menubar', 'items']
+                for menubar_view_name in menubar_view_names:
+                    try:
+                        menubar_view_setting = (
+                            session.query(TableSettings)
+                                .filter(TableSettings.user_id == user_id)
+                                .filter(TableSettings.table_name == menubar_view_name)
+                                .filter(TableSettings.schema_name == schema_name)
+                                .one()
+                        )
+                    except NoResultFound:
+                        menubar_view_setting_data = {
+                            'schema_name': schema_name,
+                            'table_name':  menubar_view_name,
+                            'user_id':     user_id
+                        }
+                        menubar_view_setting = TableSettings(**menubar_view_setting_data)
+                        session.add(menubar_view_setting)
+                        session.commit()
+                    menubar_view_setting.is_visible = False
 
     def grant_admin_privileges(self):
         from general.domains.auth.models import Users
