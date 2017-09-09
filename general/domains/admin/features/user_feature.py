@@ -4,36 +4,27 @@ from general.database.session_scope import session_scope
 from general.domains.admin.models.feature_sets import FeatureSets
 from general.domains.admin.models.feature_sets_users import \
     FeatureSetsUsers
-from general.domains.admin.models.submenus import Submenus
 from general.domains.admin.models.table_settings import TableSettings
+from general.domains.auth.models import Users
 
 
-def insert_admin_feature():
+def insert_user_feature():
+    """
+    The user feature set is the opposite of the admin feature set.
+    Hide the admin tables.
+    """
     with session_scope() as session:
-        feature_sets_users = (
+        users = (
             session
-                .query(FeatureSetsUsers)
-                .filter(FeatureSets.name == 'admin')
+                .query(Users)
+                .outerjoin(FeatureSetsUsers, FeatureSetsUsers.user_id == Users.id)
+                .outerjoin(FeatureSets, FeatureSetsUsers.feature_set_id == FeatureSets.id)
+                .filter(FeatureSets.name.is_(None))
                 .all()
         )
-        for feature_set_user in feature_sets_users:
+        for feature_set_user in users:
             schema_name = 'admin_api'
             user_id = feature_set_user.user_id
-            submenu_name = 'Settings'
-            try:
-                submenu = (
-                    session.query(Submenus)
-                        .filter(Submenus.submenu_name == submenu_name)
-                        .filter(Submenus.user_id == user_id)
-                        .one()
-                )
-            except NoResultFound:
-                submenu = Submenus()
-                submenu.user_id = feature_set_user.user_id
-                submenu.submenu_name = submenu_name
-                session.add(submenu)
-                session.commit()
-            submenu.icon = 'fa-cogs'
 
             api_view_names = ['datatable_columns',
                               'datatables',
@@ -58,4 +49,4 @@ def insert_admin_feature():
                         **menubar_view_setting_data)
                     session.add(menubar_view_setting)
                     session.commit()
-                menubar_view_setting.submenu_id = submenu.id
+                menubar_view_setting.is_visible = False

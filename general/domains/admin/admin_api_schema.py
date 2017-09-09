@@ -12,6 +12,8 @@ from general.domains.admin.api_views import (
     create_menubar_view
 )
 from general.domains.admin.features import insert_admin_feature
+from general.domains.admin.features.all_feature import insert_all_feature
+from general.domains.admin.features.user_feature import insert_user_feature
 
 
 class AdminApiSchema(Schema):
@@ -85,6 +87,8 @@ class AdminApiSchema(Schema):
     @staticmethod
     def insert_feature_records():
         insert_admin_feature()
+        insert_all_feature()
+        insert_user_feature()
         
     def setup(self):
         self.create_schema()
