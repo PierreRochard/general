@@ -12,6 +12,7 @@ from general.domains.auth.models import Users
 def insert_admin_feature():
     schema_name = 'admin_api'
     submenu_name = 'Settings'
+    submenu_icon = 'fa-cogs'
     api_view_names = ['datatable_columns',
                       'datatables',
                       'form_fields',
@@ -28,27 +29,27 @@ def insert_admin_feature():
                 .filter(FeatureSets.name == 'admin')
                 .all()
         )
-        for feature_set_user in users:
+        for user in users:
             try:
                 submenu = (
                     session.query(Submenus)
                         .filter(Submenus.submenu_name == submenu_name)
-                        .filter(Submenus.user_id == feature_set_user.user_id)
+                        .filter(Submenus.user_id == user.id)
                         .one()
                 )
             except NoResultFound:
                 submenu = Submenus()
-                submenu.user_id = feature_set_user.user_id
+                submenu.user_id = user.id
                 submenu.submenu_name = submenu_name
                 session.add(submenu)
                 session.commit()
-            submenu.icon = 'fa-cogs'
+            submenu.icon = submenu_icon
 
             for api_view_name in api_view_names:
                 try:
                     menubar_view_setting = (
                         session.query(TableSettings)
-                            .filter(TableSettings.user_id == feature_set_user.user_id)
+                            .filter(TableSettings.user_id == user.id)
                             .filter(TableSettings.table_name == api_view_name)
                             .filter(TableSettings.schema_name == schema_name)
                             .one()
@@ -57,7 +58,7 @@ def insert_admin_feature():
                     menubar_view_setting_data = {
                         'schema_name': schema_name,
                         'table_name':  api_view_name,
-                        'user_id':     feature_set_user.user_id
+                        'user_id':     user.id
                     }
                     menubar_view_setting = TableSettings(
                         **menubar_view_setting_data)
