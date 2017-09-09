@@ -13,28 +13,28 @@ def insert_user_feature():
     The user feature set is the opposite of the admin feature set.
     Hide the admin tables.
     """
+    schema_name = 'admin_api'
+    api_view_names = ['datatable_columns',
+                      'datatables',
+                      'form_fields',
+                      'forms']
     with session_scope() as session:
         users = (
             session
                 .query(Users)
-                .outerjoin(FeatureSetsUsers, FeatureSetsUsers.user_id == Users.id)
-                .outerjoin(FeatureSets, FeatureSetsUsers.feature_set_id == FeatureSets.id)
+                .outerjoin(FeatureSetsUsers,
+                           FeatureSetsUsers.user_id == Users.id)
+                .outerjoin(FeatureSets,
+                           FeatureSetsUsers.feature_set_id == FeatureSets.id)
                 .filter(FeatureSets.name.is_(None))
                 .all()
         )
-        for feature_set_user in users:
-            schema_name = 'admin_api'
-            user_id = feature_set_user.user_id
-
-            api_view_names = ['datatable_columns',
-                              'datatables',
-                              'form_fields',
-                              'forms']
+        for user in users:
             for api_view_name in api_view_names:
                 try:
                     menubar_view_setting = (
                         session.query(TableSettings)
-                            .filter(TableSettings.user_id == user_id)
+                            .filter(TableSettings.user_id == user.id)
                             .filter(TableSettings.table_name == api_view_name)
                             .filter(TableSettings.schema_name == schema_name)
                             .one()
@@ -43,7 +43,7 @@ def insert_user_feature():
                     menubar_view_setting_data = {
                         'schema_name': schema_name,
                         'table_name':  api_view_name,
-                        'user_id':     user_id
+                        'user_id':     user.id
                     }
                     menubar_view_setting = TableSettings(
                         **menubar_view_setting_data)
