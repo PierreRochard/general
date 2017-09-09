@@ -1,5 +1,3 @@
-from sqlalchemy.orm.exc import NoResultFound
-
 from general.database.schema import Schema
 from general.database.session_scope import session_scope
 
@@ -13,7 +11,7 @@ from general.domains.admin.api_views import (
     create_items_view,
     create_menubar_view
 )
-from general.domains.admin.models import TableSettings
+from general.domains.admin.features import insert_admin_feature
 
 
 class AdminApiSchema(Schema):
@@ -43,84 +41,6 @@ class AdminApiSchema(Schema):
 
         create_forms_view()
         create_form_fields_view()
-
-    @staticmethod
-    def insert_feature_records():
-        from general.domains.auth.models.users import Users
-        from general.domains.admin.models.feature_sets import FeatureSets
-        from general.domains.admin.models.feature_sets_users import \
-            FeatureSetsUsers
-        from general.domains.admin.models.submenus import Submenus
-        with session_scope() as session:
-            feature_sets_users = (
-                session
-                    .query(FeatureSetsUsers)
-                    .filter(FeatureSets.name == 'admin')
-                    .all()
-            )
-            for feature_set_user in feature_sets_users:
-                schema_name = 'admin_api'
-                user_id = feature_set_user.user_id
-                submenu_name = 'Settings'
-                try:
-                    submenu = (
-                        session.query(Submenus)
-                            .filter(Submenus.submenu_name == submenu_name)
-                            .filter(Submenus.user_id == user_id)
-                            .one()
-                    )
-                except NoResultFound:
-                    submenu = Submenus()
-                    submenu.user_id = feature_set_user.user_id
-                    submenu.submenu_name = submenu_name
-                    submenu.icon = 'fa-cogs'
-                    session.add(submenu)
-                    session.commit()
-
-                api_view_names = ['datatable_columns',
-                                  'datatables',
-                                  'form_fields',
-                                  'forms']
-                for api_view_name in api_view_names:
-                    try:
-                        menubar_view_setting = (
-                            session.query(TableSettings)
-                            .filter(TableSettings.user_id == user_id)
-                            .filter(TableSettings.table_name == api_view_name)
-                            .filter(TableSettings.schema_name == schema_name)
-                            .one()
-                        )
-                    except NoResultFound:
-                        menubar_view_setting_data = {
-                                'schema_name': schema_name,
-                                'table_name':  api_view_name,
-                                'user_id':     user_id
-                            }
-                        menubar_view_setting = TableSettings(**menubar_view_setting_data)
-                        session.add(menubar_view_setting)
-                        session.commit()
-                    menubar_view_setting.submenu_id = submenu.id
-
-                menubar_view_names = ['menubar', 'items']
-                for menubar_view_name in menubar_view_names:
-                    try:
-                        menubar_view_setting = (
-                            session.query(TableSettings)
-                                .filter(TableSettings.user_id == user_id)
-                                .filter(TableSettings.table_name == menubar_view_name)
-                                .filter(TableSettings.schema_name == schema_name)
-                                .one()
-                        )
-                    except NoResultFound:
-                        menubar_view_setting_data = {
-                            'schema_name': schema_name,
-                            'table_name':  menubar_view_name,
-                            'user_id':     user_id
-                        }
-                        menubar_view_setting = TableSettings(**menubar_view_setting_data)
-                        session.add(menubar_view_setting)
-                        session.commit()
-                    menubar_view_setting.is_visible = False
 
     def grant_admin_privileges(self):
         from general.domains.auth.models import Users
@@ -162,8 +82,12 @@ class AdminApiSchema(Schema):
             }
         self.grant_privileges(self.name, privileges)
 
+    @staticmethod
+    def insert_feature_records():
+        insert_admin_feature()
+        
     def setup(self):
         self.create_schema()
         self.create_admin_api_views()
-        self.insert_feature_records()
         self.grant_admin_privileges()
+        self.insert_feature_records()
