@@ -11,10 +11,10 @@ def create_forms_view():
             SELECT (row_number() OVER())::INT id, *
             FROM (
                 SELECT 
-                       dfs.custom_name AS "customName",
-                       dfs.form_name AS "formName",
-                       dfs.schema_name AS "schemaName",
-                       dfs.user_id as "userId"
+                       dfs.custom_name,
+                       dfs.form_name,
+                       dfs.schema_name,
+                       dfs.user_id
                 FROM admin.default_form_settings dfs
                 WHERE dfs."user" = current_user
             ) sub;

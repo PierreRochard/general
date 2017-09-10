@@ -10,7 +10,11 @@ def create_datatable_columns_view():
           CREATE OR REPLACE VIEW admin_api.datatable_columns AS
             SELECT (row_number() OVER())::INT id, *
             FROM (
-                    SELECT dtcs.data_type,
+                    SELECT 
+                           dtcs.can_update,
+                           dtcs.column_name,
+                           dtcs.custom_name,
+                           dtcs.data_type,
                            dtcs.filter_match_mode,
                            dtcs.filter_value,
                            dtcs.format_pattern,
@@ -18,10 +22,9 @@ def create_datatable_columns_view():
                            dtcs.is_filterable,
                            dtcs.is_sortable,
                            dtcs.is_visible,
-                           dtcs.custom_name AS label,
+                           dtcs.schema_name,
                            dtcs.table_name,
-                           dtcs.column_name AS value,
-                           dtcs.can_update as editable
+                           dtcs.user_id
                            
                     FROM admin.default_datatable_column_settings dtcs
                   WHERE dtcs.user = current_user

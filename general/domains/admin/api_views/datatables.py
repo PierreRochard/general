@@ -10,15 +10,15 @@ def create_datatables_view():
           CREATE OR REPLACE VIEW admin_api.datatables AS
             SELECT (row_number() OVER())::INT id, *
             FROM (
-                SELECT dts.custom_name AS "customName",
-                       dts.order_index AS "orderIndex",
-                       dts.row_limit AS "rowLimit",
-                       dts.row_offset AS "rowOffset",
-                       dts.schema_name AS "schemaName",
-                       dts.sort_column AS "sortColumn",
-                       dts.sort_order AS "sortOrder",
-                       dts.table_name AS "tableName",
-                       dts.user_id AS "userId"
+                SELECT dts.custom_name,
+                       dts.order_index,
+                       dts.row_limit,
+                       dts.row_offset,
+                       dts.schema_name,
+                       dts.sort_column,
+                       dts.sort_order,
+                       dts.table_name,
+                       dts.user_id
                 FROM admin.default_datatable_settings dts
                 WHERE dts."user" = current_user
             ) sub;
@@ -49,24 +49,24 @@ def create_datatables_trigger():
                           user_id
                           )
                           VALUES (
-                          NEW."customName",
-                          NEW."orderIndex",
-                          NEW."rowLimit",
-                          NEW."rowOffset", 
-                          NEW."schemaName", 
-                          NEW."sortColumn", 
-                          NEW."sortOrder",
-                          NEW."tableName",
-                          NEW."userId"
+                          NEW.custom_name,
+                          NEW.order_index,
+                          NEW.row_limit,
+                          NEW.row_offset, 
+                          NEW.schema_name, 
+                          NEW.sort_column, 
+                          NEW.sort_order,
+                          NEW.table_name,
+                          NEW.user_id
                           )
                           ON CONFLICT (user_id, schema_name, table_name)
                             DO UPDATE SET 
-                                   row_offset=NEW."offset",
-                                   sort_column=NEW."sortColumn",
-                                   sort_order=NEW."sortOrder"
-                            WHERE admin.table_settings.user_id = NEW.userId
-                              AND admin.table_settings.table_name = NEW.tableName
-                              AND admin.table_settings.schema_name = NEW.schemaName;
+                                   row_offset=NEW.row_offset,
+                                   sort_column=NEW.sort_column,
+                                   sort_order=NEW.sort_order
+                            WHERE admin.table_settings.user_id = NEW.user_id
+                              AND admin.table_settings.table_name = NEW.table_name
+                              AND admin.table_settings.schema_name = NEW.schema_name;
                            RETURN NEW;
                         END IF;
                         RETURN NEW;
@@ -87,7 +87,3 @@ def create_datatables_trigger():
           FOR EACH ROW
           EXECUTE PROCEDURE admin.datatables_function();
         """)
-
-if __name__ == '__main__':
-    create_datatables_view()
-    create_datatables_trigger()
