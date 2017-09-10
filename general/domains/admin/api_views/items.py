@@ -16,7 +16,7 @@ def create_items_view():
                  coalesce(ts.icon, 'fa-table') AS icon,
                  coalesce(ts.id, auth.gen_random_uuid()) as id,
                  ts.submenu_id,
-                 string_to_array('/' || t.table_name, ' ') AS "routerLink",
+                 ARRAY['/', t.schema_name, t.table_name] AS "routerLink",
                  coalesce(ts.order_index, 0) AS order_index
           FROM admin.tables t
           LEFT OUTER JOIN admin.table_settings ts
@@ -34,7 +34,7 @@ def create_items_view():
                           END AS icon,
                           fs.id,
                           fs.submenu_id AS submenu_id,
-                                 string_to_array('/rpc/' || f.form_name, ' ') 
+                                 ARRAY['/', f.schema_name, 'rpc', f.form_name]
                                     AS "routerLink",
                           fs.order_index
           FROM admin.forms f
