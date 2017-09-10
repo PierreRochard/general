@@ -9,8 +9,10 @@ def create_default_datatable_settings_view():
         session.execute("""
         CREATE OR REPLACE VIEW admin.default_datatable_settings AS 
           SELECT coalesce(ts.id, auth.gen_random_uuid()) as id,
-                 coalesce(u.role, current_user) as "user",
+                 u.role as "user",
+                 u.id as user_id,
                  t.table_name,
+                 t.schema_name,
                  
                  coalesce(ts.can_delete, TRUE) AS can_delete,
                  coalesce(ts.can_insert, TRUE) AS can_insert,
@@ -24,81 +26,12 @@ def create_default_datatable_settings_view():
                  coalesce(ts.row_offset, 0) as row_offset,
                  coalesce(ts.sort_column, 'id') as sort_column,
                  coalesce(ts.sort_order, 1) as sort_order
-          FROM admin.tables t
+          FROM auth.users u
+          LEFT OUTER JOIN admin.tables t
+          ON TRUE 
           LEFT OUTER JOIN admin.table_settings ts
               ON t.schema_name = ts.schema_name
               AND t.table_name = ts.table_name
-          LEFT JOIN auth.users u
-            ON ts.user_id = u.id
-          ORDER BY ts.order_index ASC, t.table_name ASC;
+              AND u.id = ts.user_id
+          ORDER BY u.role, t.table_name ASC;
         """)
-
-
-def create_default_datatable_settings_trigger():
-    with session_scope() as session:
-        session.execute("""
-            DROP FUNCTION IF EXISTS admin.datatable_settings_function() CASCADE;
-        """)
-        session.execute("""
-            CREATE OR REPLACE FUNCTION admin.datatable_settings_function()
-              RETURNS TRIGGER AS
-                    $BODY$
-                       BEGIN
-                        IF TG_OP = 'INSERT' THEN
-                            INSERT INTO admin.table_settings 
-                                                (table_name,
-                                                  can_delete,
-                                                  can_insert,
-                                                  can_update,
-                                                  custom_name,
-                                                  submenu_id,
-                                                  icon,
-                                                  is_visible) 
-                                          VALUES(NEW.table_name,
-                                                 NEW.can_delete,
-                                                 NEW.can_insert,
-                                                 NEW.can_update,
-                                                 NEW.custom_name,
-                                                 NEW.submenu_id,
-                                                 NEW.icon,
-                                                 NEW.is_visible);
-                            RETURN NEW;
-                          ELSIF TG_OP = 'UPDATE' THEN
-                              UPDATE admin.table_settings SET 
-                                     can_delete=NEW.can_delete, 
-                                     can_insert=NEW.can_insert, 
-                                     can_update=NEW.can_update, 
-                                     custom_name=NEW.custom_name, 
-                                     submenu_id=NEW.submenu_id, 
-                                     icon=NEW.icon, 
-                                     is_visible=NEW.is_visible 
-                              WHERE id=OLD.id;
-                           RETURN NEW;
-                          ELSIF TG_OP = 'DELETE' THEN
-                           DELETE 
-                             FROM admin.table_settings 
-                           WHERE id=OLD.id;
-                           RETURN NULL; 
-                        END IF;
-                        RETURN NEW;
-                      END;
-                    $BODY$
-              LANGUAGE plpgsql VOLATILE
-              COST 100;
-                """)
-
-        session.execute("""
-          DROP TRIGGER IF EXISTS default_datatable_settings_trigger ON api.default_datatable_settings CASCADE;
-        """)
-        session.execute("""
-        CREATE TRIGGER default_datatable_settings_trigger
-            INSTEAD OF INSERT OR UPDATE OR DELETE
-            ON api.default_datatable_settings
-            FOR EACH ROW
-        EXECUTE PROCEDURE admin.datatable_settings_function();
-        """)
-
-
-if __name__ == '__main__':
-    create_default_datatable_settings_view()
-    create_default_datatable_settings_trigger()

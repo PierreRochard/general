@@ -10,13 +10,15 @@ def create_datatables_view():
           CREATE OR REPLACE VIEW admin_api.datatables AS
             SELECT (row_number() OVER())::INT id, *
             FROM (
-                SELECT dts.table_name AS name, 
-                       dts.custom_name AS header,
-                       dts.row_limit AS "limit",
-                       dts.row_offset AS "offset",
-                       dts.sort_column,
-                       dts.sort_order,
-                       dts.order_index
+                SELECT dts.custom_name AS "customName",
+                       dts.order_index AS "orderIndex",
+                       dts.row_limit AS "rowLimit",
+                       dts.row_offset AS "rowOffset",
+                       dts.schema_name AS "schemaName",
+                       dts.sort_column AS "sortColumn",
+                       dts.sort_order AS "sortOrder",
+                       dts.table_name AS "tableName",
+                       dts.user_id AS "userId"
                 FROM admin.default_datatable_settings dts
                 WHERE dts.user = current_user
             ) sub;
@@ -35,15 +37,36 @@ def create_datatables_trigger():
                     $BODY$
                        BEGIN
                           IF TG_OP = 'UPDATE' THEN
-                          INSERT INTO admin.table_settings (table_name, row_offset, sort_column, sort_order)
-                          VALUES (NEW.name, NEW."offset", NEW.sort_column, NEW.sort_order)
-                          ON CONFLICT ("user", table_name)
+                          INSERT INTO admin.table_settings (
+                          custom_name,
+                          order_index,
+                          row_limit, 
+                          row_offset, 
+                          schema_name, 
+                          sort_column, 
+                          sort_order, 
+                          table_name,
+                          user_id
+                          )
+                          VALUES (
+                          NEW."customName",
+                          NEW."orderIndex",
+                          NEW."rowLimit",
+                          NEW."rowOffset", 
+                          NEW."schemaName", 
+                          NEW."sortColumn", 
+                          NEW."sortOrder",
+                          NEW."tableName",
+                          NEW."userId"
+                          )
+                          ON CONFLICT (user_id, schema_name, table_name)
                             DO UPDATE SET 
                                    row_offset=NEW."offset",
-                                   sort_column=NEW.sort_column,
-                                   sort_order=NEW.sort_order
-                            WHERE admin.table_settings.user = current_user
-                              AND admin.table_settings.table_name = NEW.name;
+                                   sort_column=NEW."sortColumn",
+                                   sort_order=NEW."sortOrder"
+                            WHERE admin.table_settings.user_id = NEW.userId
+                              AND admin.table_settings.table_name = NEW.tableName
+                              AND admin.table_settings.schema_name = NEW.schemaName;
                            RETURN NEW;
                         END IF;
                         RETURN NEW;
