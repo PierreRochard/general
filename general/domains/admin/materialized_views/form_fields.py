@@ -9,7 +9,7 @@ def create_form_fields_materialized_view():
         session.execute("""
             CREATE MATERIALIZED VIEW admin.form_fields AS
                 SELECT 
-                    params.specific_schema as schema_name,
+                    replace(params.specific_schema, '_api', '') AS schema_name,
                     routines.routine_name as form_name,
                     params.ordinal_position,
                     params.parameter_mode,

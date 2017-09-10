@@ -8,7 +8,7 @@ def create_forms_materialized_view():
         """)
         session.execute("""
             CREATE MATERIALIZED VIEW admin.forms AS
-                SELECT specific_schema as schema_name,
+                SELECT replace(specific_schema, '_api', '') AS schema_name,
                        routine_name as form_name
                 FROM information_schema.routines
                 WHERE specific_schema LIKE '%_api';

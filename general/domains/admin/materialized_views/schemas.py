@@ -9,7 +9,7 @@ def create_schemas_materialized_view():
         session.execute("""
             CREATE MATERIALIZED VIEW admin.schemas AS
                 SELECT
-                   schema_name
+                   replace(schema_name, '_api', '') AS schema_name
                 FROM information_schema.schemata
                 WHERE schema_name LIKE '%_api';
         """)

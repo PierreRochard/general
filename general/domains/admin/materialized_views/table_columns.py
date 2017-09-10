@@ -8,7 +8,7 @@ def create_table_columns_materialized_view():
         """)
         session.execute("""
             CREATE MATERIALIZED VIEW admin.table_columns AS
-                SELECT table_schema as schema_name,
+                SELECT replace(table_schema, '_api', '') AS schema_name,
                        table_name, 
                        column_name, 
                        is_nullable,
