@@ -10,19 +10,16 @@ def create_form_fields_view():
             CREATE OR REPLACE VIEW admin_api.form_fields AS 
             SELECT (row_number() OVER())::INT id, *
             FROM (
-                      SELECT dffs.form_name,
-                             dffs.field_name,
-                             dffs.field_type,
-                             dffs.custom_name
-                      FROM admin.default_form_field_settings dffs
-                  WHERE dffs.user = current_user
-                  ORDER BY dffs.order_index ASC
+              SELECT 
+                     dffs.custom_name AS "customName",
+                     dffs.field_name AS "fieldName",
+                     dffs.field_type AS "fieldType",
+                     dffs.form_name AS "formName",
+                     dffs.schema_name AS "schemaName",
+                     dffs.user_id as "userId"
+              FROM admin.default_form_field_settings dffs
+              WHERE dffs."user" = current_user
+              ORDER BY dffs.order_index ASC
               ) sub;
         """)
 
-        session.execute("""
-         GRANT SELECT ON admin.default_form_field_settings TO anon;
-        """)
-
-if __name__ == '__main__':
-    create_form_fields_view()

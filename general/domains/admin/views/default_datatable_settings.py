@@ -11,8 +11,8 @@ def create_default_datatable_settings_view():
           SELECT coalesce(ts.id, auth.gen_random_uuid()) as id,
                  u.role as "user",
                  u.id as user_id,
-                 t.table_name,
                  t.schema_name,
+                 t.table_name,
                  
                  coalesce(ts.can_delete, TRUE) AS can_delete,
                  coalesce(ts.can_insert, TRUE) AS can_insert,
@@ -33,5 +33,5 @@ def create_default_datatable_settings_view():
               ON t.schema_name = ts.schema_name
               AND t.table_name = ts.table_name
               AND u.id = ts.user_id
-          ORDER BY u.role, t.table_name ASC;
+          ORDER BY u.role, t.schema_name, t.table_name;
         """)

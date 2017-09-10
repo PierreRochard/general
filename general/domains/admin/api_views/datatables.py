@@ -20,7 +20,7 @@ def create_datatables_view():
                        dts.table_name AS "tableName",
                        dts.user_id AS "userId"
                 FROM admin.default_datatable_settings dts
-                WHERE dts.user = current_user
+                WHERE dts."user" = current_user
             ) sub;
         """)
 
