@@ -8,7 +8,6 @@ from general.domains.admin.api_views import (
     create_datatables_view,
     create_form_fields_view,
     create_forms_view,
-    create_items_view,
     create_menubar_view
 )
 from general.domains.admin.features import insert_admin_feature
@@ -27,8 +26,8 @@ class AdminApiSchema(Schema):
             frontend components
         """
 
-        # The frontend joins these two views to provide a menubar with submenus
-        create_items_view()
+        # The frontend consumes the menubar endpoint to parameterize the
+        # PrimeNG menubar component
         create_menubar_view()
 
         # The frontend consumes the datatable endpoint to parameterize the
@@ -55,9 +54,6 @@ class AdminApiSchema(Schema):
                 },
                 'VIEW':   {
                     'menubar':           {
-                        'SELECT': [u.role for u in session.query(Users).all()]
-                    },
-                    'items':             {
                         'SELECT': [u.role for u in session.query(Users).all()]
                     },
                     'forms':             {

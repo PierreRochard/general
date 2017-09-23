@@ -18,7 +18,9 @@ from general.domains.admin.views import (
     create_default_datatable_column_settings_view,
     create_default_datatable_settings_view,
     create_default_form_field_settings_view,
-    create_default_form_settings_view
+    create_default_form_settings_view,
+    create_menubar_view,
+    create_submenu_items_view
 )
 
 
@@ -56,6 +58,8 @@ class AdminSchema(Schema):
         create_default_datatable_settings_view()
         create_default_form_field_settings_view()
         create_default_form_settings_view()
+        create_submenu_items_view()
+        create_menubar_view()
 
     @staticmethod
     def insert_anon():

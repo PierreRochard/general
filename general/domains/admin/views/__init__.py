@@ -2,3 +2,5 @@ from .default_datatable_column_settings import create_default_datatable_column_s
 from .default_datatable_settings import create_default_datatable_settings_view
 from .default_form_field_settings import create_default_form_field_settings_view
 from .default_form_settings import create_default_form_settings_view
+from .menubar import create_menubar_view
+from .submenu_items import create_submenu_items_view

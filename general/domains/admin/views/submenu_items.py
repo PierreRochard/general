@@ -1,7 +1,7 @@
 from general.database.session_scope import session_scope
 
 
-def create_items_view():
+def create_submenu_items_view():
     with session_scope() as session:
         session.execute("""
         DROP VIEW IF EXISTS admin.submenu_items CASCADE;
@@ -34,6 +34,3 @@ def create_items_view():
         
          ORDER BY order_index ASC NULLS LAST, "label" ASC NULLS LAST;
           """)
-
-if __name__ == '__main__':
-    create_items_view()
