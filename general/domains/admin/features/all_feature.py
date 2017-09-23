@@ -6,8 +6,8 @@ from general.domains.auth.models import Users
 
 
 def insert_all_feature():
-    menubar_view_names = ['menubar', 'items']
-    schema_name = 'admin_api'
+    menubar_view_names = ['menubar']
+    schema_name = 'admin'
     with session_scope() as session:
         for user in session.query(Users).all():
             for menubar_view_name in menubar_view_names:

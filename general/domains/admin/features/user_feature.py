@@ -13,7 +13,7 @@ def insert_user_feature():
     The user feature set is the opposite of the admin feature set.
     Hide the admin tables.
     """
-    schema_name = 'admin_api'
+    schema_name = 'admin'
     api_view_names = ['datatable_columns',
                       'datatables',
                       'form_fields',
@@ -29,6 +29,7 @@ def insert_user_feature():
                 .filter(FeatureSets.name.is_(None))
                 .all()
         )
+        user_ids = [user.id for user in users]
         for user in users:
             for api_view_name in api_view_names:
                 try:

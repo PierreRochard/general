@@ -10,7 +10,7 @@ from general.domains.auth.models import Users
 
 
 def insert_admin_feature():
-    schema_name = 'admin_api'
+    schema_name = 'admin'
     submenu_name = 'Settings'
     submenu_icon = 'fa-cogs'
     api_view_names = ['datatable_columns',

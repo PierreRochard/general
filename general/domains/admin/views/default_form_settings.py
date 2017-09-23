@@ -18,7 +18,7 @@ def create_default_form_settings_view():
                      fs.submenu_id,
                      coalesce(fs.icon, 'fa-pencil-square-o') AS icon,
                      coalesce(fs.is_visible, TRUE) as is_visible, 
-                     coalesce(fs.order_index, 0) AS order_index
+                     coalesce(fs.order_index, 99) AS order_index
 
               FROM auth.users u
               LEFT OUTER JOIN admin.forms f
