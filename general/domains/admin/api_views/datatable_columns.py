@@ -23,6 +23,10 @@ def create_datatable_columns_view():
                            dtcs.is_sortable,
                            dtcs.is_visible,
                            dtcs.schema_name,
+                           dtcs.select_item_schema_name,
+                           dtcs.select_item_table_name,
+                           dtcs.select_item_label_column_name,
+                           dtcs.select_item_value_column_name,
                            dtcs.table_name,
                            dtcs.user_id
                            

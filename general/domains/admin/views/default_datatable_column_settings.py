@@ -31,7 +31,11 @@ def create_default_datatable_column_settings_view():
                  coalesce(tcs.input_type, 'text') as input_type,
                  coalesce(tcs.is_filterable, FALSE) as is_filterable,
                  coalesce(tcs.is_sortable, TRUE) as is_sortable,
-                 coalesce(tcs.is_visible, TRUE) as is_visible,                
+                 coalesce(tcs.is_visible, TRUE) as is_visible,
+                 tcs.select_item_schema_name,
+                 tcs.select_item_table_name,
+                 tcs.select_item_label_column_name,
+                 tcs.select_item_value_column_name,
                  coalesce(tcs.order_index, 0) as order_index
           FROM auth.users u
           LEFT OUTER JOIN admin.table_columns tc
