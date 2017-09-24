@@ -33,6 +33,10 @@ class TableColumnSettings(Base):
     is_filterable = Column(Boolean, default=False)
     is_sortable = Column(Boolean, default=True)
     is_visible = Column(Boolean, default=True)
+    select_item_schema_name = Column(String)
+    select_item_table_name = Column(String)
+    select_item_label_column_name = Column(String)
+    select_item_value_column_name = Column(String)
     order_index = Column(Integer)
 
     user_id = Column(UUID,
