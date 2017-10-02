@@ -10,7 +10,10 @@ def create_datatables_view():
           CREATE OR REPLACE VIEW admin_api.datatables AS
             SELECT (row_number() OVER())::INT id, *
             FROM (
-                SELECT dts.custom_name,
+                SELECT 
+                       dts.can_archive,
+                       dts.can_delete,
+                       dts.custom_name,
                        dts.order_index,
                        dts.row_limit,
                        dts.row_offset,

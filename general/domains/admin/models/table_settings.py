@@ -21,9 +21,10 @@ class TableSettings(Base):
     schema_name = Column(String, nullable=False)
     table_name = Column(String, nullable=False)
 
-    can_delete = Column(Boolean, default=True)
-    can_insert = Column(Boolean, default=True)
-    can_update = Column(Boolean, default=True)
+    can_archive = Column(Boolean, default=False)
+    can_delete = Column(Boolean, default=False)
+    can_insert = Column(Boolean, default=False)
+    can_update = Column(Boolean, default=False)
     custom_name = Column(String)
     submenu_id = Column(UUID, ForeignKey('admin.submenus.id'))
     icon = Column(String)

@@ -14,8 +14,9 @@ def create_default_datatable_settings_view():
                  t.schema_name,
                  t.table_name,
                  
-                 coalesce(ts.can_delete, TRUE) AS can_delete,
-                 coalesce(ts.can_insert, TRUE) AS can_insert,
+                 coalesce(ts.can_archive, FALSE) AS can_archive,
+                 coalesce(ts.can_delete, FALSE) AS can_delete,
+                 coalesce(ts.can_insert, FALSE) AS can_insert,
                  coalesce(ts.can_update, TRUE) AS can_update,
                  coalesce(ts.custom_name, initcap(replace(t.table_name, '_', ' '))) as custom_name,
                  ts.submenu_id,

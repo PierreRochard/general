@@ -36,7 +36,11 @@ def create_default_datatable_column_settings_view():
                  tcs.select_item_table_name,
                  tcs.select_item_label_column_name,
                  tcs.select_item_value_column_name,
-                 coalesce(tcs.order_index, 0) as order_index
+                 coalesce(tcs.order_index, 0) as order_index,
+                 CASE WHEN tcs.height IS NULL THEN 'auto' ELSE concat(tcs.height, 'px') END as height,
+                 coalesce(tcs.overflow, 'visible') as overflow,
+                 CASE WHEN tcs.height IS NULL THEN 'auto' ELSE concat(tcs.height, 'px') END as height,
+                
           FROM auth.users u
           LEFT OUTER JOIN admin.table_columns tc
             ON TRUE

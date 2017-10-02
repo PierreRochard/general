@@ -1,4 +1,4 @@
-from sqlalchemy import (Boolean, Column, ForeignKey, Integer, String,
+from sqlalchemy import (Boolean, Column, ForeignKey, Numeric, Integer, String,
                         UniqueConstraint, text)
 
 from sqlalchemy.dialects.postgresql import UUID
@@ -38,6 +38,13 @@ class TableColumnSettings(Base):
     select_item_label_column_name = Column(String)
     select_item_value_column_name = Column(String)
     order_index = Column(Integer)
+
+    # CSS Properties, in pixels
+    height = Column(Numeric)
+    overflow = Column(String)
+    padding_top = Column(Numeric)
+    padding_bottom = Column(Numeric)
+    width = Column(Numeric)
 
     user_id = Column(UUID,
                      ForeignKey('auth.users.id',
