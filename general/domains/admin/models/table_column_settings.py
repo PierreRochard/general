@@ -42,8 +42,10 @@ class TableColumnSettings(Base):
     # CSS Properties, in pixels
     height = Column(Numeric)
     overflow = Column(String)
-    padding_top = Column(Numeric)
     padding_bottom = Column(Numeric)
+    padding_left = Column(Numeric)
+    padding_right = Column(Numeric)
+    padding_top = Column(Numeric)
     width = Column(Numeric)
 
     user_id = Column(UUID,

@@ -28,7 +28,16 @@ def create_datatable_columns_view():
                            dtcs.select_item_label_column_name,
                            dtcs.select_item_value_column_name,
                            dtcs.table_name,
-                           dtcs.user_id
+                           dtcs.user_id,
+                           json_build_object(
+                           'height', dtcs.height,
+                           'overflow', dtcs.overflow,
+                           'padding-bottom', dtcs.padding_bottom,
+                           'padding-left', dtcs.padding_left,
+                           'padding-right', dtcs.padding_right,
+                           'padding-top', dtcs.padding_top,
+                           'width', dtcs.width
+                           ) AS styles
                            
                     FROM admin.default_datatable_column_settings dtcs
                   WHERE dtcs.user = current_user
