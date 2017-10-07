@@ -30,6 +30,7 @@ def create_default_datatable_column_settings_view():
                   END) as format_pattern,
                  coalesce(tcs.input_type, 'text') as input_type,
                  coalesce(tcs.is_filterable, FALSE) as is_filterable,
+                 coalesce(tcs.is_multiple, FALSE) as is_multiple,
                  coalesce(tcs.is_sortable, TRUE) as is_sortable,
                  coalesce(tcs.is_visible, TRUE) as is_visible,
                  tcs.select_item_schema_name,

@@ -20,6 +20,7 @@ def create_datatable_columns_view():
                            dtcs.format_pattern,
                            dtcs.input_type,
                            dtcs.is_filterable,
+                           dtcs.is_multiple,
                            dtcs.is_sortable,
                            dtcs.is_visible,
                            dtcs.schema_name,

@@ -31,6 +31,7 @@ class TableColumnSettings(Base):
     format_pattern = Column(String)
     input_type = Column(String, default='text')
     is_filterable = Column(Boolean, default=False)
+    is_multiple = Column(Boolean, default=False)
     is_sortable = Column(Boolean, default=True)
     is_visible = Column(Boolean, default=True)
     select_item_schema_name = Column(String)
