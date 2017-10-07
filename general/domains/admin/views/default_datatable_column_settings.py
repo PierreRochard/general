@@ -43,7 +43,7 @@ def create_default_datatable_column_settings_view():
                  CASE WHEN tcs.padding_left IS NULL THEN 'auto' ELSE concat(tcs.padding_left, 'px') END as padding_left,
                  CASE WHEN tcs.padding_right IS NULL THEN 'auto' ELSE concat(tcs.padding_right, 'px') END as padding_right,
                  CASE WHEN tcs.padding_top IS NULL THEN 'auto' ELSE concat(tcs.padding_top, 'px') END as padding_top,
-                 CASE WHEN tcs.width IS NULL THEN 'auto' ELSE concat(tcs.width, 'px') END as width
+                 concat(coalesce(tcs.width, 200), 'px') AS width
           FROM auth.users u
           LEFT OUTER JOIN admin.table_columns tc
             ON TRUE
