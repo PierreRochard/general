@@ -21,6 +21,7 @@ def create_datatable_columns_view():
                            dtcs.input_type,
                            dtcs.is_filterable,
                            dtcs.is_multiple,
+                           dtcs.is_select_item,
                            dtcs.is_sortable,
                            dtcs.is_visible,
                            dtcs.schema_name,
@@ -28,6 +29,9 @@ def create_datatable_columns_view():
                            dtcs.select_item_table_name,
                            dtcs.select_item_label_column_name,
                            dtcs.select_item_value_column_name,
+                           dtcs.suggestion_column_name,
+                           dtcs.suggestion_schema_name,
+                           dtcs.suggestion_table_name,
                            dtcs.table_name,
                            dtcs.user_id,
                            json_build_object(
