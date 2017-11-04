@@ -21,8 +21,20 @@ def create_datatables_view():
                        dts.sort_column,
                        dts.sort_order,
                        dts.table_name,
-                       dts.user_id
+                       dts.user_id,
+                       fc.filter_columns AS filter_columns
                 FROM admin.default_datatable_settings dts
+                LEFT OUTER JOIN (
+                  SELECT
+                    dc.table_name,
+                    dc.schema_name,
+                    array_to_json(array_agg(row_to_json(dc)))::JSONB as "filter_columns"
+                    FROM admin_api.datatable_columns dc
+                    WHERE dc.is_filterable IS TRUE
+                    GROUP BY dc.table_name, dc.schema_name
+                ) fc
+                ON fc.table_name = dts.table_name
+                AND fc.schema_name = dts.schema_name
                 WHERE dts."user" = current_user
             ) sub;
         """)

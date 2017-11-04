@@ -30,15 +30,15 @@ class AdminApiSchema(Schema):
         # PrimeNG menubar component
         create_menubar_view()
 
-        # The frontend consumes the datatable endpoint to parameterize the
-        # PrimeNG datatable component
-        create_datatables_view()
-        create_datatables_trigger()
-
         # The frontend consumes the datatable_columns endpoint to parameterize the
         # PrimeNG datatable component's columns
         create_datatable_columns_view()
         create_datatable_columns_trigger()
+
+        # The frontend consumes the datatable endpoint to parameterize the
+        # PrimeNG datatable component
+        create_datatables_view()
+        create_datatables_trigger()
 
         create_forms_view()
         create_form_fields_view()
