@@ -22,7 +22,7 @@ def create_datatables_view():
                        dts.sort_order,
                        dts.table_name,
                        dts.user_id,
-                       fc.filter_columns AS filter_columns
+                       coalesce(fc.filter_columns, '[]') AS filter_columns
                 FROM admin.default_datatable_settings dts
                 LEFT OUTER JOIN (
                   SELECT
