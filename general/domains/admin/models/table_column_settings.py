@@ -36,10 +36,13 @@ class TableColumnSettings(Base):
     is_sortable = Column(Boolean, default=True)
     is_visible = Column(Boolean, default=True)
     order_index = Column(Integer)
+
+    # Utility Columns
     select_item_label_column_name = Column(String)
     select_item_schema_name = Column(String)
     select_item_table_name = Column(String)
     select_item_value_column_name = Column(String)
+
     suggestion_column_name = Column(String)
     suggestion_schema_name = Column(String)
     suggestion_table_name = Column(String)

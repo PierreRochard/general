@@ -22,6 +22,10 @@ def create_datatables_view():
                        dts.sort_order,
                        dts.table_name,
                        dts.user_id,
+                       dts.mapping_column_name,
+                       dts.mapping_table_name,
+                       dts.mapping_schema_name,
+                       dts.keyword_column_name,
                        coalesce(fc.filter_columns, '[]') AS filter_columns
                 FROM admin.default_datatable_settings dts
                 LEFT OUTER JOIN (

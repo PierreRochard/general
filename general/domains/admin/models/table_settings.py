@@ -1,7 +1,6 @@
 from sqlalchemy import (Boolean, Column, ForeignKey, Integer, String, text,
                         UniqueConstraint)
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
 
 from general.database.base import Base
 
@@ -35,10 +34,14 @@ class TableSettings(Base):
     sort_column = Column(String)
     sort_order = Column(Integer)
 
+    # Feature Utility Columns
+    mapping_column_name = Column(String)
+    mapping_table_name = Column(String)
+    mapping_schema_name = Column(String)
+    keyword_column_name = Column(String)
+
     user_id = Column(UUID,
                      ForeignKey('auth.users.id',
                                 onupdate='CASCADE',
                                 ondelete='CASCADE'),
                      nullable=False)
-
-    user = relationship('Users')
