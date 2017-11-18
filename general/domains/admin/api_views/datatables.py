@@ -22,24 +22,32 @@ def create_datatables_view():
                        dts.sort_order,
                        dts.table_name,
                        dts.user_id,
-                       dts.mapping_column_name,
-                       dts.mapping_table_name,
-                       dts.mapping_schema_name,
-                       dts.keyword_column_name,
-                       coalesce(fc.filter_columns, '[]') AS filter_columns
+                       map.mapper_settings
                 FROM admin.default_datatable_settings dts
                 LEFT OUTER JOIN (
                   SELECT
-                    dc.table_name,
-                    dc.schema_name,
-                    array_to_json(array_agg(row_to_json(dc)))::JSONB as "filter_columns"
-                    FROM admin_api.datatable_columns dc
-                    WHERE dc.is_filterable IS TRUE
-                    GROUP BY dc.table_name, dc.schema_name
-                ) fc
-                ON fc.table_name = dts.table_name
-                AND fc.schema_name = dts.schema_name
-                WHERE dts."user" = current_user
+                    mq.table_settings_id,
+                    row_to_json(mq)::JSONB AS "mapper_settings"
+                    FROM 
+                    (
+                    SELECT
+                      ms.table_settings_id,
+                      row_to_json(fcdc) AS filter_column,
+                      row_to_json(mcdc) AS mapping_column,
+                      row_to_json(smcdc) AS saved_keyword_column,
+                      row_to_json(skdc) AS saved_mapping_column
+                    FROM ADMIN.mapper_settings MS
+                    LEFT JOIN ADMIN.default_datatable_column_settings fcdc
+                    ON fcdc.id = MS.filter_column_settings_id
+                    LEFT JOIN ADMIN.default_datatable_column_settings mcdc
+                    ON mcdc.id = MS.mapping_column_settings_id
+                    LEFT JOIN ADMIN.default_datatable_column_settings smcdc
+                    ON smcdc.id = MS.saved_mapping_column_settings_id
+                    LEFT JOIN ADMIN.default_datatable_column_settings skdc
+                    ON skdc.id = MS.saved_keyword_column_settings_id
+                    ) mq
+                ) map
+                ON dts.id = map.table_settings_id
             ) sub;
         """)
 
