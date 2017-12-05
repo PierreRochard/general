@@ -41,7 +41,7 @@ def create_default_datatable_column_settings_view():
                  tcs.suggestion_column_name,
                  tcs.suggestion_schema_name,
                  tcs.suggestion_table_name,
-                 coalesce(tcs.order_index, 0) as order_index,
+                 coalesce(tcs.order_index, 99) as order_index,
                  CASE WHEN tcs.height IS NULL THEN 'auto' ELSE concat(tcs.height, 'px') END as height,
                  coalesce(tcs.overflow, 'visible') as overflow,
                  CASE WHEN tcs.padding_bottom IS NULL THEN 'auto' ELSE concat(tcs.padding_bottom, 'px') END as padding_bottom,
