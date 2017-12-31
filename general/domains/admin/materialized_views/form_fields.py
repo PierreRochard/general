@@ -18,7 +18,8 @@ def create_form_fields_materialized_view():
                 FROM information_schema.parameters params
                 LEFT JOIN information_schema.routines routines 
                     ON routines.specific_name = params.specific_name
-                WHERE params.specific_schema LIKE '%_api';
+                WHERE params.specific_schema LIKE '%_api'
+                  AND params.parameter_mode = 'IN';
         """)
 
 if __name__ == '__main__':

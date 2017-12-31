@@ -6,5 +6,6 @@ def setup_domains():
     setup_auth()
     setup_admin()
 
+
 if __name__ == '__main__':
     setup_domains()

@@ -52,11 +52,12 @@ def create_menubar_view():
                 NULL as "items"
          FROM admin.default_form_settings dfs
          WHERE dfs.submenu_id IS NULL AND dfs.is_visible
-            AND (dfs.user != 'anon' AND dfs.form_name != 'login')
-             OR (dfs.user = 'anon' AND dfs.form_name  = 'login')
+            AND ((dfs.user != 'anon' AND dfs.form_name != 'login')
+             OR (dfs.user = 'anon' AND dfs.form_name  != 'logout'))
         
          ORDER BY "user" ASC, order_index ASC NULLS LAST, "label" ASC NULLS LAST;
         """)
+
 
 if __name__ == '__main__':
     create_menubar_view()

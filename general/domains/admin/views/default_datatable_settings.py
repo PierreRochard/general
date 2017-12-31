@@ -26,11 +26,7 @@ def create_default_datatable_settings_view():
                  coalesce(ts.row_limit, 10) AS row_limit,
                  coalesce(ts.row_offset, 0) as row_offset,
                  coalesce(ts.sort_column, 'id') as sort_column,
-                 coalesce(ts.sort_order, 1) as sort_order,
-                 ts.mapping_column_name,
-                 ts.mapping_table_name,
-                 ts.mapping_schema_name,
-                 ts.keyword_column_name
+                 coalesce(ts.sort_order, 1) as sort_order
           FROM auth.users u
           LEFT OUTER JOIN admin.tables t
           ON TRUE 

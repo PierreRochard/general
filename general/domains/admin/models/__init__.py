@@ -1,3 +1,4 @@
+from .dialog_settings import DialogSettings
 from .feature_sets import FeatureSets
 from .feature_sets_users import FeatureSetsUsers
 from .form_field_settings import FormFieldSettings

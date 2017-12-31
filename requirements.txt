@@ -1,3 +1,4 @@
+selenium
 alembic
 psycopg2
 PyJWT

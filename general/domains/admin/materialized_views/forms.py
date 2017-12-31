@@ -14,5 +14,6 @@ def create_forms_materialized_view():
                 WHERE specific_schema LIKE '%_api';
         """)
 
+
 if __name__ == '__main__':
     create_forms_materialized_view()

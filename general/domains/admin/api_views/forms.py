@@ -11,7 +11,9 @@ def create_forms_view():
             SELECT (row_number() OVER())::INT id, *
             FROM (
                 SELECT 
+                       dfs.custom_button_copy,
                        dfs.custom_name,
+                       dfs.dialog_settings,
                        dfs.form_name,
                        dfs.schema_name,
                        dfs.user_id
