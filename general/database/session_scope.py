@@ -7,7 +7,6 @@ from sqlalchemy.exc import IntegrityError, ProgrammingError
 from sqlalchemy.orm import sessionmaker
 
 
-
 @contextmanager
 def session_scope(echo=False,
                   raise_integrity_error=True,
