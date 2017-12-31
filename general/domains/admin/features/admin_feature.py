@@ -13,11 +13,14 @@ def insert_admin_feature():
     schema_name = 'admin'
     submenu_name = 'Settings'
     submenu_icon = 'fa-cogs'
-    api_view_names = ['datatable_columns',
-                      'datatables',
-                      'form_fields',
-                      'forms']
-    
+    api_view_names = [
+        'datatable_columns',
+        'datatables',
+        'form_fields',
+        'forms',
+        'home'
+    ]
+
     with session_scope() as session:
         users = (
             session

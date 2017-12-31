@@ -22,7 +22,7 @@ def create_default_datatable_settings_view():
                  ts.submenu_id,
                  coalesce(ts.icon, 'fa-table') AS icon,
                  coalesce(ts.is_visible, FALSE) AS is_visible,
-                 coalesce(ts.order_index, 0) AS order_index,
+                 coalesce(ts.order_index, 99) AS order_index,
                  coalesce(ts.row_limit, 10) AS row_limit,
                  coalesce(ts.row_offset, 0) as row_offset,
                  coalesce(ts.sort_column, 'id') as sort_column,

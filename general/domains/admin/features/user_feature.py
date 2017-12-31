@@ -17,7 +17,8 @@ def insert_user_feature():
     api_view_names = ['datatable_columns',
                       'datatables',
                       'form_fields',
-                      'forms']
+                      'forms',
+                      'home']
     with session_scope() as session:
         users = (
             session

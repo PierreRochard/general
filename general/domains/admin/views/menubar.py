@@ -8,6 +8,16 @@ def create_menubar_view():
         """)
         session.execute("""
         CREATE OR REPLACE VIEW admin.menubar AS
+         SELECT 
+                dhs.user,
+                dhs.id,
+                dhs.custom_name AS "label",
+                dhs.icon,
+                ARRAY['/'] AS "routerLink",
+                -1 AS order_index,
+                NULL AS "items"
+         FROM admin.default_home_settings dhs
+         UNION
          SELECT u.role AS "user",
                 s.id,
                 s.submenu_name AS "label",

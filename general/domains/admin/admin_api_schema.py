@@ -75,7 +75,12 @@ class AdminApiSchema(Schema):
                         'SELECT, UPDATE': [u.role for u in
                                            session.query(Users).all()
                                            if u.role != 'anon']
-                    }
+                    },
+                    'home':           {
+                        'SELECT': [u.role for u in session.query(Users).all()],
+                        'UPDATE': [u.role for u in session.query(Users).all()
+                                   if u.role != 'anon']
+                    },
                 }
             }
         self.grant_privileges(self.name, privileges)

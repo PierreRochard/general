@@ -21,7 +21,9 @@ class HomeSettings(Base):
                 server_default=text('auth.gen_random_uuid()'),
                 primary_key=True)
 
+    custom_name = Column(String)
     headline = Column(String)
+    icon = Column(String)
     sub_headline = Column(String)
     supporting_image = Column(String)
 
