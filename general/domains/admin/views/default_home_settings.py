@@ -12,6 +12,7 @@ def create_default_home_settings_view():
                      u.role as "user",
                      u.id as user_id,
                      
+                     coalesce(hs.body, '') AS body,
                      coalesce(hs.custom_name, 'General') AS custom_name,
                      coalesce(hs.headline, 'Welcome') as headline,
                      coalesce(hs.icon, 'fa-home') AS icon,

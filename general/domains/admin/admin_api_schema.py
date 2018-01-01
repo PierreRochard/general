@@ -8,6 +8,7 @@ from general.domains.admin.api_views import (
     create_datatables_view,
     create_form_fields_view,
     create_forms_view,
+    create_home_view,
     create_menubar_view
 )
 from general.domains.admin.features import insert_admin_feature
@@ -42,6 +43,8 @@ class AdminApiSchema(Schema):
 
         create_forms_view()
         create_form_fields_view()
+
+        create_home_view()
 
     def grant_admin_privileges(self):
         from general.domains.auth.models import Users

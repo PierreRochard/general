@@ -8,7 +8,8 @@ def create_home_view():
         """)
         session.execute("""
         CREATE OR REPLACE VIEW admin_api.home AS
-         SELECT dhs.custom_name,
+         SELECT dhs.body,
+                dhs.custom_name,
                 dhs.headline,
                 dhs.icon,
                 dhs.sub_headline,
