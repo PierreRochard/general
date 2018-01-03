@@ -72,12 +72,14 @@ class AdminApiSchema(Schema):
                     'datatables':        {
                         'SELECT': [u.role for u in session.query(Users).all()],
                         'UPDATE': [u.role for u in session.query(Users).all()
-                                   if u.role != 'anon']
+                                   # if u.role != 'anon'
+                                   ]
                     },
                     'datatable_columns': {
                         'SELECT': [u.role for u in session.query(Users).all()],
                         'UPDATE': [u.role for u in session.query(Users).all()
-                                   if u.role != 'anon']
+                                   # if u.role != 'anon'
+                                   ]
                     },
                     'home':           {
                         'SELECT': [u.role for u in session.query(Users).all()],
