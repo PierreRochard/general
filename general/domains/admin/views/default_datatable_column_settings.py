@@ -56,5 +56,6 @@ def create_default_datatable_column_settings_view():
               ON  tc.schema_name = tcs.schema_name
               AND tc.table_name = tcs.table_name
               AND tc.column_name = tcs.column_name
+              AND u.id = tcs.user_id
           ORDER BY u.role, tc.schema_name, tc.table_name
         """)
