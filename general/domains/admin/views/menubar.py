@@ -38,7 +38,6 @@ def create_menubar_view():
          ) si
          ON s.id = si.submenu_id AND si.user = u.role
          WHERE s.is_visible
-          AND u.role != 'anon'
          UNION
          SELECT 
                 dts.user,
@@ -50,7 +49,6 @@ def create_menubar_view():
                 NULL as "items"
          FROM admin.default_datatable_settings dts
          WHERE dts.submenu_id IS NULL AND dts.is_visible
-          AND dts."user" != 'anon'
          UNION
          SELECT 
                 dfs.user,

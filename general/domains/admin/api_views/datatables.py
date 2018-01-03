@@ -48,6 +48,7 @@ def create_datatables_view():
                     ) mq
                 ) map
                 ON dts.id = map.table_settings_id
+                WHERE dts.user = current_user
             ) sub;
         """)
 
