@@ -29,6 +29,8 @@ def create_datatable_columns_view():
                            dtcs.select_item_table_name,
                            dtcs.select_item_label_column_name,
                            dtcs.select_item_value_column_name,
+                           dtcs.slice_end,
+                           dtcs.slice_start,
                            dtcs.suggestion_column_name,
                            dtcs.suggestion_schema_name,
                            dtcs.suggestion_table_name,

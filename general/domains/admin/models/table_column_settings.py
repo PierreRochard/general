@@ -36,6 +36,8 @@ class TableColumnSettings(Base):
     is_sortable = Column(Boolean, default=True)
     is_visible = Column(Boolean, default=True)
     order_index = Column(Integer)
+    slice_start = Column(Integer, default=None)
+    slice_end = Column(Integer, default=None)
 
     # Utility Columns
     select_item_label_column_name = Column(String)

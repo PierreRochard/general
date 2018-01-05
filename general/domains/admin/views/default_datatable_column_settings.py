@@ -25,6 +25,7 @@ def create_default_datatable_column_settings_view():
                  tcs.filter_value,
                  coalesce(tcs.format_pattern, 
                  CASE WHEN tc.data_type = 'timestamp without time zone' THEN 'shortDate'
+                      WHEN tc.data_type = 'timestamp with time zone' THEN 'short'
                       WHEN tc.data_type = 'numeric' THEN '1.2-2'
                       ELSE NULL
                   END) as format_pattern,
@@ -34,6 +35,8 @@ def create_default_datatable_column_settings_view():
                  coalesce(tcs.is_select_item, FALSE) as is_select_item,
                  coalesce(tcs.is_sortable, TRUE) as is_sortable,
                  coalesce(tcs.is_visible, TRUE) as is_visible,
+                 tcs.slice_start,
+                 tcs.slice_end,
                  tcs.select_item_label_column_name,
                  tcs.select_item_schema_name,
                  tcs.select_item_table_name,
