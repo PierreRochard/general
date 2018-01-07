@@ -18,6 +18,7 @@ def create_login_api_trigger():
                 BEGIN
                   SELECT auth.authenticate_user_email(email, password)
                   INTO _role;
+                  
                   IF _role IS NULL
                   THEN
                     RAISE invalid_password
@@ -36,10 +37,3 @@ def create_login_api_trigger():
                 END;
                 $$;
                 """)
-        session.execute('''
-                GRANT EXECUTE ON FUNCTION auth_api.login(TEXT, TEXT) TO anon;
-                ''')
-
-
-if __name__ == '__main__':
-    create_login_api_trigger()

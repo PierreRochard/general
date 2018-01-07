@@ -26,7 +26,8 @@ def create_default_datatable_settings_view():
                  coalesce(ts.row_limit, 10) AS row_limit,
                  coalesce(ts.row_offset, 0) as row_offset,
                  coalesce(ts.sort_column, 'id') as sort_column,
-                 coalesce(ts.sort_order, 1) as sort_order
+                 coalesce(ts.sort_order, 1) as sort_order,
+                 coalesce(cmi.context_menu_items, '[]') AS context_menu_items
           FROM auth.users u
           LEFT OUTER JOIN admin.tables t
           ON TRUE 
@@ -34,5 +35,17 @@ def create_default_datatable_settings_view():
               ON t.schema_name = ts.schema_name
               AND t.table_name = ts.table_name
               AND u.id = ts.user_id
+         LEFT OUTER JOIN (
+            SELECT
+              cmi.user_id,
+              cmi.table_name,
+              cmi.schema_name,
+              array_to_json(array_agg(row_to_json(cmi)))::JSONB as "context_menu_items"
+              FROM  admin.context_menu_items cmi
+              GROUP BY 1, 2, 3
+         ) cmi 
+              ON t.schema_name = cmi.schema_name
+              AND t.table_name = cmi.table_name
+              AND u.id = cmi.user_id
           ORDER BY u.role, t.schema_name, t.table_name;
         """)
