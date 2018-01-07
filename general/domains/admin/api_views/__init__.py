@@ -5,4 +5,5 @@ from .datatable_columns import (
 from .datatables import create_datatables_trigger, create_datatables_view
 from .form_fields import create_form_fields_view
 from .forms import create_forms_view
+from .home import create_home_view
 from .menubar import create_menubar_view

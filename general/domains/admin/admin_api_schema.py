@@ -8,6 +8,7 @@ from general.domains.admin.api_views import (
     create_datatables_view,
     create_form_fields_view,
     create_forms_view,
+    create_home_view,
     create_menubar_view
 )
 from general.domains.admin.features import insert_admin_feature
@@ -43,6 +44,8 @@ class AdminApiSchema(Schema):
         create_forms_view()
         create_form_fields_view()
 
+        create_home_view()
+
     def grant_admin_privileges(self):
         from general.domains.auth.models import Users
         with session_scope() as session:
@@ -67,15 +70,22 @@ class AdminApiSchema(Schema):
                                    if u.role != 'anon']
                     },
                     'datatables':        {
-                        'SELECT, UPDATE': [u.role for u in
-                                           session.query(Users).all()
-                                           if u.role != 'anon']
+                        'SELECT': [u.role for u in session.query(Users).all()],
+                        'UPDATE': [u.role for u in session.query(Users).all()
+                                   # if u.role != 'anon'
+                                   ]
                     },
                     'datatable_columns': {
-                        'SELECT, UPDATE': [u.role for u in
-                                           session.query(Users).all()
-                                           if u.role != 'anon']
-                    }
+                        'SELECT': [u.role for u in session.query(Users).all()],
+                        'UPDATE': [u.role for u in session.query(Users).all()
+                                   # if u.role != 'anon'
+                                   ]
+                    },
+                    'home':           {
+                        'SELECT': [u.role for u in session.query(Users).all()],
+                        'UPDATE': [u.role for u in session.query(Users).all()
+                                   if u.role != 'anon']
+                    },
                 }
             }
         self.grant_privileges(self.name, privileges)

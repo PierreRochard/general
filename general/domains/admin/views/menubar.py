@@ -8,6 +8,16 @@ def create_menubar_view():
         """)
         session.execute("""
         CREATE OR REPLACE VIEW admin.menubar AS
+         SELECT 
+                dhs.user,
+                dhs.id,
+                dhs.custom_name AS "label",
+                dhs.icon,
+                ARRAY['/'] AS "routerLink",
+                -1 AS order_index,
+                NULL AS "items"
+         FROM admin.default_home_settings dhs
+         UNION
          SELECT u.role AS "user",
                 s.id,
                 s.submenu_name AS "label",
@@ -28,7 +38,6 @@ def create_menubar_view():
          ) si
          ON s.id = si.submenu_id AND si.user = u.role
          WHERE s.is_visible
-          AND u.role != 'anon'
          UNION
          SELECT 
                 dts.user,
@@ -40,7 +49,6 @@ def create_menubar_view():
                 NULL as "items"
          FROM admin.default_datatable_settings dts
          WHERE dts.submenu_id IS NULL AND dts.is_visible
-          AND dts."user" != 'anon'
          UNION
          SELECT 
                 dfs.user,
@@ -52,11 +60,12 @@ def create_menubar_view():
                 NULL as "items"
          FROM admin.default_form_settings dfs
          WHERE dfs.submenu_id IS NULL AND dfs.is_visible
-            AND (dfs.user != 'anon' AND dfs.form_name != 'login')
-             OR (dfs.user = 'anon' AND dfs.form_name  = 'login')
+            AND ((dfs.user != 'anon' AND dfs.form_name != 'login')
+             OR (dfs.user = 'anon' AND dfs.form_name  != 'logout'))
         
          ORDER BY "user" ASC, order_index ASC NULLS LAST, "label" ASC NULLS LAST;
         """)
+
 
 if __name__ == '__main__':
     create_menubar_view()

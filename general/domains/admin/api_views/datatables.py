@@ -22,6 +22,7 @@ def create_datatables_view():
                        dts.sort_order,
                        dts.table_name,
                        dts.user_id,
+                       dts.context_menu_items,
                        map.mapper_settings
                 FROM admin.default_datatable_settings dts
                 LEFT OUTER JOIN (
@@ -48,6 +49,7 @@ def create_datatables_view():
                     ) mq
                 ) map
                 ON dts.id = map.table_settings_id
+                WHERE dts.user = current_user
             ) sub;
         """)
 

@@ -20,11 +20,14 @@ class FormSettings(Base):
                 primary_key=True)
     schema_name = Column(String, nullable=False)
     form_name = Column(String, nullable=False)
+
+    custom_button_copy = Column(String, default='Submit')
     custom_name = Column(String)
-    submenu_id = Column(UUID, ForeignKey('admin.submenus.id'))
+    dialog_settings_id = Column(UUID, ForeignKey('admin.dialog_settings.id'))
     icon = Column(String)
     is_visible = Column(Boolean, default=True)
     order_index = Column(Integer)
+    submenu_id = Column(UUID, ForeignKey('admin.submenus.id'))
 
     user_id = Column(UUID,
                      ForeignKey('auth.users.id',

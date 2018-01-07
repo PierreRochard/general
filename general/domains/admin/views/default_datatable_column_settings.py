@@ -25,6 +25,7 @@ def create_default_datatable_column_settings_view():
                  tcs.filter_value,
                  coalesce(tcs.format_pattern, 
                  CASE WHEN tc.data_type = 'timestamp without time zone' THEN 'shortDate'
+                      WHEN tc.data_type = 'timestamp with time zone' THEN 'short'
                       WHEN tc.data_type = 'numeric' THEN '1.2-2'
                       ELSE NULL
                   END) as format_pattern,
@@ -34,6 +35,8 @@ def create_default_datatable_column_settings_view():
                  coalesce(tcs.is_select_item, FALSE) as is_select_item,
                  coalesce(tcs.is_sortable, TRUE) as is_sortable,
                  coalesce(tcs.is_visible, TRUE) as is_visible,
+                 tcs.slice_start,
+                 tcs.slice_end,
                  tcs.select_item_label_column_name,
                  tcs.select_item_schema_name,
                  tcs.select_item_table_name,
@@ -41,7 +44,7 @@ def create_default_datatable_column_settings_view():
                  tcs.suggestion_column_name,
                  tcs.suggestion_schema_name,
                  tcs.suggestion_table_name,
-                 coalesce(tcs.order_index, 0) as order_index,
+                 coalesce(tcs.order_index, 99) as order_index,
                  CASE WHEN tcs.height IS NULL THEN 'auto' ELSE concat(tcs.height, 'px') END as height,
                  coalesce(tcs.overflow, 'visible') as overflow,
                  CASE WHEN tcs.padding_bottom IS NULL THEN 'auto' ELSE concat(tcs.padding_bottom, 'px') END as padding_bottom,
@@ -56,5 +59,6 @@ def create_default_datatable_column_settings_view():
               ON  tc.schema_name = tcs.schema_name
               AND tc.table_name = tcs.table_name
               AND tc.column_name = tcs.column_name
+              AND u.id = tcs.user_id
           ORDER BY u.role, tc.schema_name, tc.table_name
         """)
