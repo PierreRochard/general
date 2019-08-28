@@ -3,5 +3,6 @@ alembic
 psycopg2
 PyJWT
 requests
+structlog
 sqlalchemy
 websockets

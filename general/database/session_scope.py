@@ -17,9 +17,8 @@ def session_scope(echo=False,
                  password=os.environ['PGPASSWORD'],
                  host=os.environ['PGHOST'],
                  port=os.environ['PGPORT'],
-                 database='bitcoinadvisory')
-    engine = create_engine(pg_url, echo=echo,
-                           connect_args={'sslmode': 'require'})
+                 database=os.environ['PGDB'])
+    engine = create_engine(pg_url, echo=echo)
     session_maker = sessionmaker(bind=engine)
     session = session_maker()
 
