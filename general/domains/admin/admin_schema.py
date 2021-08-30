@@ -1,6 +1,6 @@
 import os
 
-from psycopg2 import ProgrammingError
+from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.orm.exc import NoResultFound
 
 from general.database.base import Base
