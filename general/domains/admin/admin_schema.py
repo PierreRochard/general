@@ -68,6 +68,9 @@ class AdminSchema(Schema):
         from general.domains.auth.models import Users
         with session_scope() as session:
             try:
+                session.execute("""
+                CREATE ROLE anon noinherit;
+                """)
                 user = (
                     session.query(Users)
                         .filter(Users.role == 'anon')
