@@ -74,6 +74,7 @@ class AdminSchema(Schema):
                 """)
             except ProgrammingError:
                 pass
+        with session_scope() as session:
             try:
                 user = (
                     session.query(Users)
