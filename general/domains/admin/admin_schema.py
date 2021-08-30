@@ -1,5 +1,6 @@
 import os
 
+from psycopg2 import ProgrammingError
 from sqlalchemy.orm.exc import NoResultFound
 
 from general.database.base import Base
@@ -71,6 +72,9 @@ class AdminSchema(Schema):
                 session.execute("""
                 CREATE ROLE anon noinherit;
                 """)
+            except ProgrammingError:
+                pass
+            try:
                 user = (
                     session.query(Users)
                         .filter(Users.role == 'anon')
