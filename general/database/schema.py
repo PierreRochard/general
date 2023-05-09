@@ -1,3 +1,5 @@
+from sqlalchemy import text
+
 from general.database.session_scope import session_scope
 
 
@@ -8,9 +10,9 @@ class Schema(object):
 
     def create_schema(self):
         with session_scope(raise_programming_error=True) as session:
-            session.execute(f"""
+            session.execute(text(f"""
             CREATE SCHEMA IF NOT EXISTS {self.name};
-                """)
+                """))
 
     def create_extension(self, extension_name):
         with session_scope(raise_programming_error=True) as session:
