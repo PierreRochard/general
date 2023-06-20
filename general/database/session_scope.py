@@ -10,15 +10,17 @@ from sqlalchemy.orm import sessionmaker
 @contextmanager
 def session_scope(echo=False,
                   raise_integrity_error=True,
-                  raise_programming_error=True):
+                  raise_programming_error=True,
+                  engine=None):
     """Provide a transactional scope around a series of operations."""
-    pg_url = URL(drivername='postgresql+psycopg2',
-                 username=os.environ['PGUSER'],
-                 password=os.environ['PGPASSWORD'],
-                 host=os.environ['PGHOST'],
-                 port=os.environ['PGPORT'],
-                 database=os.environ['PGDB'])
-    engine = create_engine(pg_url, echo=echo)
+    if engine is None:
+        pg_url = URL(drivername='postgresql+psycopg2',
+                     username=os.environ['PGUSER'],
+                     password=os.environ['PGPASSWORD'],
+                     host=os.environ['PGHOST'],
+                     port=os.environ['PGPORT'],
+                     database=os.environ['PGDB'])
+        engine = create_engine(pg_url, echo=echo)
     session_maker = sessionmaker(bind=engine)
     session = session_maker()
 
