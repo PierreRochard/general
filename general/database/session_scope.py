@@ -9,6 +9,13 @@ from sqlalchemy.orm import sessionmaker
 import dotenv
 dotenv.load_dotenv(dotenv.find_dotenv())
 
+pg_url = URL.create(drivername='postgresql+psycopg2',
+                 username=os.environ['PGUSER'],
+                 password=os.environ['PGPASSWORD'],
+                 host=os.environ['PGHOST'],
+                 port=int(os.environ['PGPORT']),
+                 database=os.environ['PGDB'])
+
 @contextmanager
 def session_scope(echo=False,
                   raise_integrity_error=True,
