@@ -6,7 +6,6 @@ from sqlalchemy.engine.url import URL
 from sqlalchemy.exc import IntegrityError, ProgrammingError
 from sqlalchemy.orm import sessionmaker
 
-from dotenv import load_dotenv, find_dotenv
 
 @contextmanager
 def session_scope(echo=False,
